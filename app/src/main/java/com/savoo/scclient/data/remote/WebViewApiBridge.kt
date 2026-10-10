@@ -18,8 +18,6 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -35,8 +33,6 @@ class WebViewApiBridge @Inject constructor(
     private val clientIdProvider: ClientIdProvider,
     private val tokenStore: TokenStore,
     private val challenge: DataDomeChallenge,
-    private val customServer: CustomServer,
-    private val httpClient: dagger.Lazy<okhttp3.OkHttpClient>,
 ) {
     private var webView: WebView? = null
     private var pageReady = CompletableDeferred<Unit>()
@@ -212,38 +208,11 @@ class WebViewApiBridge @Inject constructor(
         timeoutMs: Long = 10_000,
         solveChallenge: Boolean = true,
     ): BridgeResponse {
-        if (customServer.isActive) return executeDirect(method, url, jsonBody, contentType, extraQuery)
         val first = executeOnce(method, url, jsonBody, contentType, extraQuery, timeoutMs)
         if (!solveChallenge) return first
         val challengeUrl = DataDomeChallenge.challengeUrl(first.code, first.body) ?: return first
         if (!challenge.solve(challengeUrl)) return first
         return executeOnce(method, url, jsonBody, contentType, extraQuery, timeoutMs)
-    }
-
-    private suspend fun executeDirect(
-        method: String,
-        url: String,
-        jsonBody: String?,
-        contentType: String,
-        extraQuery: String?,
-    ): BridgeResponse = withContext(Dispatchers.IO) {
-        val fullUrl = if (extraQuery != null) "$url?$extraQuery" else url
-        val body = when {
-            jsonBody != null -> jsonBody.toRequestBody(contentType.toMediaType())
-            method == "PUT" || method == "POST" -> ByteArray(0).toRequestBody()
-            else -> null
-        }
-        val request = okhttp3.Request.Builder().url(fullUrl).method(method, body).build()
-        val (code, text) = runCatching {
-            httpClient.get().newCall(request).execute().use { it.code to it.body?.string() }
-        }.getOrElse {
-            DebugLog.log(TAG, "$method $url via custom server failed: ${it.message}")
-            0 to null
-        }
-        lastResponseBody = text
-        lastResponsePayload = runCatching { org.json.JSONObject(text.orEmpty()) }.getOrNull()
-        DebugLog.log(TAG, "$method ${url.substringAfter("soundcloud.com")} via custom server -> $code")
-        BridgeResponse(code, text)
     }
 
     private suspend fun executeOnce(

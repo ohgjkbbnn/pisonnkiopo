@@ -976,11 +976,4 @@
     <string name="datadome_blocked_title">Access restricted</string>
     <string name="datadome_blocked_subtitle">SoundCloud has temporarily blocked this network. Switch to another network or VPN server, then sign out and sign in again.</string>
     <string name="datadome_close">Close</string>
-    <string name="debug_menu_custom_server">Custom server</string>
-    <string name="debug_menu_custom_server_current">Active: %s</string>
-    <string name="debug_menu_custom_server_off">Off, using SoundCloud</string>
-    <string name="debug_menu_custom_server_desc">Requests to api-v2.soundcloud.com go to this server instead. Your SoundCloud token is not sent to it. Restart the app after changing it.</string>
-    <string name="debug_menu_custom_server_hint">Server address</string>
-    <string name="debug_menu_custom_server_invalid">Invalid address</string>
-    <string name="debug_menu_custom_server_reset">Back to SoundCloud</string>
 </resources>

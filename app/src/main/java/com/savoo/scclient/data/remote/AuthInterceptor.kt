@@ -19,7 +19,7 @@ class AuthInterceptor @Inject constructor(
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.request()
-        if (!CustomServer.isSoundCloudHost(original.url.host)) return chain.proceed(original)
+        if (!isSoundCloudHost(original.url.host)) return chain.proceed(original)
 
         val clientId = clientIdProvider.cachedOrFallback()
 
@@ -92,3 +92,6 @@ class AuthInterceptor @Inject constructor(
         builder.header("X-Client-UUID", UUID.randomUUID().toString())
     }
 }
+
+internal fun isSoundCloudHost(host: String): Boolean =
+    host == "soundcloud.com" || host.endsWith(".soundcloud.com")

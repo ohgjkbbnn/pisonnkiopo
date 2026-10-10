@@ -1002,11 +1002,4 @@
     <string name="datadome_blocked_title">Доступ ограничен</string>
     <string name="datadome_blocked_subtitle">SoundCloud временно заблокировал эту сеть. Переключитесь на другую сеть или сервер VPN, затем выйдите из аккаунта и войдите снова.</string>
     <string name="datadome_close">Закрыть</string>
-    <string name="debug_menu_custom_server">Свой сервер</string>
-    <string name="debug_menu_custom_server_current">Включён: %s</string>
-    <string name="debug_menu_custom_server_off">Выключен, используется SoundCloud</string>
-    <string name="debug_menu_custom_server_desc">Запросы к api-v2.soundcloud.com пойдут на этот сервер. Токен SoundCloud ему не передаётся. После смены адреса перезапустите приложение.</string>
-    <string name="debug_menu_custom_server_hint">Адрес сервера</string>
-    <string name="debug_menu_custom_server_invalid">Неверный адрес</string>
-    <string name="debug_menu_custom_server_reset">Вернуть SoundCloud</string>
 </resources>
