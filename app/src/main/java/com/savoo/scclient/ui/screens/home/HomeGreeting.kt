@@ -5,6 +5,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -71,21 +72,30 @@ fun AutoSizeGreetingText(text: String, color: Color, modifier: Modifier = Modifi
     val maxFontSize = MaterialTheme.typography.displayLarge.fontSize
     val minFontSize = MaterialTheme.typography.headlineMedium.fontSize
     var fontSize by remember(text) { mutableStateOf(maxFontSize) }
+    var maxLines by remember(text) { mutableIntStateOf(GREETING_LINES) }
     var readyToDraw by remember(text) { mutableStateOf(false) }
 
     Text(
         text = text,
         color = color,
-        maxLines = 2,
-        overflow = TextOverflow.Clip,
+        maxLines = maxLines,
+        overflow = if (readyToDraw) TextOverflow.Ellipsis else TextOverflow.Clip,
         style = MaterialTheme.typography.displayLarge.copy(fontSize = fontSize, lineHeight = fontSize * 1.05f),
         modifier = modifier.drawWithContent { if (readyToDraw) drawContent() },
         onTextLayout = { result ->
-            if (result.didOverflowHeight && fontSize > minFontSize) {
-                fontSize = (fontSize.value - 2).coerceAtLeast(minFontSize.value).sp
-            } else {
-                readyToDraw = true
+            when {
+                readyToDraw -> Unit
+                !result.didOverflowHeight -> readyToDraw = true
+                fontSize > minFontSize -> fontSize = (fontSize.value - 2).coerceAtLeast(minFontSize.value).sp
+                maxLines < GREETING_MAX_LINES -> {
+                    maxLines++
+                    fontSize = maxFontSize
+                }
+                else -> readyToDraw = true
             }
         },
     )
 }
+
+private const val GREETING_LINES = 2
+private const val GREETING_MAX_LINES = 3

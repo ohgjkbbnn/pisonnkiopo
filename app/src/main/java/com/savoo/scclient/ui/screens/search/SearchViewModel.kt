@@ -11,6 +11,8 @@ import com.savoo.scclient.data.model.User
 import com.savoo.scclient.data.remote.DeepLinkResult
 import com.savoo.scclient.ui.navigation.SoundCloudLinks
 import com.savoo.scclient.data.remote.SoundCloudImportRepository
+import com.savoo.scclient.data.repository.LyricMatch
+import com.savoo.scclient.data.repository.LyricSearchRepository
 import com.savoo.scclient.data.repository.SearchHistoryManager
 import com.savoo.scclient.data.repository.TrackRepository
 import com.savoo.scclient.player.OfflineTrackManager
@@ -51,6 +53,8 @@ data class SearchUiState(
     val nextArtistsHref: String? = null,
     val nextAlbumsHref: String? = null,
     val resultsQuery: String? = null,
+    val lyricMatches: List<LyricMatch> = emptyList(),
+    val resolvingLyricId: Long? = null,
 )
 
 sealed class SearchNavEvent {
@@ -73,6 +77,7 @@ class SearchViewModel @Inject constructor(
     private val searchHistory: SearchHistoryManager,
     private val offlineTrackManager: OfflineTrackManager,
     private val scImportRepo: SoundCloudImportRepository,
+    private val lyricSearchRepository: LyricSearchRepository,
     val playerController: PlayerController,
 ) : ViewModel() {
 
@@ -90,6 +95,7 @@ class SearchViewModel @Inject constructor(
     private val queryFlow = MutableStateFlow("")
     private var pendingHistoryQuery: String? = null
     private var loadMoreJob: kotlinx.coroutines.Job? = null
+    private var lyricJob: kotlinx.coroutines.Job? = null
 
     init {
         queryFlow
@@ -98,7 +104,10 @@ class SearchViewModel @Inject constructor(
             .onEach { q ->
                 when {
                     isSoundCloudUrl(q) -> clearResults()
-                    q.isNotBlank() -> runSearch(q)
+                    q.isNotBlank() -> {
+                        runSearch(q)
+                        runLyricSearch(q)
+                    }
                     else -> clearResults()
                 }
             }
@@ -165,9 +174,39 @@ class SearchViewModel @Inject constructor(
         if (query.isNotBlank()) runSearch(query)
     }
 
+    private fun runLyricSearch(query: String) {
+        lyricJob?.cancel()
+        if (query.split(' ').size < LyricSearchRepository.MIN_WORDS) {
+            _uiState.value = _uiState.value.copy(lyricMatches = emptyList())
+            return
+        }
+        lyricJob = viewModelScope.launch {
+            val matches = runCatching { lyricSearchRepository.search(query) }.getOrDefault(emptyList())
+            if (isStale(query)) return@launch
+            _uiState.value = _uiState.value.copy(lyricMatches = matches)
+        }
+    }
+
+    fun playLyricMatch(match: LyricMatch) {
+        if (_uiState.value.resolvingLyricId != null) return
+        commitQueryToHistory()
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(resolvingLyricId = match.geniusId)
+            val track = runCatching { lyricSearchRepository.findOnSoundCloud(match) }.getOrNull()
+            _uiState.value = _uiState.value.copy(resolvingLyricId = null)
+            if (track != null) {
+                playerController.playQueue(listOf(track), 0, tag = "search")
+            } else {
+                onQueryChange("${match.artist} ${match.title}")
+            }
+        }
+    }
+
     private fun clearResults() {
         loadMoreJob?.cancel()
+        lyricJob?.cancel()
         _uiState.value = _uiState.value.copy(
+            lyricMatches = emptyList(),
             tracks = emptyList(),
             artists = emptyList(),
             albums = emptyList(),

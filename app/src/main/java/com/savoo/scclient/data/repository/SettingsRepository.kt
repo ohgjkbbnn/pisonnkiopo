@@ -122,7 +122,7 @@ data class AppSettings(
     val customSeedColor: Color = OrangeSeed.Primary,
     val homeSections: List<HomeSectionConfig> = DefaultHomeSections,
     val playerBackgroundStyle: PlayerBackgroundStyle = PlayerBackgroundStyle.ORB,
-    val artworkShape: ArtworkShape = ArtworkShape.BLOB,
+    val artworkShape: ArtworkShape = ArtworkShape.SQUARE,
     val artworkRingEnabled: Boolean = true,
     val artworkScalePercent: Int = DefaultArtworkScalePercent,
     val fontRoundnessEnabled: Boolean = true,
@@ -136,6 +136,7 @@ data class AppSettings(
     val recapEnabled: Boolean = true,
     val pixelGlowEnabled: Boolean = true,
     val beatPulseEnabled: Boolean = false,
+    val animatedArtwork: Boolean = false,
     val cacheLimitMb: Int = DefaultCacheLimitMb,
     val crossfadeSeconds: Int = DefaultCrossfadeSeconds,
     val dividerStyle: DividerStyle = DividerStyle.SUBTLE,
@@ -194,6 +195,7 @@ class SettingsRepository @Inject constructor(
         val RECAP_ENABLED = booleanPreferencesKey("recap_enabled")
         val PIXEL_GLOW_ENABLED = booleanPreferencesKey("pixel_glow_enabled")
         val BEAT_PULSE_ENABLED = booleanPreferencesKey("beat_pulse_enabled")
+        val ANIMATED_ARTWORK = booleanPreferencesKey("animated_artwork")
         val CACHE_LIMIT_MB = intPreferencesKey("cache_limit_mb")
         val CROSSFADE_SECONDS = intPreferencesKey("crossfade_seconds")
         val DIVIDER_STYLE = stringPreferencesKey("divider_style")
@@ -256,7 +258,7 @@ class SettingsRepository @Inject constructor(
             artworkScalePercent = (prefs[Keys.ARTWORK_SCALE_PERCENT] ?: DefaultArtworkScalePercent).coerceIn(MinArtworkScalePercent, MaxArtworkScalePercent),
             fontRoundnessEnabled = prefs[Keys.FONT_ROUNDNESS_ENABLED] ?: true,
             fontRoundness = (prefs[Keys.FONT_ROUNDNESS] ?: DefaultFontRoundness).coerceIn(MinFontRoundness, MaxFontRoundness),
-            artworkShape = prefs[Keys.ARTWORK_SHAPE]?.let { runCatching { ArtworkShape.valueOf(it) }.getOrNull() } ?: ArtworkShape.BLOB,
+            artworkShape = prefs[Keys.ARTWORK_SHAPE]?.let { runCatching { ArtworkShape.valueOf(it) }.getOrNull() } ?: ArtworkShape.SQUARE,
             playerBackgroundStyle = (prefs[Keys.PLAYER_BACKGROUND_STYLE]?.let {
                 runCatching { PlayerBackgroundStyle.valueOf(it) }.getOrNull()
             } ?: PlayerBackgroundStyle.ORB).let {
@@ -275,6 +277,7 @@ class SettingsRepository @Inject constructor(
             recapEnabled = prefs[Keys.RECAP_ENABLED] ?: true,
             pixelGlowEnabled = prefs[Keys.PIXEL_GLOW_ENABLED] ?: true,
             beatPulseEnabled = prefs[Keys.BEAT_PULSE_ENABLED] ?: false,
+            animatedArtwork = prefs[Keys.ANIMATED_ARTWORK] ?: false,
             cacheLimitMb = prefs[Keys.CACHE_LIMIT_MB] ?: DefaultCacheLimitMb,
             crossfadeSeconds = (prefs[Keys.CROSSFADE_SECONDS] ?: DefaultCrossfadeSeconds)
                 .coerceIn(MinCrossfadeSeconds, MaxCrossfadeSeconds),
@@ -463,6 +466,10 @@ class SettingsRepository @Inject constructor(
 
     suspend fun setBeatPulseEnabled(value: Boolean) {
         context.dataStore.edit { it[Keys.BEAT_PULSE_ENABLED] = value }
+    }
+
+    suspend fun setAnimatedArtwork(value: Boolean) {
+        context.dataStore.edit { it[Keys.ANIMATED_ARTWORK] = value }
     }
 
     suspend fun setDividerStyle(style: DividerStyle) {

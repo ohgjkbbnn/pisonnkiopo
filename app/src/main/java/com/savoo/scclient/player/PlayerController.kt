@@ -66,6 +66,8 @@ import javax.inject.Inject
 import kotlin.math.roundToInt
 import javax.inject.Singleton
 import androidx.compose.ui.graphics.Color
+import com.savoo.scclient.ui.components.GeneratedArtworkDebugState
+import com.savoo.scclient.ui.components.generatedArtworkSeedColor
 
 data class PlaybackState(
     val currentTrack: Track? = null,
@@ -405,7 +407,7 @@ class PlayerController @Inject constructor(
                     beginListenSegment(track)
                     if (_state.value.currentTrack?.id != mediaId) clearLoop()
                     _state.update { it.copy(currentTrack = track, durationMs = track.durationMs, loadingTrackId = null) }
-                    extractSeedColor(track.artworkUrl)
+                    extractSeedColor(track.artworkUrl, track.title)
                     fadeOutStartedForMediaId = null
                     fadeJob?.cancel()
                     val stoppingAfterPreviousTrack = _sleepAfterCurrentTrack.value &&
@@ -1317,7 +1319,7 @@ class PlayerController @Inject constructor(
 
                 beginListenSegment(fullTrack)
                 _state.update { it.copy(currentTrack = fullTrack, durationMs = fullTrack.durationMs, loadingTrackId = null) }
-                extractSeedColor(fullTrack.artworkUrl)
+                extractSeedColor(fullTrack.artworkUrl, fullTrack.title)
                 controller?.apply {
                     val startAt = if (fullTrack.durationMs > 0) {
                         startPositionMs.coerceIn(0L, (fullTrack.durationMs - 1000L).coerceAtLeast(0L))
@@ -1462,7 +1464,7 @@ class PlayerController @Inject constructor(
                 loadingTrackId = track.id,
             )
         }
-        extractSeedColor(track.artworkUrl)
+        extractSeedColor(track.artworkUrl, track.title)
     }
 
     private fun restorePlayLastTrack() {
@@ -1511,7 +1513,7 @@ class PlayerController @Inject constructor(
                     }
                     beginListenSegment(fullTrack)
                     _state.update { it.copy(currentTrack = fullTrack, durationMs = fullTrack.durationMs, loadingTrackId = null) }
-                    extractSeedColor(fullTrack.artworkUrl)
+                    extractSeedColor(fullTrack.artworkUrl, fullTrack.title)
                     controller?.apply {
                         setMediaItems(items, queueIndex, position.coerceAtLeast(0L))
                         prepare()
@@ -1556,12 +1558,15 @@ class PlayerController @Inject constructor(
     // Cancelling the previous extraction is what keeps the color in sync while skipping quickly:
     // these run at wildly different speeds (cache hit vs network fetch vs decode), so without it
     // whichever request happens to finish last wins, which is rarely the track now playing.
-    private fun extractSeedColor(artworkUrl: String?) {
-        if (artworkUrl != null && artworkUrl == seedColorUrl && (_seedColor.value != null || seedColorJob?.isActive == true)) return
+    private fun extractSeedColor(sourceUrl: String?, title: String) {
+        val artworkUrl = sourceUrl.takeUnless { GeneratedArtworkDebugState.forceEverywhere.value }
+        val key = artworkUrl ?: "generated:$title"
+        if (key == seedColorUrl && (_seedColor.value != null || seedColorJob?.isActive == true)) return
         seedColorJob?.cancel()
-        seedColorUrl = artworkUrl
+        seedColorUrl = key
+        val fallback = generatedArtworkSeedColor(title)
         if (artworkUrl == null) {
-            _seedColor.value = null
+            _seedColor.value = fallback
             return
         }
         seedColorJob = scope.launch {
@@ -1571,26 +1576,22 @@ class PlayerController @Inject constructor(
                     .allowHardware(false)
                     .build()
                 val result = context.imageLoader.execute(request)
-                if (result is SuccessResult) {
-                    val bitmap = (result.drawable as? BitmapDrawable)?.bitmap
-                    if (bitmap != null) {
-                        val palette = Palette.from(bitmap).generate()
-                        val swatch = palette.vibrantSwatch ?: palette.dominantSwatch
-                        if (swatch != null) {
-                            ensureActive()
-                            _seedColor.value = Color(swatch.rgb)
-                            prefs.edit()
-                                .putString("seed_color_url", artworkUrl)
-                                .putInt("seed_color", swatch.rgb)
-                                .apply()
-                        }
-                    }
+                val bitmap = ((result as? SuccessResult)?.drawable as? BitmapDrawable)?.bitmap
+                val swatch = bitmap?.let { Palette.from(it).generate() }?.let { it.vibrantSwatch ?: it.dominantSwatch }
+                ensureActive()
+                if (swatch != null) {
+                    _seedColor.value = Color(swatch.rgb)
+                    prefs.edit()
+                        .putString("seed_color_url", artworkUrl)
+                        .putInt("seed_color", swatch.rgb)
+                        .apply()
+                } else {
+                    _seedColor.value = fallback
                 }
             } catch (_: CancellationException) {
                 throw CancellationException()
             } catch (_: Exception) {
-                _seedColor.value = null
-                seedColorUrl = null
+                _seedColor.value = fallback
             }
         }
     }

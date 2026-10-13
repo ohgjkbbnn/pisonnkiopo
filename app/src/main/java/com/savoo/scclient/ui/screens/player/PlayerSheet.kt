@@ -731,6 +731,7 @@ private fun Color.tone(amount: Float, towards: Color): Color = lerp(this, toward
 @Composable
 private fun PixelArtwork(
     artworkUrl: String?,
+    artworkSeed: Any?,
     progress: Float,
     palette: PixelPalette,
     slideOffsetX: androidx.compose.animation.core.Animatable<Float, androidx.compose.animation.core.AnimationVector1D>,
@@ -762,6 +763,8 @@ private fun PixelArtwork(
             TrackArtwork(
                 artworkUrl = artworkUrl,
                 contentDescription = null,
+                seed = artworkSeed,
+                animated = true,
                 shape = shape,
                 modifier = Modifier
                     .fillMaxSize()
@@ -837,6 +840,7 @@ private fun MiniPlayerRow(
             TrackArtwork(
                 artworkUrl = track.artworkUrl,
                 contentDescription = null,
+                seed = track.title,
                 shape = CircleShape,
                 modifier = Modifier.size(40.dp),
             )
@@ -1241,6 +1245,7 @@ private fun PixelPlayerContent(
                         val artSize = ((minOf(maxWidth, maxHeight) - 20.dp) * artworkScale).coerceAtLeast(0.dp)
                         PixelArtwork(
                             artworkUrl = state.currentTrack?.artworkUrl,
+                            artworkSeed = state.currentTrack?.title,
                             progress = if (state.durationMs > 0) {
                                 ((if (isDragging) dragPosition else state.positionMs.toFloat()) / state.durationMs.toFloat()).coerceIn(0f, 1f)
                             } else 0f,
@@ -2789,6 +2794,7 @@ private fun ClassicPlayerContent(
                         val artSize = (minOf(maxWidth * 0.92f, maxHeight) * artworkScale).coerceAtLeast(0.dp)
                         ArtworkOrb(
                             artworkUrl = state.currentTrack?.artworkUrl,
+                            artworkSeed = state.currentTrack?.title,
                             glowColor = glowColor,
                             isPlaying = state.isPlaying,
                             progress = if (state.durationMs > 0) {
@@ -3238,12 +3244,13 @@ private fun OrbGlow(
 @Composable
 private fun ArtworkOrb(
     artworkUrl: String?,
+    artworkSeed: Any?,
     glowColor: Color?,
     isPlaying: Boolean,
     progress: Float,
     slideOffsetX: androidx.compose.animation.core.Animatable<Float, androidx.compose.animation.core.AnimationVector1D>,
     style: com.savoo.scclient.data.repository.PlayerBackgroundStyle = com.savoo.scclient.data.repository.PlayerBackgroundStyle.ORB,
-    artworkShape: ArtworkShape = ArtworkShape.BLOB,
+    artworkShape: ArtworkShape = ArtworkShape.SQUARE,
     artworkRingEnabled: Boolean = true,
     modifier: Modifier = Modifier,
     pulse: () -> Float = { 0f },
@@ -3293,6 +3300,7 @@ private fun ArtworkOrb(
                     TrackArtwork(
                         artworkUrl = url,
                         contentDescription = null,
+                        seed = artworkSeed,
                         shape = blobShape,
                         modifier = Modifier
                             .fillMaxSize()
@@ -3304,6 +3312,8 @@ private fun ArtworkOrb(
             TrackArtwork(
                 artworkUrl = artworkUrl,
                 contentDescription = null,
+                seed = artworkSeed,
+                animated = true,
                 shape = blobShape,
                 modifier = Modifier
                     .fillMaxSize()

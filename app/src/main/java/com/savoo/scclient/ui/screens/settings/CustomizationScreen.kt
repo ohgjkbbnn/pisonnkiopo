@@ -696,6 +696,12 @@ fun CustomizationScreen(
                     checked = settings.beatPulseEnabled,
                     onCheckedChange = { viewModel.setBeatPulseEnabled(it) },
                 )
+                SwitchItem(
+                    title = stringResource(R.string.settings_animated_artwork),
+                    subtitle = stringResource(R.string.settings_animated_artwork_desc),
+                    checked = settings.animatedArtwork,
+                    onCheckedChange = { viewModel.setAnimatedArtwork(it) },
+                )
             }
 
             if (settings.playerStyle == PlayerStyle.CLASSIC) {

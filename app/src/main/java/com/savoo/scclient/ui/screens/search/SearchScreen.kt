@@ -254,7 +254,7 @@ fun SearchScreen(
                         state.error != null -> PullableCenteredContent {
                             SearchErrorState(error = state.error!!)
                         }
-                        state.query.isNotBlank() && state.tracks.isEmpty() && state.artists.isEmpty() && state.albums.isEmpty() -> PullableCenteredContent {
+                        state.query.isNotBlank() && state.tracks.isEmpty() && state.artists.isEmpty() && state.albums.isEmpty() && state.lyricMatches.isEmpty() -> PullableCenteredContent {
                             Text(
                                 stringResource(R.string.search_nothing_found),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -278,6 +278,20 @@ fun SearchScreen(
                                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
+                                if (state.lyricMatches.isNotEmpty()) {
+                                    item(key = "lyric_header") {
+                                        LyricMatchesHeader(modifier = Modifier.animateItem())
+                                    }
+                                    items(state.lyricMatches, key = { "lyric_${it.geniusId}" }) { match ->
+                                        LyricMatchCard(
+                                            match = match,
+                                            resolving = state.resolvingLyricId == match.geniusId,
+                                            onClick = { haptic(); viewModel.playLyricMatch(match) },
+                                            modifier = Modifier.animateItem(),
+                                        )
+                                    }
+                                    item(key = "lyric_spacer") { Spacer(Modifier.height(4.dp)) }
+                                }
                                 items(state.tracks, key = { it.id }) { track ->
                                     val isFav by viewModel.isFavoriteFlow(track.id).collectAsState(initial = false)
                                     val isCurrentTrack = playerState.currentTrack?.id == track.id

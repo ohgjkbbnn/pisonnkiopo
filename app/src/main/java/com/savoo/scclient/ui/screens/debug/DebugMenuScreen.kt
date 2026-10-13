@@ -76,6 +76,7 @@ import com.savoo.scclient.debug.DebugLog
 import com.savoo.scclient.debug.ScreenshotModeState
 import com.savoo.scclient.player.OfflineTrackManager
 import com.savoo.scclient.player.PlayerController
+import com.savoo.scclient.ui.components.GeneratedArtworkDebugState
 import com.savoo.scclient.ui.screens.home.GreetingDebugState
 import com.savoo.scclient.ui.screens.recap.RecapDebugState
 import com.savoo.scclient.ui.screens.recap.RecapDemo
@@ -226,6 +227,9 @@ class DebugMenuViewModel @Inject constructor(
     }
 
     val forceRecapBanner = RecapDebugState.forceBanner
+    val forceGeneratedArtwork = GeneratedArtworkDebugState.forceEverywhere
+
+    fun setForceGeneratedArtwork(value: Boolean) = GeneratedArtworkDebugState.setForceEverywhere(value)
 
     fun setForceRecapBanner(value: Boolean) = RecapDebugState.setForceBanner(value)
 
@@ -367,6 +371,7 @@ fun DebugMenuScreen(
     val recapReport by viewModel.recapReport.collectAsState()
     val recapStories by viewModel.recapStories.collectAsState()
     val forceRecapBanner by viewModel.forceRecapBanner.collectAsState()
+    val forceGeneratedArtwork by viewModel.forceGeneratedArtwork.collectAsState()
     var clientIdOverride by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -556,6 +561,20 @@ fun DebugMenuScreen(
                     ) {
                         Text(stringResource(R.string.debug_menu_waveforms_clear))
                     }
+                }
+            }
+
+            DebugSectionCard(title = stringResource(R.string.debug_menu_generated_artwork)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        stringResource(R.string.debug_menu_generated_artwork_everywhere),
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Switch(checked = forceGeneratedArtwork, onCheckedChange = { viewModel.setForceGeneratedArtwork(it) })
                 }
             }
 

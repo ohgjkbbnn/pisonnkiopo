@@ -296,6 +296,7 @@ class SettingsViewModel @Inject constructor(
     fun setBackgroundMode(mode: AppBackgroundMode) = viewModelScope.launch { repository.setBackgroundMode(mode) }
     fun setPixelGlowEnabled(value: Boolean) = viewModelScope.launch { repository.setPixelGlowEnabled(value) }
     fun setBeatPulseEnabled(value: Boolean) = viewModelScope.launch { repository.setBeatPulseEnabled(value) }
+    fun setAnimatedArtwork(value: Boolean) = viewModelScope.launch { repository.setAnimatedArtwork(value) }
     fun setRecapEnabled(value: Boolean) = viewModelScope.launch { repository.setRecapEnabled(value) }
     fun setCacheLimitMb(limitMb: Int) = viewModelScope.launch { repository.setCacheLimitMb(limitMb) }
     fun setCrossfadeSeconds(seconds: Int) = viewModelScope.launch { repository.setCrossfadeSeconds(seconds) }

@@ -522,6 +522,7 @@ private fun PickTrackRow(
         TrackArtwork(
             artworkUrl = track.artworkUrl,
             contentDescription = null,
+            seed = track.title,
             shape = RoundedCornerShape(14.dp),
             modifier = Modifier.size(48.dp),
         )

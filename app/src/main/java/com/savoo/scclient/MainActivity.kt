@@ -214,6 +214,7 @@ class MainActivity : FragmentActivity() {
                     com.savoo.scclient.ui.components.LocalDividerStyle provides settings.dividerStyle,
                     com.savoo.scclient.ui.components.LocalMarqueeTitles provides settings.marqueeTitles,
                     com.savoo.scclient.ui.components.LocalArtworkGlowSource provides settings.artworkGlowSource,
+                    com.savoo.scclient.ui.components.LocalAnimatedArtwork provides settings.animatedArtwork,
                 ) {
                     var eulaDismissed by androidx.compose.runtime.remember { mutableStateOf(false) }
                     var onboardingDismissed by androidx.compose.runtime.remember { mutableStateOf(false) }

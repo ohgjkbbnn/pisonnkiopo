@@ -320,6 +320,7 @@ fun AddToPlaylistSheet(
                         TrackArtwork(
                             artworkUrl = playlist.artworkUrl,
                             contentDescription = null,
+                            seed = playlist.title,
                             shape = RoundedCornerShape(16.dp),
                             modifier = Modifier.size(48.dp),
                         )
@@ -364,6 +365,7 @@ fun AddToPlaylistSheet(
                             TrackArtwork(
                                 artworkUrl = playlist.displayArtworkUrl,
                                 contentDescription = null,
+                                seed = playlist.title,
                                 shape = RoundedCornerShape(16.dp),
                                 modifier = Modifier.size(48.dp),
                             )
