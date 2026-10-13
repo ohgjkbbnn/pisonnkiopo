@@ -127,7 +127,7 @@ fun PinPad(
                 }
             }
             FilledIconButton(
-                onClick = { haptic(); onSubmit() },
+                onClick = { onSubmit() },
                 enabled = enabled && pin.length >= MinPinLength,
                 modifier = Modifier.size(keySize),
             ) {

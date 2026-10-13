@@ -94,7 +94,7 @@ fun ArtistRow(
         modifier = modifier
             .fillMaxWidth()
             .graphicsLayer { scaleX = scale; scaleY = scale }
-            .clickable(interactionSource = interactionSource, indication = null, onClick = { haptic(); onClick() }),
+            .clickable(interactionSource = interactionSource, indication = null, onClick = { onClick() }),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
         shape = RoundedCornerShape(20.dp),
     ) {

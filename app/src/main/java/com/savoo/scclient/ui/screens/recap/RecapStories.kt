@@ -87,7 +87,6 @@ import com.savoo.scclient.ui.components.hiResArtwork
 import com.savoo.scclient.ui.components.rememberArtworkColor
 import com.savoo.scclient.ui.components.rememberCaptureLayer
 import com.savoo.scclient.ui.components.shareImage
-import com.savoo.scclient.ui.haptics.rememberHapticTick
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.time.Instant
@@ -142,7 +141,6 @@ fun RecapStoriesDialog(stats: RecapStats, onDismiss: () -> Unit) {
 @Composable
 fun RecapStories(stats: RecapStats, onClose: () -> Unit) {
     val slides = remember(stats) { stats.slides() }
-    val haptic = rememberHapticTick()
     var current by rememberSaveable { mutableIntStateOf(0) }
     var paused by remember { mutableStateOf(false) }
     var forward by remember { mutableStateOf(true) }
@@ -151,7 +149,6 @@ fun RecapStories(stats: RecapStats, onClose: () -> Unit) {
     fun goTo(index: Int) {
         val target = index.coerceIn(0, slides.lastIndex)
         if (target == current) return
-        haptic()
         forward = target > current
         current = target
     }

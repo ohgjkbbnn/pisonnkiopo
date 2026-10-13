@@ -126,6 +126,7 @@ import com.savoo.scclient.data.model.LyricsResult
 import com.savoo.scclient.data.model.Track
 import com.savoo.scclient.ui.components.MorphingArtworkShape
 import com.savoo.scclient.ui.haptics.rememberHapticTick
+import com.savoo.scclient.ui.haptics.rememberHaptics
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -201,7 +202,6 @@ internal fun PlayerLyricsScreen(
 
 @Composable
 private fun LyricsHeader(track: Track?, onColor: Color, mutedColor: Color, surfaceColor: Color, onClose: () -> Unit) {
-    val haptic = rememberHapticTick()
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -209,7 +209,7 @@ private fun LyricsHeader(track: Track?, onColor: Color, mutedColor: Color, surfa
         PixelIconButton(
             icon = Icons.Filled.KeyboardArrowDown,
             contentDescription = stringResource(R.string.player_close_lyrics),
-            onClick = { haptic(); onClose() },
+            onClick = { onClose() },
             tint = onColor,
             background = surfaceColor,
             iconSize = 24.dp,
@@ -250,7 +250,6 @@ private fun LyricsTransport(
     onNext: () -> Unit,
     onPrev: () -> Unit,
 ) {
-    val haptic = rememberHapticTick()
     val progress by animateFloatAsState(
         targetValue = if (durationMs > 0) (positionMs.toFloat() / durationMs).coerceIn(0f, 1f) else 0f,
         animationSpec = tween(500, easing = LinearEasing),
@@ -299,7 +298,7 @@ private fun LyricsTransport(
             PixelPillButton(
                 icon = Icons.Filled.SkipPrevious,
                 contentDescription = stringResource(R.string.player_previous),
-                onClick = { haptic(); onPrev() },
+                onClick = { onPrev() },
                 background = surfaceColor,
                 tint = onColor,
                 interactionSource = prevSource,
@@ -309,7 +308,7 @@ private fun LyricsTransport(
             PixelPillButton(
                 icon = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                 contentDescription = stringResource(if (isPlaying) R.string.player_pause else R.string.player_play),
-                onClick = { haptic(); onTogglePlay() },
+                onClick = { onTogglePlay() },
                 background = accent,
                 tint = accentInk,
                 iconSize = 30.dp,
@@ -320,7 +319,7 @@ private fun LyricsTransport(
             PixelPillButton(
                 icon = Icons.Filled.SkipNext,
                 contentDescription = stringResource(R.string.player_next),
-                onClick = { haptic(); onNext() },
+                onClick = { onNext() },
                 background = surfaceColor,
                 tint = onColor,
                 interactionSource = nextSource,
@@ -665,10 +664,8 @@ private fun SyncedLyrics(
                 exit = fadeOut() + scaleOut(targetScale = 0.8f),
                 modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 16.dp),
             ) {
-                val haptic = rememberHapticTick()
                 Surface(
                     onClick = {
-                        haptic()
                         userBrowsing = false
                         scope.launch { listState.animateScrollToItem(activeRow.coerceAtLeast(0)) }
                     },
@@ -711,7 +708,7 @@ private fun LyricLine(
     annotations: List<GeniusAnnotation>? = null,
     onAnnotationClick: (List<GeniusAnnotation>) -> Unit = {},
 ) {
-    val haptic = rememberHapticTick()
+    val haptics = rememberHaptics()
     val scale by animateFloatAsState(
         targetValue = if (isActive) 1f else 0.92f,
         animationSpec = spring(dampingRatio = 0.42f, stiffness = Spring.StiffnessMedium),
@@ -751,7 +748,7 @@ private fun LyricLine(
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
-                onClick = { haptic(); onClick() },
+                onClick = { haptics.seekRelease(); onClick() },
                 onLongClick = onLongClick,
             )
             .padding(horizontal = 28.dp, vertical = 8.dp),

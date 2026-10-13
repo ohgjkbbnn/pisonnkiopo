@@ -189,7 +189,7 @@ fun TrackRow(
     val showDownloadProgress = isDownloading || optimisticDownload
 
     fun handleRowTap() {
-        if (selectionActive) onLongPress?.invoke() else { haptic(); onClick() }
+        if (selectionActive) onLongPress?.invoke() else { onClick() }
     }
 
     val containerColor by animateColorAsState(
@@ -271,7 +271,6 @@ fun TrackRow(
                     IconButton(
                         onClick = {
                             if (!showDownloadProgress) {
-                                haptics.click()
                                 if (!isDownloaded) optimisticDownload = true
                                 onToggleDownload()
                             }
@@ -306,7 +305,7 @@ fun TrackRow(
                     }
                 }
                 Surface(
-                    onClick = { haptics.click(); onTogglePlayPause?.invoke() ?: onClick() },
+                    onClick = { onTogglePlayPause?.invoke() ?: onClick() },
                     shape = CircleShape,
                     color = MaterialTheme.colorScheme.primaryContainer,
                     modifier = Modifier.size(40.dp),

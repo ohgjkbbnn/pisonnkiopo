@@ -179,7 +179,6 @@ fun DataDomeChallengeSheet(
             Spacer(Modifier.height(16.dp))
             FilledTonalButton(
                 onClick = {
-                    haptics.click()
                     onDismiss()
                 },
                 modifier = Modifier.fillMaxWidth(),

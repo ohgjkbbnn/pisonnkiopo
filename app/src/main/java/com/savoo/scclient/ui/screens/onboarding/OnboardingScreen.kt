@@ -66,7 +66,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.savoo.scclient.R
-import com.savoo.scclient.ui.haptics.rememberHapticTick
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlinx.coroutines.launch
@@ -88,7 +87,6 @@ private val pages = listOf(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun OnboardingScreen(onFinish: () -> Unit) {
-    val haptic = rememberHapticTick()
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val scope = rememberCoroutineScope()
 
@@ -119,7 +117,7 @@ fun OnboardingScreen(onFinish: () -> Unit) {
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
                 horizontalArrangement = Arrangement.End,
             ) {
-                TextButton(onClick = { haptic(); onFinish() }) {
+                TextButton(onClick = { onFinish() }) {
                     Text(
                         stringResource(R.string.onboarding_skip),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -147,7 +145,6 @@ fun OnboardingScreen(onFinish: () -> Unit) {
             val isLastPage = pagerState.currentPage == pages.lastIndex
             Surface(
                 onClick = {
-                    haptic()
                     if (isLastPage) {
                         onFinish()
                     } else {

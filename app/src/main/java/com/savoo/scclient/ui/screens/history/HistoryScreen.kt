@@ -64,7 +64,6 @@ import com.savoo.scclient.player.PlayerController
 import com.savoo.scclient.ui.components.EmptyState
 import com.savoo.scclient.ui.components.UndoAction
 import com.savoo.scclient.ui.components.UndoController
-import com.savoo.scclient.ui.haptics.rememberHapticTick
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -228,7 +227,6 @@ fun HistoryScreen(
     viewModel: HistoryViewModel = hiltViewModel(),
     onBack: () -> Unit = {},
 ) {
-    val haptic = rememberHapticTick()
     val days by viewModel.days.collectAsState()
     val query by viewModel.query.collectAsState()
     val isEmpty by viewModel.isEmpty.collectAsState()
@@ -248,7 +246,7 @@ fun HistoryScreen(
                 },
                 actions = {
                     if (!isEmpty) {
-                        IconButton(onClick = { haptic(); showClearDialog = true }) {
+                        IconButton(onClick = { showClearDialog = true }) {
                             Icon(Icons.Filled.DeleteSweep, contentDescription = stringResource(R.string.history_clear))
                         }
                     }
@@ -305,8 +303,8 @@ fun HistoryScreen(
                                 entry = entry,
                                 isPlaying = playerState.currentTrack?.id == entry.trackId && playerState.isPlaying,
                                 isLoading = resolvingTrackId == entry.trackId || playerState.loadingTrackId == entry.trackId,
-                                onClick = { haptic(); viewModel.play(entry) },
-                                onRemove = { haptic(); viewModel.remove(entry) },
+                                onClick = { viewModel.play(entry) },
+                                onRemove = { viewModel.remove(entry) },
                                 modifier = Modifier.padding(bottom = 8.dp).animateItem(),
                             )
                         }

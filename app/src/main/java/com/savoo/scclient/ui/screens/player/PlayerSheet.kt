@@ -75,6 +75,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Lyrics
 import androidx.compose.material.icons.filled.LibraryAdd
+import androidx.compose.material.icons.filled.Loop
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Pause
@@ -299,7 +300,7 @@ fun PlayerSheet(
             lastBulkDownload?.let { progress ->
                 BulkDownloadBanner(
                     progress = progress,
-                    onCancel = { haptics.click(); viewModel.cancelBulkDownloads() },
+                    onCancel = { viewModel.cancelBulkDownloads() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 4.dp),
@@ -312,7 +313,7 @@ fun PlayerSheet(
             lastFavoritesImport?.let { importState ->
                 FavoritesImportBanner(
                     state = importState,
-                    onCancel = { haptics.click(); viewModel.cancelFavoritesImport() },
+                    onCancel = { viewModel.cancelFavoritesImport() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 4.dp),
@@ -325,7 +326,7 @@ fun PlayerSheet(
             lastPlaylistAdd?.let { progress ->
                 PlaylistAddBanner(
                     progress = progress,
-                    onCancel = { haptics.click(); viewModel.cancelPlaylistAdd() },
+                    onCancel = { viewModel.cancelPlaylistAdd() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 4.dp),
@@ -338,7 +339,7 @@ fun PlayerSheet(
             lastFavoritesPush?.let { pushState ->
                 FavoritesSyncBanner(
                     state = pushState,
-                    onCancel = { haptics.click(); viewModel.cancelFavoritesPush() },
+                    onCancel = { viewModel.cancelFavoritesPush() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 4.dp),
@@ -374,7 +375,7 @@ fun PlayerSheet(
                 UndoBanner(
                     message = stringResource(action.messageRes, *action.messageArgs.toTypedArray()),
                     icon = action.icon,
-                    onUndo = { haptics.click(); viewModel.undoController.undo(action) },
+                    onUndo = { viewModel.undoController.undo(action) },
                     onDismiss = { viewModel.undoController.dismiss(action) },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -404,8 +405,8 @@ fun PlayerSheet(
                     onExpand = { showFullPlayer = true },
                     onTogglePlay = { viewModel.controller.togglePlayPause() },
                     onToggleFavorite = { viewModel.toggleFavoriteWithUndo() },
-                    onNext = { viewModel.controller.skipToNext() },
-                    onPrev = { viewModel.controller.skipToPrevious() },
+                    onNext = { haptics.skipForward(); viewModel.controller.skipToNext() },
+                    onPrev = { haptics.skipBack(); viewModel.controller.skipToPrevious() },
                 )
                 if (showDockBar) Spacer(Modifier.height(6.dp))
                 if (showDockBar) AppDivider(
@@ -466,8 +467,8 @@ fun PlayerSheet(
             onToggleFavorite = { viewModel.toggleFavorite() },
             onSaveForOffline = { viewModel.saveForOffline() },
             onRemoveFromOffline = { viewModel.removeFromOffline() },
-            onNext = { viewModel.controller.skipToNext() },
-            onPrev = { viewModel.controller.skipToPrevious() },
+            onNext = { haptics.skipForward(); viewModel.controller.skipToNext() },
+            onPrev = { haptics.skipBack(); viewModel.controller.skipToPrevious() },
             onToggleShuffle = { viewModel.controller.toggleShuffle() },
             onCycleRepeat = { viewModel.controller.cycleRepeatMode() },
             onArtistClick = { id -> showFullPlayer = false; onArtistClick(id) },
@@ -789,7 +790,6 @@ private fun MiniPlayerRow(
     onNext: () -> Unit,
     onPrev: () -> Unit,
 ) {
-    val haptic = rememberHapticTick()
     val haptics = rememberHaptics()
     var heartAnimating by remember { mutableStateOf(false) }
     val heartScale by animateFloatAsState(
@@ -827,7 +827,7 @@ private fun MiniPlayerRow(
     Column(
         modifier = Modifier
             .scale(pressScale)
-            .clickable(interactionSource = interactionSource, indication = null) { haptic(); onExpand() },
+            .clickable(interactionSource = interactionSource, indication = null) { onExpand() },
     ) {
         Row(
             modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 6.dp),
@@ -854,7 +854,7 @@ private fun MiniPlayerRow(
                     maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
             }
-            IconButton(onClick = { haptic(); onPrev() }, modifier = Modifier.size(48.dp), enabled = state.hasPrev || state.positionMs > 0L) {
+            IconButton(onClick = { onPrev() }, modifier = Modifier.size(48.dp), enabled = state.hasPrev || state.positionMs > 0L) {
                 Icon(
                     Icons.Filled.SkipPrevious,
                     contentDescription = stringResource(R.string.player_previous),
@@ -863,7 +863,7 @@ private fun MiniPlayerRow(
                 )
             }
             Surface(
-                onClick = { haptics.click(); onTogglePlay() },
+                onClick = { onTogglePlay() },
                 interactionSource = playInteractionSource,
                 shape = PlayButtonShape,
                 color = MaterialTheme.colorScheme.primary,
@@ -888,7 +888,7 @@ private fun MiniPlayerRow(
                     }
                 }
             }
-            IconButton(onClick = { haptic(); onNext() }, modifier = Modifier.size(48.dp), enabled = state.hasNext) {
+            IconButton(onClick = { onNext() }, modifier = Modifier.size(48.dp), enabled = state.hasNext) {
                 Icon(
                     Icons.Filled.SkipNext,
                     contentDescription = stringResource(R.string.player_next),
@@ -977,7 +977,6 @@ private fun PixelPlayerContent(
 ) {
     val context = LocalContext.current
     val accent = palette.accent
-    val haptic = rememberHapticTick()
     val haptics = rememberHaptics()
     var showLyrics by rememberSaveable { mutableStateOf(false) }
     var showComments by remember { mutableStateOf(false) }
@@ -998,7 +997,7 @@ private fun PixelPlayerContent(
     val sleepTimerActive = sleepTimerRemainingMs != null || sleepAfterCurrentTrack
     var isDragging by remember { mutableStateOf(false) }
     var dragPosition by remember { mutableFloatStateOf(0f) }
-    var lastSeekTickSecond by remember { mutableStateOf(-1L) }
+    var lastScrubDetent by remember { mutableIntStateOf(-1) }
     var heartAnimating by remember { mutableStateOf(false) }
     val heartScale by animateFloatAsState(
         targetValue = if (heartAnimating) 1.4f else 1f,
@@ -1134,7 +1133,7 @@ private fun PixelPlayerContent(
             PixelIconButton(
                 icon = Icons.Filled.KeyboardArrowDown,
                 contentDescription = stringResource(R.string.player_collapse),
-                onClick = { haptic(); onCollapse() },
+                onClick = { onCollapse() },
                 tint = palette.onBackground,
                 background = palette.surface,
                 iconSize = 24.dp,
@@ -1159,7 +1158,7 @@ private fun PixelPlayerContent(
                     PixelIconButton(
                         icon = Icons.Filled.CloudDownload,
                         contentDescription = stringResource(R.string.player_save_offline),
-                        onClick = { haptic(); onSaveForOffline() },
+                        onClick = { onSaveForOffline() },
                         tint = palette.onBackground,
                         background = palette.surface,
                     )
@@ -1168,8 +1167,8 @@ private fun PixelPlayerContent(
                     PixelIconButton(
                         icon = Icons.Filled.Lyrics,
                         contentDescription = stringResource(R.string.player_lyrics),
-                        onClick = { haptic(); showLyrics = !showLyrics },
-                        onLongClick = { haptic(); showLyricsSourceMenu = true },
+                        onClick = { showLyrics = !showLyrics },
+                        onLongClick = { haptics.longPress(); showLyricsSourceMenu = true },
                         tint = if (showLyrics) accent else palette.onBackground,
                         background = palette.surface,
                     )
@@ -1182,7 +1181,7 @@ private fun PixelPlayerContent(
                 PixelIconButton(
                     icon = Icons.Filled.MoreVert,
                     contentDescription = stringResource(R.string.player_more_options),
-                    onClick = { haptic(); showOverflowMenu = !showOverflowMenu },
+                    onClick = { showOverflowMenu = !showOverflowMenu },
                     tint = if (sleepTimerActive) accent else palette.onBackground,
                     background = palette.surface,
                 )
@@ -1195,7 +1194,7 @@ private fun PixelPlayerContent(
             exit = fadeOut(spring(stiffness = Spring.StiffnessMedium)),
         ) {
             Surface(
-                onClick = { haptic(); onDismissCustomizeHint() },
+                onClick = { onDismissCustomizeHint() },
                 shape = RoundedCornerShape(20.dp),
                 color = palette.surface,
                 contentColor = palette.onBackground,
@@ -1279,7 +1278,7 @@ private fun PixelPlayerContent(
                             if (isMixPlaying) {
                                 Spacer(Modifier.width(6.dp))
                                 Surface(
-                                    onClick = { haptic(); onExcludeArtist() },
+                                    onClick = { onExcludeArtist() },
                                     shape = RoundedCornerShape(50),
                                     color = palette.surface,
                                     contentColor = palette.onBackgroundMuted,
@@ -1335,7 +1334,7 @@ private fun PixelPlayerContent(
                                         .clickable(
                                             interactionSource = remember { MutableInteractionSource() },
                                             indication = null,
-                                        ) { haptic(); onArtistClick(track.user.id) },
+                                        ) { onArtistClick(track.user.id) },
                                 )
                             }
                         }
@@ -1349,22 +1348,23 @@ private fun PixelPlayerContent(
             actionSpacing = if (compact) 8.dp else 14.dp,
             seek = {
             val seekValue = if (isDragging) dragPosition else state.positionMs.toFloat()
+            val scrubLevels = remember(waveform) { waveformLevels(waveform, SCRUB_DETENTS) }
             val onSeekValueChange: (Float) -> Unit = { value ->
-                val second = (value / 1000L).toLong()
+                val detent = scrubDetent(value, state.durationMs)
                 if (!isDragging) {
-                    haptics.seekEdge()
-                    lastSeekTickSecond = second
+                    haptics.seekGrab()
+                    lastScrubDetent = detent
                     onScrubStart()
-                } else if (second != lastSeekTickSecond) {
-                    haptics.seekTick()
-                    lastSeekTickSecond = second
+                } else if (detent != lastScrubDetent) {
+                    haptics.scrub(if (waveform == null) SCRUB_FALLBACK_LEVEL else scrubLevels[detent])
+                    lastScrubDetent = detent
                 }
                 dragPosition = value
                 isDragging = true
                 onScrub(value.roundToLong())
             }
             val onSeekValueChangeFinished: () -> Unit = {
-                haptics.seekEdge()
+                haptics.seekRelease()
                 onSeek(dragPosition.roundToLong())
                 isDragging = false
             }
@@ -1403,7 +1403,12 @@ private fun PixelPlayerContent(
                     activeColor = accent,
                     inactiveColor = palette.onBackgroundMuted.copy(alpha = 0.25f),
                     isDragging = isDragging,
-                    modifier = Modifier.timedCommentMarkers(
+                    modifier = Modifier.loopRegion(
+                        loop = state.loop,
+                        durationMs = state.durationMs,
+                        color = accent,
+                        trackInset = 2.dp,
+                    ).timedCommentMarkers(
                         comments = timedComments,
                         durationMs = state.durationMs,
                         activeId = activeComment?.id,
@@ -1420,7 +1425,12 @@ private fun PixelPlayerContent(
                     onValueChangeFinished = onSeekValueChangeFinished,
                     valueRange = seekValueRange,
                     colors = seekColors,
-                    modifier = Modifier.timedCommentMarkers(
+                    modifier = Modifier.loopRegion(
+                        loop = state.loop,
+                        durationMs = state.durationMs,
+                        color = accent,
+                        trackInset = 8.dp,
+                    ).timedCommentMarkers(
                         comments = timedComments,
                         durationMs = state.durationMs,
                         activeId = activeComment?.id,
@@ -1457,7 +1467,12 @@ private fun PixelPlayerContent(
                     onValueChangeFinished = onSeekValueChangeFinished,
                     valueRange = seekValueRange,
                     colors = seekColors,
-                    modifier = Modifier.timedCommentMarkers(
+                    modifier = Modifier.loopRegion(
+                        loop = state.loop,
+                        durationMs = state.durationMs,
+                        color = accent,
+                        trackInset = 10.dp,
+                    ).timedCommentMarkers(
                         comments = timedComments,
                         durationMs = state.durationMs,
                         activeId = activeComment?.id,
@@ -1499,7 +1514,7 @@ private fun PixelPlayerContent(
                 PixelPillButton(
                     icon = Icons.Filled.SkipPrevious,
                     contentDescription = stringResource(R.string.player_previous),
-                    onClick = { haptic(); onPrev() },
+                    onClick = { onPrev() },
                     background = palette.surface,
                     tint = palette.onBackground,
                     interactionSource = prevSource,
@@ -1509,7 +1524,7 @@ private fun PixelPlayerContent(
                 PixelPillButton(
                     icon = if (state.isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                     contentDescription = stringResource(if (state.isPlaying) R.string.player_pause else R.string.player_play),
-                    onClick = { haptics.click(); onTogglePlay() },
+                    onClick = { onTogglePlay() },
                     background = accent,
                     tint = palette.accentInk,
                     iconSize = 32.dp,
@@ -1521,7 +1536,7 @@ private fun PixelPlayerContent(
                 PixelPillButton(
                     icon = Icons.Filled.SkipNext,
                     contentDescription = stringResource(R.string.player_next),
-                    onClick = { haptic(); onNext() },
+                    onClick = { onNext() },
                     background = palette.surface,
                     tint = palette.onBackground,
                     interactionSource = nextSource,
@@ -1548,7 +1563,7 @@ private fun PixelPlayerContent(
                     PixelIconButton(
                         icon = Icons.Filled.Shuffle,
                         contentDescription = stringResource(R.string.player_shuffle),
-                        onClick = { haptic(); onToggleShuffle() },
+                        onClick = { onToggleShuffle() },
                         tint = if (state.shuffleEnabled) accent else palette.onBackgroundMuted,
                         background = Color.Transparent,
                         size = 48.dp,
@@ -1557,7 +1572,7 @@ private fun PixelPlayerContent(
                     PixelIconButton(
                         icon = if (state.repeatMode == Player.REPEAT_MODE_ONE) Icons.Filled.RepeatOne else Icons.Filled.Repeat,
                         contentDescription = stringResource(R.string.player_repeat),
-                        onClick = { haptic(); onCycleRepeat() },
+                        onClick = { onCycleRepeat() },
                         tint = if (state.repeatMode != Player.REPEAT_MODE_OFF) accent else palette.onBackgroundMuted,
                         background = Color.Transparent,
                         size = 48.dp,
@@ -1624,20 +1639,20 @@ private fun PixelPlayerContent(
                         label = stringResource(R.string.player_sleep_timer),
                         palette = palette,
                         active = sleepTimerActive,
-                        onClick = { haptic(); showOverflowMenu = false; panel = PixelPanel.SLEEP_TIMER },
+                        onClick = { showOverflowMenu = false; panel = PixelPanel.SLEEP_TIMER },
                     )
                     PixelMenuItem(
                         icon = Icons.AutoMirrored.Filled.QueueMusic,
                         label = stringResource(R.string.player_queue),
                         palette = palette,
-                        onClick = { haptic(); showOverflowMenu = false; panel = PixelPanel.QUEUE },
+                        onClick = { showOverflowMenu = false; panel = PixelPanel.QUEUE },
                     )
                     if (commentsEnabled) {
                         PixelMenuItem(
                             icon = Icons.AutoMirrored.Filled.Comment,
                             label = stringResource(R.string.player_comments),
                             palette = palette,
-                            onClick = { haptic(); showOverflowMenu = false; showComments = true },
+                            onClick = { showOverflowMenu = false; showComments = true },
                         )
                     }
                     PixelMenuItem(
@@ -1645,7 +1660,6 @@ private fun PixelPlayerContent(
                         label = stringResource(R.string.player_more_like_this),
                         palette = palette,
                         onClick = {
-                            haptic()
                             showOverflowMenu = false
                             state.currentTrack?.let { track ->
                                 moreLikeThis(scope, context, controller, track) { infoMessage = it }
@@ -1656,28 +1670,34 @@ private fun PixelPlayerContent(
                         icon = Icons.Filled.LibraryAdd,
                         label = stringResource(R.string.playlist_add_to),
                         palette = palette,
-                        onClick = { haptic(); showOverflowMenu = false; showAddToPlaylist = true },
+                        onClick = { showOverflowMenu = false; showAddToPlaylist = true },
                     )
                     PixelMenuItem(
                         icon = Icons.Filled.Speed,
                         label = stringResource(R.string.player_speed),
                         palette = palette,
                         active = state.playbackSpeed != 1f,
-                        onClick = { haptic(); showOverflowMenu = false; panel = PixelPanel.SPEED },
+                        onClick = { showOverflowMenu = false; panel = PixelPanel.SPEED },
                     )
                     PixelMenuItem(
                         icon = Icons.Filled.GraphicEq,
                         label = stringResource(R.string.player_sound),
                         palette = palette,
                         active = state.soundMode.isActive,
-                        onClick = { haptic(); showOverflowMenu = false; panel = PixelPanel.SOUND },
+                        onClick = { showOverflowMenu = false; panel = PixelPanel.SOUND },
+                    )
+                    PixelMenuItem(
+                        icon = Icons.Filled.Loop,
+                        label = stringResource(R.string.player_loop),
+                        palette = palette,
+                        active = state.loop != null,
+                        onClick = { showOverflowMenu = false; panel = PixelPanel.LOOP },
                     )
                     PixelMenuItem(
                         icon = Icons.Filled.Share,
                         label = stringResource(R.string.player_share),
                         palette = palette,
                         onClick = {
-                            haptic()
                             showOverflowMenu = false
                             onShare()
                         },
@@ -1752,6 +1772,7 @@ private fun PixelPlayerContent(
                             )
                             PixelPanel.SPEED -> PlaybackSpeedContent(controller = controller)
                             PixelPanel.SOUND -> SoundModeContent(controller = controller)
+                            PixelPanel.LOOP -> LoopContent(controller = controller, waveform = waveform)
                         }
                     }
                 }
@@ -1762,7 +1783,7 @@ private fun PixelPlayerContent(
 
 private const val ORB_PULSE = 0.12f
 
-private enum class PixelPanel { QUEUE, SLEEP_TIMER, SPEED, SOUND }
+private enum class PixelPanel { QUEUE, SLEEP_TIMER, SPEED, SOUND, LOOP }
 
 
 @Composable
@@ -1997,10 +2018,16 @@ private fun WaveformSeekTrack(
     }
 }
 
+internal const val SCRUB_DETENTS = 48
+private const val SCRUB_FALLBACK_LEVEL = 0.35f
+
+internal fun scrubDetent(valueMs: Float, durationMs: Long): Int =
+    (valueMs / durationMs.coerceAtLeast(1L) * SCRUB_DETENTS).toInt().coerceIn(0, SCRUB_DETENTS - 1)
+
 private const val WAVEFORM_SWEEP_SECONDS = 0.6f
 private const val WAVEFORM_EASE_RATE = 10f
 
-private fun waveformLevels(samples: FloatArray?, barCount: Int): FloatArray {
+internal fun waveformLevels(samples: FloatArray?, barCount: Int): FloatArray {
     if (samples == null || samples.isEmpty()) return FloatArray(barCount)
     val averages = FloatArray(barCount) { index ->
         val from = index * samples.size / barCount
@@ -2034,12 +2061,11 @@ private fun ExpressiveMenuItem(
     onClick: () -> Unit,
     active: Boolean = false,
 ) {
-    val haptic = rememberHapticTick()
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(18.dp))
-            .clickable { haptic(); onClick() }
+            .clickable { onClick() }
             .padding(horizontal = 10.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -2153,7 +2179,7 @@ internal fun LyricsSyncControls(
                 modifier = Modifier
                     .clip(RoundedCornerShape(50))
                     .background(surfaceColor.copy(alpha = 0.9f))
-                    .clickable { haptic(); onExpandedChange(!expanded) }
+                    .clickable { onExpandedChange(!expanded) }
                     .padding(start = 10.dp, end = 6.dp, top = 6.dp, bottom = 6.dp),
             ) {
                 Icon(
@@ -2432,7 +2458,6 @@ private fun ClassicPlayerContent(
 ) {
     val context = LocalContext.current
     val palette = rememberPlayerPalette()
-    val haptic = rememberHapticTick()
     val haptics = rememberHaptics()
     var showLyrics by rememberSaveable { mutableStateOf(false) }
     var showComments by remember { mutableStateOf(false) }
@@ -2442,6 +2467,7 @@ private fun ClassicPlayerContent(
     var showSleepTimer by remember { mutableStateOf(false) }
     var showSpeed by remember { mutableStateOf(false) }
     var showSound by remember { mutableStateOf(false) }
+    var showLoop by remember { mutableStateOf(false) }
     var showOverflowMenu by remember { mutableStateOf(false) }
     var showAddToPlaylist by remember { mutableStateOf(false) }
     if (showAddToPlaylist) {
@@ -2454,7 +2480,7 @@ private fun ClassicPlayerContent(
     val sleepTimerActive = sleepTimerRemainingMs != null || sleepAfterCurrentTrack
     var isDragging by remember { mutableStateOf(false) }
     var dragPosition by remember { mutableFloatStateOf(0f) }
-    var lastSeekTickSecond by remember { mutableStateOf(-1L) }
+    var lastScrubDetent by remember { mutableIntStateOf(-1) }
     var heartAnimating by remember { mutableStateOf(false) }
     val heartScale by animateFloatAsState(
         targetValue = if (heartAnimating) 1.4f else 1f,
@@ -2557,7 +2583,7 @@ private fun ClassicPlayerContent(
                     }
                 }
             } else {
-                IconButton(onClick = { haptic(); onSaveForOffline() }) {
+                IconButton(onClick = { onSaveForOffline() }) {
                     Icon(
                         Icons.Filled.CloudDownload,
                         contentDescription = stringResource(R.string.player_save_offline),
@@ -2629,7 +2655,7 @@ private fun ClassicPlayerContent(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            IconButton(onClick = { haptic(); onCollapse() }) {
+            IconButton(onClick = { onCollapse() }) {
                 Icon(
                     Icons.Filled.KeyboardArrowDown,
                     contentDescription = stringResource(R.string.player_collapse),
@@ -2646,8 +2672,8 @@ private fun ClassicPlayerContent(
                             .size(48.dp)
                             .clip(CircleShape)
                             .combinedClickable(
-                                onClick = { haptic(); showLyrics = !showLyrics },
-                                onLongClick = { haptic(); showLyricsSourceMenu = true },
+                                onClick = { showLyrics = !showLyrics },
+                                onLongClick = { haptics.longPress(); showLyricsSourceMenu = true },
                             ),
                     ) {
                         Icon(
@@ -2664,7 +2690,7 @@ private fun ClassicPlayerContent(
                     )
                 }
                 Box {
-                    IconButton(onClick = { haptic(); showOverflowMenu = true }) {
+                    IconButton(onClick = { showOverflowMenu = true }) {
                         Icon(
                             Icons.Filled.MoreVert,
                             contentDescription = stringResource(R.string.player_more_options),
@@ -2687,25 +2713,24 @@ private fun ClassicPlayerContent(
                                 icon = Icons.Filled.Bedtime,
                                 label = stringResource(R.string.player_sleep_timer),
                                 active = sleepTimerActive,
-                                onClick = { haptic(); showOverflowMenu = false; showSleepTimer = true },
+                                onClick = { showOverflowMenu = false; showSleepTimer = true },
                             )
                             ExpressiveMenuItem(
                                 icon = Icons.AutoMirrored.Filled.QueueMusic,
                                 label = stringResource(R.string.player_queue),
-                                onClick = { haptic(); showOverflowMenu = false; showQueue = true },
+                                onClick = { showOverflowMenu = false; showQueue = true },
                             )
                             if (commentsEnabled) {
                                 ExpressiveMenuItem(
                                     icon = Icons.AutoMirrored.Filled.Comment,
                                     label = stringResource(R.string.player_comments),
-                                    onClick = { haptic(); showOverflowMenu = false; showComments = true },
+                                    onClick = { showOverflowMenu = false; showComments = true },
                                 )
                             }
                             ExpressiveMenuItem(
                                 icon = Icons.Filled.AutoAwesome,
                                 label = stringResource(R.string.player_more_like_this),
                                 onClick = {
-                                    haptic()
                                     showOverflowMenu = false
                                     state.currentTrack?.let { track ->
                                 moreLikeThis(scope, context, controller, track) { infoMessage = it }
@@ -2715,25 +2740,30 @@ private fun ClassicPlayerContent(
                             ExpressiveMenuItem(
                                 icon = Icons.Filled.LibraryAdd,
                                 label = stringResource(R.string.playlist_add_to),
-                                onClick = { haptic(); showOverflowMenu = false; showAddToPlaylist = true },
+                                onClick = { showOverflowMenu = false; showAddToPlaylist = true },
                             )
                             ExpressiveMenuItem(
                                 icon = Icons.Filled.Speed,
                                 label = stringResource(R.string.player_speed),
                                 active = state.playbackSpeed != 1f,
-                                onClick = { haptic(); showOverflowMenu = false; showSpeed = true },
+                                onClick = { showOverflowMenu = false; showSpeed = true },
                             )
                             ExpressiveMenuItem(
                                 icon = Icons.Filled.GraphicEq,
                                 label = stringResource(R.string.player_sound),
                                 active = state.soundMode.isActive,
-                                onClick = { haptic(); showOverflowMenu = false; showSound = true },
+                                onClick = { showOverflowMenu = false; showSound = true },
+                            )
+                            ExpressiveMenuItem(
+                                icon = Icons.Filled.Loop,
+                                label = stringResource(R.string.player_loop),
+                                active = state.loop != null,
+                                onClick = { showOverflowMenu = false; showLoop = true },
                             )
                             ExpressiveMenuItem(
                                 icon = Icons.Filled.Share,
                                 label = stringResource(R.string.player_share),
                                 onClick = {
-                                    haptic()
                                     showOverflowMenu = false
                                     onShare()
                                 },
@@ -2795,7 +2825,7 @@ private fun ClassicPlayerContent(
                             if (isMixPlaying) {
                                 Spacer(Modifier.width(6.dp))
                                 Surface(
-                                    onClick = { haptic(); onExcludeArtist() },
+                                    onClick = { onExcludeArtist() },
                                     shape = RoundedCornerShape(50),
                                     color = palette.card,
                                     contentColor = palette.onMuted,
@@ -2851,7 +2881,7 @@ private fun ClassicPlayerContent(
                                         .clickable(
                                             interactionSource = remember { MutableInteractionSource() },
                                             indication = null,
-                                        ) { haptic(); onArtistClick(track.user.id) },
+                                        ) { onArtistClick(track.user.id) },
                                 )
                             }
                         }
@@ -2869,22 +2899,23 @@ private fun ClassicPlayerContent(
             actionSpacing = if (compact) 8.dp else 14.dp,
             seek = {
             val seekValue = if (isDragging) dragPosition else state.positionMs.toFloat()
+            val scrubLevels = remember(waveform) { waveformLevels(waveform, SCRUB_DETENTS) }
             val onSeekValueChange: (Float) -> Unit = { value ->
-                val second = (value / 1000L).toLong()
+                val detent = scrubDetent(value, state.durationMs)
                 if (!isDragging) {
-                    haptics.seekEdge()
-                    lastSeekTickSecond = second
+                    haptics.seekGrab()
+                    lastScrubDetent = detent
                     onScrubStart()
-                } else if (second != lastSeekTickSecond) {
-                    haptics.seekTick()
-                    lastSeekTickSecond = second
+                } else if (detent != lastScrubDetent) {
+                    haptics.scrub(if (waveform == null) SCRUB_FALLBACK_LEVEL else scrubLevels[detent])
+                    lastScrubDetent = detent
                 }
                 dragPosition = value
                 isDragging = true
                 onScrub(value.roundToLong())
             }
             val onSeekValueChangeFinished: () -> Unit = {
-                haptics.seekEdge()
+                haptics.seekRelease()
                 onSeek(dragPosition.roundToLong())
                 isDragging = false
             }
@@ -2923,7 +2954,12 @@ private fun ClassicPlayerContent(
                     activeColor = accent,
                     inactiveColor = palette.onMuted.copy(alpha = 0.25f),
                     isDragging = isDragging,
-                    modifier = Modifier.timedCommentMarkers(
+                    modifier = Modifier.loopRegion(
+                        loop = state.loop,
+                        durationMs = state.durationMs,
+                        color = accent,
+                        trackInset = 2.dp,
+                    ).timedCommentMarkers(
                         comments = timedComments,
                         durationMs = state.durationMs,
                         activeId = activeComment?.id,
@@ -2940,7 +2976,12 @@ private fun ClassicPlayerContent(
                     onValueChangeFinished = onSeekValueChangeFinished,
                     valueRange = seekValueRange,
                     colors = seekColors,
-                    modifier = Modifier.timedCommentMarkers(
+                    modifier = Modifier.loopRegion(
+                        loop = state.loop,
+                        durationMs = state.durationMs,
+                        color = accent,
+                        trackInset = 8.dp,
+                    ).timedCommentMarkers(
                         comments = timedComments,
                         durationMs = state.durationMs,
                         activeId = activeComment?.id,
@@ -2977,7 +3018,12 @@ private fun ClassicPlayerContent(
                     onValueChangeFinished = onSeekValueChangeFinished,
                     valueRange = seekValueRange,
                     colors = seekColors,
-                    modifier = Modifier.timedCommentMarkers(
+                    modifier = Modifier.loopRegion(
+                        loop = state.loop,
+                        durationMs = state.durationMs,
+                        color = accent,
+                        trackInset = 10.dp,
+                    ).timedCommentMarkers(
                         comments = timedComments,
                         durationMs = state.durationMs,
                         activeId = activeComment?.id,
@@ -2993,7 +3039,7 @@ private fun ClassicPlayerContent(
             primary = {
 
             Surface(
-                onClick = { haptics.click(); onTogglePlay() },
+                onClick = { onTogglePlay() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(if (compact) 48.dp else 64.dp)
@@ -3073,6 +3119,9 @@ private fun ClassicPlayerContent(
     if (showSpeed) {
         PlaybackSpeedSheet(controller = controller, onDismiss = { showSpeed = false })
     }
+    if (showLoop) {
+        LoopSheet(controller = controller, waveform = waveform, onDismiss = { showLoop = false })
+    }
 }
 
 @Composable
@@ -3086,9 +3135,8 @@ private fun PlayerCircleIconButton(
     iconSize: Dp = 24.dp,
 ) {
     val palette = rememberPlayerPalette()
-    val haptic = rememberHapticTick()
     IconButton(
-        onClick = { haptic(); onClick() },
+        onClick = { onClick() },
         modifier = modifier.size(size),
         colors = IconButtonDefaults.iconButtonColors(containerColor = palette.card, contentColor = tint),
     ) {

@@ -154,7 +154,7 @@ fun SearchScreen(
                             label = "searchIconRotation",
                         )
                         IconButton(
-                            onClick = { if (hasQuery) { haptic(); viewModel.commitQueryToHistory(); viewModel.onQueryChange("") } },
+                            onClick = { if (hasQuery) { viewModel.commitQueryToHistory(); viewModel.onQueryChange("") } },
                             enabled = hasQuery,
                         ) {
                             Icon(
@@ -188,7 +188,7 @@ fun SearchScreen(
                             color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(8.dp))
-                                .clickable { haptic(); viewModel.clearHistory() }
+                                .clickable { viewModel.clearHistory() }
                                 .padding(horizontal = 8.dp, vertical = 4.dp)
                         )
                     }
@@ -200,8 +200,8 @@ fun SearchScreen(
                         items(history, key = { it }) { query ->
                             HistoryRow(
                                 query = query,
-                                onClick = { haptic(); viewModel.selectFromHistory(query) },
-                                onRemove = { haptic(); viewModel.removeHistoryItem(query) },
+                                onClick = { viewModel.selectFromHistory(query) },
+                                onRemove = { viewModel.removeHistoryItem(query) },
                                 modifier = Modifier.animateItem(),
                             )
                         }

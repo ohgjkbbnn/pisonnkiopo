@@ -381,12 +381,12 @@ fun AddTracksSheet(
                     modifier = Modifier.weight(1f).padding(horizontal = 4.dp),
                 )
                 if (selected.isNotEmpty()) {
-                    TextButton(onClick = { haptic(); viewModel.clearSelection() }) {
+                    TextButton(onClick = { viewModel.clearSelection() }) {
                         Text(stringResource(R.string.playlist_pick_clear))
                     }
                 }
                 if (list.tracks.isNotEmpty()) {
-                    TextButton(onClick = { haptic(); viewModel.selectAllVisible() }) {
+                    TextButton(onClick = { viewModel.selectAllVisible() }) {
                         Text(stringResource(R.string.selection_select_all))
                     }
                 }
@@ -433,7 +433,6 @@ fun AddTracksSheet(
             Spacer(Modifier.height(10.dp))
             Button(
                 onClick = {
-                    haptic()
                     viewModel.confirm(playlistTitle) { result ->
                         if (!result.queued) {
                             Toast.makeText(

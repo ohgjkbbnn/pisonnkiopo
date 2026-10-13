@@ -108,7 +108,7 @@ private fun CollectionTile(
                 .combinedClickable(
                     interactionSource = interactionSource,
                     indication = null,
-                    onClick = { haptics.tick(); onClick() },
+                    onClick = { onClick() },
                     onLongClick = { haptics.click(); menuOpen = true },
                 ),
         ) {

@@ -608,7 +608,6 @@ fun SettingsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                haptic()
                                 context.startActivity(
                                     Intent(Intent.ACTION_VIEW, Uri.parse(TRANSLATION_CATALOG_URL))
                                 )
@@ -647,7 +646,6 @@ fun SettingsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                haptic()
                                 translationTemplateLauncher.launch("strings_template.xml")
                             }
                             .padding(horizontal = 16.dp, vertical = 14.dp),
@@ -671,7 +669,6 @@ fun SettingsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                haptic()
                                 translationFileLauncher.launch(arrayOf("text/xml", "application/xml", "*/*"))
                             }
                             .padding(horizontal = 16.dp, vertical = 14.dp),
@@ -733,7 +730,6 @@ fun SettingsScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    haptic()
                                     viewModel.clearCustomTranslation()
                                     activity?.recreate()
                                 }
@@ -794,7 +790,7 @@ fun SettingsScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable(enabled = updateCheckState != UpdateCheckUiState.Checking) { haptic(); viewModel.checkForUpdates() }
+                        .clickable(enabled = updateCheckState != UpdateCheckUiState.Checking) { viewModel.checkForUpdates() }
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -975,7 +971,7 @@ fun SettingsScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { haptic(); onOpenDebugMenu() }
+                            .clickable { onOpenDebugMenu() }
                             .padding(horizontal = 16.dp, vertical = 14.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
@@ -1025,7 +1021,6 @@ fun SettingsScreen(
                             .clip(RoundedCornerShape(20.dp))
                             .background(MaterialTheme.colorScheme.errorContainer)
                             .clickable {
-                                haptic()
                                 viewModel.clearCache {
                                     scope.launch {
                                         snackbarHostState.showSnackbar(context.getString(R.string.settings_cache_cleared))
@@ -1115,7 +1110,6 @@ fun SettingsScreen(
                                 .clip(RoundedCornerShape(20.dp))
                                 .background(MaterialTheme.colorScheme.errorContainer)
                                 .clickable {
-                                    haptic()
                                     viewModel.clearOffline {
                                         scope.launch {
                                             snackbarHostState.showSnackbar(context.getString(R.string.settings_offline_cleared))
@@ -1193,7 +1187,7 @@ fun SettingsScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { haptic(); onOpenCustomization() }
+                        .clickable { onOpenCustomization() }
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -1221,7 +1215,7 @@ fun SettingsScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { haptic(); onOpenAppLock() }
+                        .clickable { onOpenAppLock() }
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -1249,7 +1243,7 @@ fun SettingsScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { haptic(); SoundCloudLinks.openHandlingSettings(context) }
+                        .clickable { SoundCloudLinks.openHandlingSettings(context) }
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -1280,7 +1274,7 @@ fun SettingsScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { haptic(); onOpenDislikedArtists() }
+                        .clickable { onOpenDislikedArtists() }
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -1309,7 +1303,6 @@ fun SettingsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable(enabled = !isRefreshingClientId) {
-                            haptic()
                             viewModel.refreshClientId {
                                 scope.launch {
                                     snackbarHostState.showSnackbar(context.getString(R.string.settings_client_id_refreshed))
@@ -1341,7 +1334,7 @@ fun SettingsScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { haptic(); showKeepAndroidOpen = true }
+                        .clickable { showKeepAndroidOpen = true }
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -1374,7 +1367,7 @@ fun SettingsScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { haptic(); showAbout = true }
+                        .clickable { showAbout = true }
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -1400,7 +1393,7 @@ fun SettingsScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { haptic(); showEula = true }
+                        .clickable { showEula = true }
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {

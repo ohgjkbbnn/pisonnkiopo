@@ -67,7 +67,7 @@ fun SleepTimerContent(
             )
             Spacer(Modifier.height(16.dp))
             OutlinedButton(
-                onClick = { haptic(); controller.cancelSleepTimer() },
+                onClick = { controller.cancelSleepTimer() },
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(stringResource(R.string.player_sleep_timer_cancel))
@@ -80,7 +80,7 @@ fun SleepTimerContent(
             )
             Spacer(Modifier.height(16.dp))
             OutlinedButton(
-                onClick = { haptic(); controller.cancelSleepTimer() },
+                onClick = { controller.cancelSleepTimer() },
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(stringResource(R.string.player_sleep_timer_cancel))

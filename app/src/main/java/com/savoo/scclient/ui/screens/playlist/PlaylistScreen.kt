@@ -114,7 +114,6 @@ import com.savoo.scclient.ui.components.hiResArtwork
 import com.savoo.scclient.ui.components.rememberArtworkColor
 import com.savoo.scclient.ui.components.rememberCollapseProgress
 import com.savoo.scclient.ui.components.rememberTrackSelection
-import com.savoo.scclient.ui.haptics.rememberHapticTick
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -449,7 +448,6 @@ fun PlaylistScreen(
     var sort by remember { mutableStateOf(TrackSort()) }
     val listState = rememberLazyListState()
     val selection = rememberTrackSelection()
-    val haptic = rememberHapticTick()
     val actionError by viewModel.actionError.collectAsState()
     val actionBusy by viewModel.actionBusy.collectAsState()
     var playlistTargets by remember { mutableStateOf<List<Track>?>(null) }
@@ -646,7 +644,7 @@ fun PlaylistScreen(
                                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 8.dp),
                             ) {
                                 FilledTonalButton(
-                                    onClick = { haptic(); showAddTracks = true },
+                                    onClick = { showAddTracks = true },
                                     shapes = ButtonDefaults.shapes(),
                                     modifier = Modifier.weight(1f).height(52.dp),
                                 ) {
@@ -657,7 +655,7 @@ fun PlaylistScreen(
                                 Spacer(Modifier.width(10.dp))
                                 Box {
                                     FilledTonalIconButton(
-                                        onClick = { haptic(); showOwnerMenu = true },
+                                        onClick = { showOwnerMenu = true },
                                         shapes = IconButtonDefaults.shapes(),
                                         modifier = Modifier.size(52.dp),
                                     ) {
@@ -787,7 +785,6 @@ private fun PlaylistHeader(
     localLabel: String?,
     onOwnerClick: () -> Unit,
 ) {
-    val haptic = rememberHapticTick()
     val surface = MaterialTheme.colorScheme.surface
     var descriptionExpanded by remember { mutableStateOf(false) }
     val kind = stringResource(
@@ -872,7 +869,7 @@ private fun PlaylistHeader(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .clip(RoundedCornerShape(50))
-                .clickable { haptic(); onOwnerClick() }
+                .clickable { onOwnerClick() }
                 .padding(end = 10.dp, top = 2.dp, bottom = 2.dp),
         ) {
             AsyncImage(

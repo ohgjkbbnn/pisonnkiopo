@@ -25,7 +25,6 @@ import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.toShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.savoo.scclient.ui.haptics.rememberHapticTick
 import java.text.NumberFormat
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -315,7 +314,6 @@ private fun LoggedInContent(
     onEditProfile: () -> Unit = {},
 ) {
     val context = LocalContext.current
-    val haptic = rememberHapticTick()
     var selectedBadge by remember { mutableStateOf<String?>(null) }
     var confirmPush by remember { mutableStateOf(false) }
 
@@ -326,7 +324,7 @@ private fun LoggedInContent(
             title = { Text(stringResource(R.string.favorites_push_danger_title)) },
             text = { Text(stringResource(R.string.favorites_push_danger_body, localOnlyFavorites)) },
             confirmButton = {
-                TextButton(onClick = { haptic(); confirmPush = false; onPushFavorites() }) {
+                TextButton(onClick = { confirmPush = false; onPushFavorites() }) {
                     Text(stringResource(R.string.favorites_push_danger_confirm), color = MaterialTheme.colorScheme.error)
                 }
             },
@@ -465,7 +463,7 @@ private fun LoggedInContent(
             Spacer(Modifier.height(12.dp))
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
                 Button(
-                    onClick = { haptic(); onEditProfile() },
+                    onClick = { onEditProfile() },
                     shapes = ButtonDefaults.shapes(),
                     modifier = Modifier.weight(1f).height(52.dp),
                 ) {
@@ -476,7 +474,7 @@ private fun LoggedInContent(
                 if (share != null) {
                     Spacer(Modifier.width(10.dp))
                     FilledTonalIconButton(
-                        onClick = { haptic(); share() },
+                        onClick = { share() },
                         shapes = IconButtonDefaults.shapes(),
                         modifier = Modifier.size(52.dp),
                     ) {
@@ -509,7 +507,7 @@ private fun LoggedInContent(
                     Text(stringResource(R.string.spam_warning_body), style = MaterialTheme.typography.bodyMedium)
                     Spacer(Modifier.height(14.dp))
                     Button(
-                        onClick = { haptic(); onAckSpamWarning() },
+                        onClick = { onAckSpamWarning() },
                         enabled = !isAckingSpamWarning,
                         shapes = ButtonDefaults.shapes(),
                         colors = ButtonDefaults.buttonColors(
@@ -548,7 +546,7 @@ private fun LoggedInContent(
                         title = stringResource(R.string.favorites_online_sync_now),
                         description = stringResource(R.string.favorites_online_sync_now_desc),
                         loading = isSyncingFavorites,
-                        onClick = { haptic(); onSyncFavoritesNow() },
+                        onClick = { onSyncFavoritesNow() },
                     )
                 }
                 if ((onlineFavoritesEnabled && localOnlyFavorites > 0) || isPushingFavorites) {
@@ -559,7 +557,7 @@ private fun LoggedInContent(
                         description = stringResource(R.string.favorites_push_desc, localOnlyFavorites),
                         loading = isPushingFavorites,
                         danger = true,
-                        onClick = { haptic(); confirmPush = true },
+                        onClick = { confirmPush = true },
                     )
                 }
             }
@@ -578,14 +576,14 @@ private fun LoggedInContent(
                 title = stringResource(R.string.account_settings),
                 description = null,
                 loading = false,
-                onClick = { haptic(); onSettings() },
+                onClick = { onSettings() },
             )
         }
 
         Spacer(Modifier.height(12.dp))
 
         Surface(
-            onClick = { haptic(); logoutPressed = true; onLogout() },
+            onClick = { logoutPressed = true; onLogout() },
             modifier = Modifier
                 .fillMaxWidth()
                 .graphicsLayer { scaleX = logoutScale; scaleY = logoutScale },

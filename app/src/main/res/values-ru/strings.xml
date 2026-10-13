@@ -234,6 +234,16 @@
     <string name="player_queue">Очередь</string>
     <string name="player_queue_remove">Убрать из очереди</string>
     <string name="player_speed">Скорость</string>
+    <string name="player_loop">Зациклить фрагмент</string>
+    <string name="player_loop_title">Петля</string>
+    <string name="player_loop_range">%1$s – %2$s</string>
+    <string name="player_loop_start">Начало</string>
+    <string name="player_loop_end">Конец</string>
+    <string name="player_loop_enable">Зациклить</string>
+    <string name="player_loop_disable">Выключить петлю</string>
+    <string name="player_loop_set_now">Поставить на текущий момент</string>
+    <string name="player_loop_earlier">На полсекунды раньше</string>
+    <string name="player_loop_later">На полсекунды позже</string>
     <string name="player_speed_format">%s\u00D7</string>
     <string name="player_speed_reset">Обычная скорость</string>
     <string name="history_title">История прослушиваний</string>

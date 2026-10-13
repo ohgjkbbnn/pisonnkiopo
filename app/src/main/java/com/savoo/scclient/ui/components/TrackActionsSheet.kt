@@ -44,7 +44,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.savoo.scclient.R
 import com.savoo.scclient.data.model.Track
-import com.savoo.scclient.ui.haptics.rememberHapticTick
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,7 +54,6 @@ fun TrackActionsSheet(
     onAddToQueue: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val haptic = rememberHapticTick()
     val context = LocalContext.current
     val shareUrl = track.permalinkUrl
     var showAddToPlaylist by remember { mutableStateOf(false) }
@@ -117,24 +115,23 @@ fun TrackActionsSheet(
             TrackActionItem(
                 icon = Icons.AutoMirrored.Filled.PlaylistPlay,
                 label = stringResource(R.string.track_play_next),
-                onClick = { haptic(); onPlayNext(); onDismiss() },
+                onClick = { onPlayNext(); onDismiss() },
             )
             TrackActionItem(
                 icon = Icons.AutoMirrored.Filled.PlaylistAdd,
                 label = stringResource(R.string.track_add_to_queue),
-                onClick = { haptic(); onAddToQueue(); onDismiss() },
+                onClick = { onAddToQueue(); onDismiss() },
             )
             TrackActionItem(
                 icon = Icons.Filled.LibraryAdd,
                 label = stringResource(R.string.playlist_add_to),
-                onClick = { haptic(); showAddToPlaylist = true },
+                onClick = { showAddToPlaylist = true },
             )
             if (!shareUrl.isNullOrBlank()) {
                 TrackActionItem(
                     icon = Icons.Filled.Share,
                     label = stringResource(R.string.player_share),
                     onClick = {
-                        haptic()
                         val intent = Intent(Intent.ACTION_SEND).apply {
                             type = "text/plain"
                             putExtra(Intent.EXTRA_TEXT, shareUrl)

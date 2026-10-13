@@ -229,6 +229,16 @@
     <string name="player_queue">Queue</string>
     <string name="player_queue_remove">Remove from queue</string>
     <string name="player_speed">Speed</string>
+    <string name="player_loop">Loop a part</string>
+    <string name="player_loop_title">Loop</string>
+    <string name="player_loop_range">%1$s – %2$s</string>
+    <string name="player_loop_start">Start</string>
+    <string name="player_loop_end">End</string>
+    <string name="player_loop_enable">Loop it</string>
+    <string name="player_loop_disable">Turn off loop</string>
+    <string name="player_loop_set_now">Set to current moment</string>
+    <string name="player_loop_earlier">Half a second earlier</string>
+    <string name="player_loop_later">Half a second later</string>
     <string name="player_speed_format">%s\u00D7</string>
     <string name="player_speed_reset">Normal speed</string>
     <string name="history_title">Listening history</string>

@@ -23,47 +23,97 @@ private fun Context.vibratorService(): Vibrator =
     }
 
 private fun HapticsIntensity.multiplier(): Float = when (this) {
-    HapticsIntensity.LOW -> 0.55f
+    HapticsIntensity.LOW -> 0.6f
     HapticsIntensity.MEDIUM -> 1f
-    HapticsIntensity.HIGH -> 1.55f
+    HapticsIntensity.HIGH -> 1.45f
 }
+
+private enum class Tap { SOFT, LIGHT, MEDIUM, HEAVY }
+
+private class Pulse(val tap: Tap, val scale: Float, val delayMs: Int = 0)
 
 class Haptics internal constructor(
     private val vibrator: Vibrator,
     private val enabled: Boolean,
     private val intensity: HapticsIntensity,
 ) {
-    fun tick() = fire(12L, 90)
-    fun click() = fire(18L, 150)
-    fun seekTick() = fire(8L, 70)
-    fun seekEdge() = fire(16L, 180)
-    fun longPress() = fire(28L, 220)
+    private val primitives: Boolean = Build.VERSION.SDK_INT >= 30 && vibrator.areAllPrimitivesSupported(
+        VibrationEffect.Composition.PRIMITIVE_TICK,
+        VibrationEffect.Composition.PRIMITIVE_CLICK,
+    )
+    private val lowTick: Boolean = primitives && Build.VERSION.SDK_INT >= 31 &&
+        vibrator.areAllPrimitivesSupported(VibrationEffect.Composition.PRIMITIVE_LOW_TICK)
 
-    /** Light, quick pulse for favoriting — deliberately lighter than [click]. */
-    fun like() = fire(10L, 70)
+    fun tick() = play(Pulse(Tap.SOFT, 0.6f))
+    fun click() = play(Pulse(Tap.LIGHT, 0.6f))
+    fun longPress() = play(Pulse(Tap.MEDIUM, 0.55f))
 
-    /** Weighty double-thump for a meaningfully completed action (e.g. an offline download finishing). */
-    fun success() = fireWaveform(longArrayOf(0, 25, 55, 40), intArrayOf(0, 140, 0, 220))
+    fun seekGrab() = play(Pulse(Tap.LIGHT, 0.7f))
+    fun seekRelease() = play(Pulse(Tap.MEDIUM, 0.45f))
+    fun scrub(level: Float) = play(Pulse(if (level > 0.6f) Tap.LIGHT else Tap.SOFT, 0.15f + 0.75f * level.coerceIn(0f, 1f)))
 
-    /** Sharp triple-buzz "shake" for errors — distinct from every other pattern here. */
-    fun error() = fireWaveform(longArrayOf(0, 35, 45, 35, 45, 35), intArrayOf(0, 210, 0, 210, 0, 210))
+    fun skipForward() = play(Pulse(Tap.SOFT, 0.35f), Pulse(Tap.LIGHT, 0.55f, 35), Pulse(Tap.MEDIUM, 0.5f, 35))
+    fun skipBack() = play(Pulse(Tap.MEDIUM, 0.5f), Pulse(Tap.LIGHT, 0.55f, 35), Pulse(Tap.SOFT, 0.35f, 35))
 
-    fun warn() = fireWaveform(longArrayOf(0, 14, 70, 14), intArrayOf(0, 130, 0, 130))
+    fun like() = play(Pulse(Tap.MEDIUM, 0.55f), Pulse(Tap.LIGHT, 0.4f, 110))
+    fun loopWrap() = play(Pulse(Tap.SOFT, 0.5f), Pulse(Tap.SOFT, 0.5f, 50))
+    fun success() = play(Pulse(Tap.LIGHT, 0.5f), Pulse(Tap.MEDIUM, 0.8f, 90))
+    fun warn() = play(Pulse(Tap.MEDIUM, 0.7f), Pulse(Tap.LIGHT, 0.5f, 110))
+    fun error() = play(Pulse(Tap.MEDIUM, 0.8f), Pulse(Tap.MEDIUM, 0.8f, 70), Pulse(Tap.HEAVY, 0.9f, 70))
+    fun remove() = play(Pulse(Tap.HEAVY, 0.8f))
 
-    fun remove() = fire(40L, 230)
-
-    private fun fire(durationMs: Long, amplitude: Int) {
+    private fun play(vararg pulses: Pulse) {
         if (!enabled) return
-        val scaled = (amplitude * intensity.multiplier()).toInt().coerceIn(1, 255)
-        vibrator.vibrate(VibrationEffect.createOneShot(durationMs, scaled))
+        val gain = intensity.multiplier()
+        runCatching {
+            val effect = when {
+                primitives -> composed(pulses, gain)
+                Build.VERSION.SDK_INT >= 29 && pulses.size == 1 -> predefined(pulses[0].tap)
+                else -> waveform(pulses, gain)
+            }
+            vibrator.vibrate(effect)
+        }
     }
 
-    private fun fireWaveform(timings: LongArray, amplitudes: IntArray) {
-        if (!enabled) return
-        val scaled = IntArray(amplitudes.size) { i ->
-            if (amplitudes[i] == 0) 0 else (amplitudes[i] * intensity.multiplier()).toInt().coerceIn(1, 255)
+    @androidx.annotation.RequiresApi(30)
+    private fun composed(pulses: Array<out Pulse>, gain: Float): VibrationEffect {
+        val composition = VibrationEffect.startComposition()
+        pulses.forEach { pulse ->
+            val primitive = when (pulse.tap) {
+                Tap.SOFT -> if (lowTick) VibrationEffect.Composition.PRIMITIVE_LOW_TICK else VibrationEffect.Composition.PRIMITIVE_TICK
+                Tap.LIGHT -> VibrationEffect.Composition.PRIMITIVE_TICK
+                Tap.MEDIUM, Tap.HEAVY -> VibrationEffect.Composition.PRIMITIVE_CLICK
+            }
+            composition.addPrimitive(primitive, (pulse.scale * gain).coerceIn(0.05f, 1f), pulse.delayMs)
         }
-        vibrator.vibrate(VibrationEffect.createWaveform(timings, scaled, -1))
+        return composition.compose()
+    }
+
+    @androidx.annotation.RequiresApi(29)
+    private fun predefined(tap: Tap): VibrationEffect = VibrationEffect.createPredefined(
+        when (tap) {
+            Tap.SOFT, Tap.LIGHT -> VibrationEffect.EFFECT_TICK
+            Tap.MEDIUM -> VibrationEffect.EFFECT_CLICK
+            Tap.HEAVY -> VibrationEffect.EFFECT_HEAVY_CLICK
+        },
+    )
+
+    private fun waveform(pulses: Array<out Pulse>, gain: Float): VibrationEffect {
+        val timings = ArrayList<Long>()
+        val amplitudes = ArrayList<Int>()
+        pulses.forEach { pulse ->
+            timings += pulse.delayMs.toLong()
+            amplitudes += 0
+            val (length, base) = when (pulse.tap) {
+                Tap.SOFT -> 5L to 90
+                Tap.LIGHT -> 7L to 130
+                Tap.MEDIUM -> 9L to 180
+                Tap.HEAVY -> 12L to 230
+            }
+            timings += length
+            amplitudes += (base * pulse.scale * gain).toInt().coerceIn(1, 255)
+        }
+        return VibrationEffect.createWaveform(timings.toLongArray(), amplitudes.toIntArray(), -1)
     }
 }
 

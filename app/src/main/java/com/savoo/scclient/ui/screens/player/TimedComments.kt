@@ -73,7 +73,6 @@ import com.savoo.scclient.data.model.TrackComment
 import com.savoo.scclient.data.repository.TimedCommentsRate
 import com.savoo.scclient.ui.components.PlayerInfoBanner
 import com.savoo.scclient.ui.components.hiResArtwork
-import com.savoo.scclient.ui.haptics.rememberHapticTick
 import kotlinx.coroutines.launch
 
 private const val COMMENT_EXACT_WINDOW_MS = 5_000L
@@ -178,7 +177,6 @@ fun TimedCommentChip(
     highlighted: Boolean = false,
 ) {
     if (!enabled) return
-    val haptic = rememberHapticTick()
     AnimatedContent(
         targetState = comment,
         transitionSpec = {
@@ -200,7 +198,7 @@ fun TimedCommentChip(
                 .height(COMMENT_ROW_HEIGHT)
                 .clip(RoundedCornerShape(50))
                 .background(if (highlighted) accent.copy(alpha = 0.28f) else surfaceColor.copy(alpha = 0.8f))
-                .clickable { haptic(); onClick() }
+                .clickable { onClick() }
                 .padding(start = 6.dp, end = 12.dp),
         ) {
             CommentAvatar(shown, accent, 20.dp)
@@ -243,7 +241,6 @@ fun TimedCommentsSheet(
     onDismiss: () -> Unit,
     onUserClick: (Long) -> Unit = {},
 ) {
-    val haptic = rememberHapticTick()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var draft by rememberSaveable { mutableStateOf("") }
@@ -311,14 +308,12 @@ fun TimedCommentsSheet(
                                 .fillMaxWidth()
                                 .background(rowColor)
                                 .clickable {
-                                    haptic()
                                     highlightedId = comment.id
                                     onSelect(comment)
                                 }
                                 .padding(horizontal = 24.dp, vertical = 10.dp),
                         ) {
                             val openProfile = Modifier.clickable(enabled = comment.user.id != 0L) {
-                                haptic()
                                 onUserClick(comment.user.id)
                             }
                             CommentAvatar(comment, accent, 34.dp, openProfile)
@@ -342,7 +337,7 @@ fun TimedCommentsSheet(
                                     if (currentUserId != null && comment.user.id == currentUserId) {
                                         Spacer(Modifier.width(4.dp))
                                         IconButton(
-                                            onClick = { haptic(); onDelete(comment) },
+                                            onClick = { onDelete(comment) },
                                             modifier = Modifier.size(28.dp),
                                         ) {
                                             Icon(
@@ -385,7 +380,6 @@ fun TimedCommentsSheet(
                         Spacer(Modifier.width(8.dp))
                         IconButton(
                             onClick = {
-                                haptic()
                                 sending = true
                                 scope.launch {
                                     val posted = onSubmit(draft, draftPositionMs)

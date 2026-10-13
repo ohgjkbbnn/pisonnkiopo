@@ -180,7 +180,6 @@ fun AppLockSettingsScreen(
             if (mode != AppLockMode.OFF) {
                 SettingsSectionCard {
                     NavRow(stringResource(R.string.app_lock_change_pin)) {
-                        haptic()
                         pinRequest = PinRequest(PinTarget.MAIN, null)
                     }
                 }
@@ -197,7 +196,6 @@ fun AppLockSettingsScreen(
                     if (duressEnabled) {
                         SettingsDivider()
                         NavRow(stringResource(R.string.app_lock_duress_change)) {
-                            haptic()
                             pinRequest = PinRequest(PinTarget.DURESS, null)
                         }
                     }

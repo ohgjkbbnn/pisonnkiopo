@@ -194,7 +194,7 @@ fun AboutBottomSheet(
                 aboutLinks.forEach { link ->
                     AboutLinkCard(
                         link = link,
-                        onClick = { haptics.click(); onOpenUrl(link.url) },
+                        onClick = { onOpenUrl(link.url) },
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight(),

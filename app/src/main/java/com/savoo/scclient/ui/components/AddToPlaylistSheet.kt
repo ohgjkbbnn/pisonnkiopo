@@ -233,7 +233,6 @@ fun AddToPlaylistSheet(
     viewModel: PlaylistActionsViewModel = hiltViewModel(),
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val haptic = rememberHapticTick()
     val context = LocalContext.current
     val localPlaylists by viewModel.localPlaylists.collectAsState()
     val online by viewModel.online.collectAsState()
@@ -297,7 +296,7 @@ fun AddToPlaylistSheet(
                         subtitle = null,
                         enabled = !busy,
                         highlighted = true,
-                        onClick = { haptic(); showCreate = true },
+                        onClick = { showCreate = true },
                     ) {
                         Surface(
                             color = MaterialTheme.colorScheme.primary,
@@ -316,7 +315,7 @@ fun AddToPlaylistSheet(
                         title = playlist.title,
                         subtitle = playlistSubtitle(stringResource(R.string.playlist_local_label), playlist.trackCount),
                         enabled = !busy,
-                        onClick = { haptic(); viewModel.addToLocal(playlist, tracks, onAdded) },
+                        onClick = { viewModel.addToLocal(playlist, tracks, onAdded) },
                     ) {
                         TrackArtwork(
                             artworkUrl = playlist.artworkUrl,
@@ -360,7 +359,7 @@ fun AddToPlaylistSheet(
                             title = playlist.title,
                             subtitle = playlistSubtitle(label, playlist.trackCount),
                             enabled = !busy,
-                            onClick = { haptic(); viewModel.addToOnline(playlist, tracks, onAdded) },
+                            onClick = { viewModel.addToOnline(playlist, tracks, onAdded) },
                         ) {
                             TrackArtwork(
                                 artworkUrl = playlist.displayArtworkUrl,
@@ -562,7 +561,6 @@ fun CreatePlaylistSheet(
             Spacer(Modifier.height(18.dp))
             Button(
                 onClick = {
-                    haptic()
                     val name = title.trim()
                     viewModel.create(name, online, isPrivate, tracks) { routeId ->
                         Toast.makeText(context, context.getString(R.string.playlist_created, name), Toast.LENGTH_SHORT).show()
@@ -652,7 +650,6 @@ fun RenamePlaylistSheet(
     onSave: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val haptic = rememberHapticTick()
     var title by rememberSaveable { mutableStateOf(currentTitle) }
     val isBusy by rememberUpdatedState(busy)
     val sheetState = rememberModalBottomSheetState(
@@ -690,7 +687,7 @@ fun RenamePlaylistSheet(
             )
             Spacer(Modifier.height(18.dp))
             Button(
-                onClick = { haptic(); onSave(title.trim()) },
+                onClick = { onSave(title.trim()) },
                 enabled = title.isNotBlank() && title.trim() != currentTitle && !busy,
                 shapes = ButtonDefaults.shapes(),
                 modifier = Modifier.fillMaxWidth().height(56.dp),

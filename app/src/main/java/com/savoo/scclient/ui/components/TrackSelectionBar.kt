@@ -108,7 +108,7 @@ fun TrackSelectionBar(
                 modifier = Modifier.padding(start = 6.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                IconButton(onClick = { haptics.click(); onClear() }) {
+                IconButton(onClick = { onClear() }) {
                     Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.selection_clear))
                 }
 
@@ -135,7 +135,7 @@ fun TrackSelectionBar(
                             SelectionActionSpec(
                                 icon = Icons.Filled.SelectAll,
                                 label = stringResource(R.string.selection_select_all),
-                                onClick = { haptics.click(); onSelectAll() },
+                                onClick = { onSelectAll() },
                             )
                         )
                     }
@@ -144,7 +144,7 @@ fun TrackSelectionBar(
                             SelectionActionSpec(
                                 icon = Icons.AutoMirrored.Filled.PlaylistAdd,
                                 label = stringResource(R.string.selection_queue_all),
-                                onClick = { haptics.click(); onQueueAll() },
+                                onClick = { onQueueAll() },
                             )
                         )
                     }
@@ -162,7 +162,7 @@ fun TrackSelectionBar(
                             SelectionActionSpec(
                                 icon = Icons.Filled.CloudDownload,
                                 label = stringResource(R.string.selection_download_all),
-                                onClick = { haptics.click(); onDownloadAll() },
+                                onClick = { onDownloadAll() },
                             )
                         )
                     }
@@ -171,7 +171,7 @@ fun TrackSelectionBar(
                             SelectionActionSpec(
                                 icon = Icons.Filled.LibraryAdd,
                                 label = stringResource(R.string.selection_add_to_playlist),
-                                onClick = { haptics.click(); onAddToPlaylist() },
+                                onClick = { onAddToPlaylist() },
                             )
                         )
                     }
@@ -180,7 +180,7 @@ fun TrackSelectionBar(
                             SelectionActionSpec(
                                 icon = Icons.Filled.PlaylistRemove,
                                 label = stringResource(R.string.selection_remove_from_playlist),
-                                onClick = { haptics.click(); onRemoveFromPlaylist() },
+                                onClick = { onRemoveFromPlaylist() },
                             )
                         )
                     }
@@ -211,7 +211,7 @@ fun TrackSelectionBar(
                                 icon = Icons.Filled.MoreVert,
                                 label = stringResource(R.string.selection_more),
                                 shapes = ButtonGroupDefaults.connectedTrailingButtonShapes(),
-                                onClick = { haptics.click(); overflowOpen = true },
+                                onClick = { overflowOpen = true },
                             )
                             DropdownMenu(
                                 expanded = overflowOpen,

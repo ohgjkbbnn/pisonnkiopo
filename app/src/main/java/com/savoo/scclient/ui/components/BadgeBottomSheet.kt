@@ -39,7 +39,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.savoo.scclient.R
-import com.savoo.scclient.ui.haptics.rememberHaptics
 
 data class BadgeInfo(
     @StringRes val titleRes: Int?,
@@ -90,7 +89,6 @@ fun BadgeBottomSheet(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val info = badgeInfoMap[badge] ?: unknownBadgeInfo
     val tint = badgeTint(badge)
-    val haptics = rememberHaptics()
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -156,7 +154,7 @@ fun BadgeBottomSheet(
             info.howToGetUrl?.let { url ->
                 Spacer(Modifier.height(16.dp))
                 FilledTonalButton(
-                    onClick = { haptics.click(); onOpenUrl(url) },
+                    onClick = { onOpenUrl(url) },
                     modifier = Modifier.fillMaxWidth().height(52.dp),
                 ) {
                     Text(stringResource(R.string.badge_how_to_get), style = MaterialTheme.typography.labelLarge)

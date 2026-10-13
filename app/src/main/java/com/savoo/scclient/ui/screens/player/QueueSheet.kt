@@ -43,7 +43,6 @@ import coil.compose.AsyncImage
 import com.savoo.scclient.R
 import com.savoo.scclient.player.PlayerController
 import com.savoo.scclient.player.QueueEntry
-import com.savoo.scclient.ui.haptics.rememberHapticTick
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
@@ -71,7 +70,6 @@ fun QueueContent(
     controller: PlayerController,
     modifier: Modifier = Modifier,
 ) {
-    val haptic = rememberHapticTick()
     val hapticFeedback = LocalHapticFeedback.current
     val entries by controller.queueEntries.collectAsState()
     val state by controller.state.collectAsState()
@@ -102,8 +100,8 @@ fun QueueContent(
                         entry = entry,
                         isCurrent = index == state.queueIndex,
                         isDragging = isDragging,
-                        onPlay = { haptic(); controller.playFromQueue(index) },
-                        onRemove = { haptic(); controller.removeQueueItem(index) },
+                        onPlay = { controller.playFromQueue(index) },
+                        onRemove = { controller.removeQueueItem(index) },
                         dragModifier = Modifier.longPressDraggableHandle(
                             onDragStarted = { hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress) },
                             onDragStopped = { hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress) },

@@ -95,7 +95,6 @@ import com.savoo.scclient.data.model.Track
 import com.savoo.scclient.ui.components.CreatePlaylistSheet
 import com.savoo.scclient.ui.components.ExpressivePullToRefreshBox
 import com.savoo.scclient.ui.components.TrackArtwork
-import com.savoo.scclient.ui.haptics.rememberHapticTick
 import com.savoo.scclient.ui.haptics.rememberHaptics
 import kotlinx.coroutines.delay
 
@@ -207,11 +206,9 @@ fun HomeScreen(
             ) {
                 LinkHandlingHint(
                     onEnable = {
-                        haptics.click()
                         SoundCloudLinks.openHandlingSettings(context)
                     },
                     onDismiss = {
-                        haptics.click()
                         viewModel.dismissLinkHint()
                     },
                 )
@@ -226,11 +223,9 @@ fun HomeScreen(
                     RecapBanner(
                         stats = stats,
                         onOpen = {
-                            haptics.click()
                             recapOpen = true
                         },
                         onDismiss = {
-                            haptics.click()
                             viewModel.dismissRecap(stats.year)
                         },
                     )
@@ -247,7 +242,6 @@ fun HomeScreen(
                     isMixPlaying = playerState.isPlaying && isMixQueueActive,
                     isPlaybackBuffering = playerState.loadingTrackId != null && isMixQueueActive,
                     onPlayToggle = {
-                        haptics.click()
                         android.util.Log.d("HomeScreen", "onPlayToggle: isMixQueueActive=$isMixQueueActive queueTag=${playerState.queueTag} currentTrack=${playerState.currentTrack?.id} mixTracks.size=${mixTracks.size}")
                         if (isMixQueueActive) {
                             viewModel.playerController.togglePlayPause()
@@ -379,7 +373,6 @@ private fun HomeTopBar(
     onStatistics: () -> Unit,
     onSettings: () -> Unit,
 ) {
-    val haptic = rememberHapticTick()
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -391,7 +384,7 @@ private fun HomeTopBar(
                 .size(40.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-                .clickable(onClick = { haptic(); onAccount() }),
+                .clickable(onClick = { onAccount() }),
             contentAlignment = Alignment.Center,
         ) {
             if (avatarUrl != null) {
@@ -411,13 +404,13 @@ private fun HomeTopBar(
             }
         }
         Spacer(Modifier.weight(1f))
-        IconButton(onClick = { haptic(); onStatistics() }) {
+        IconButton(onClick = { onStatistics() }) {
             Icon(Icons.Filled.BarChart, contentDescription = stringResource(R.string.home_action_statistics))
         }
-        IconButton(onClick = { haptic(); onImportExport() }) {
+        IconButton(onClick = { onImportExport() }) {
             Icon(Icons.Filled.SwapHoriz, contentDescription = stringResource(R.string.nav_import_export))
         }
-        IconButton(onClick = { haptic(); onSettings() }) {
+        IconButton(onClick = { onSettings() }) {
             Icon(Icons.Filled.Settings, contentDescription = stringResource(R.string.nav_settings))
         }
     }
@@ -696,11 +689,10 @@ private fun TrackSection(
 
 @Composable
 private fun SectionHeader(title: String, onSeeAll: (() -> Unit)?) {
-    val haptic = rememberHapticTick()
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .then(if (onSeeAll != null) Modifier.clickable(onClick = { haptic(); onSeeAll() }) else Modifier)
+            .then(if (onSeeAll != null) Modifier.clickable(onClick = { onSeeAll() }) else Modifier)
             .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -711,7 +703,7 @@ private fun SectionHeader(title: String, onSeeAll: (() -> Unit)?) {
             modifier = Modifier.weight(1f),
         )
         if (onSeeAll != null) {
-            IconButton(onClick = { haptic(); onSeeAll() }, modifier = Modifier.size(32.dp)) {
+            IconButton(onClick = { onSeeAll() }, modifier = Modifier.size(32.dp)) {
                 Icon(Icons.Filled.ChevronRight, contentDescription = null)
             }
         }
@@ -727,7 +719,6 @@ private fun HomeTrackCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val haptic = rememberHapticTick()
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(
@@ -740,7 +731,7 @@ private fun HomeTrackCard(
         modifier = modifier
             .width(120.dp)
             .graphicsLayer { scaleX = scale; scaleY = scale }
-            .clickable(interactionSource = interactionSource, indication = null) { haptic(); onClick() },
+            .clickable(interactionSource = interactionSource, indication = null) { onClick() },
     ) {
         Box(modifier = Modifier.size(120.dp), contentAlignment = Alignment.Center) {
             TrackArtwork(
@@ -810,7 +801,6 @@ private fun ArtistSection(
 
 @Composable
 private fun HomeArtistChip(artist: FavoriteArtist, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    val haptic = rememberHapticTick()
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(
@@ -822,7 +812,7 @@ private fun HomeArtistChip(artist: FavoriteArtist, onClick: () -> Unit, modifier
         modifier = modifier
             .width(76.dp)
             .graphicsLayer { scaleX = scale; scaleY = scale }
-            .clickable(interactionSource = interactionSource, indication = null) { haptic(); onClick() },
+            .clickable(interactionSource = interactionSource, indication = null) { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
@@ -890,7 +880,6 @@ private fun PlaylistSection(
 
 @Composable
 private fun HomeCreatePlaylistCard(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    val haptic = rememberHapticTick()
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(
@@ -902,7 +891,7 @@ private fun HomeCreatePlaylistCard(onClick: () -> Unit, modifier: Modifier = Mod
         modifier = modifier
             .width(120.dp)
             .graphicsLayer { scaleX = scale; scaleY = scale }
-            .clickable(interactionSource = interactionSource, indication = null) { haptic(); onClick() },
+            .clickable(interactionSource = interactionSource, indication = null) { onClick() },
     ) {
         Surface(
             shape = RoundedCornerShape(20.dp),
@@ -927,7 +916,6 @@ private fun HomeCreatePlaylistCard(onClick: () -> Unit, modifier: Modifier = Mod
 
 @Composable
 private fun HomePlaylistCard(playlist: FavoritePlaylist, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    val haptic = rememberHapticTick()
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(
@@ -940,7 +928,7 @@ private fun HomePlaylistCard(playlist: FavoritePlaylist, onClick: () -> Unit, mo
         modifier = modifier
             .width(120.dp)
             .graphicsLayer { scaleX = scale; scaleY = scale }
-            .clickable(interactionSource = interactionSource, indication = null) { haptic(); onClick() },
+            .clickable(interactionSource = interactionSource, indication = null) { onClick() },
     ) {
         TrackArtwork(
             artworkUrl = playlist.artworkUrl,

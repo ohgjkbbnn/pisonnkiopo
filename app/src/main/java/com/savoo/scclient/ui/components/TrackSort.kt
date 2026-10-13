@@ -122,7 +122,6 @@ fun TrackSortButton(
     modifier: Modifier = Modifier,
 ) {
     var showSheet by remember { mutableStateOf(false) }
-    val haptics = rememberHaptics()
 
     val tint by animateColorAsState(
         targetValue = if (sort.isActive) MaterialTheme.colorScheme.primary
@@ -132,7 +131,7 @@ fun TrackSortButton(
     )
 
     IconButton(
-        onClick = { haptics.click(); showSheet = true },
+        onClick = { showSheet = true },
         modifier = modifier,
     ) {
         Icon(Icons.Filled.Sort, contentDescription = stringResource(R.string.sort_button), tint = tint)
@@ -176,7 +175,7 @@ private fun TrackSortSheet(
                     option = option,
                     selected = option == sort.option,
                     onClick = {
-                        haptics.click()
+                        haptics.tick()
                         onSortChange(sort.copy(option = option))
                     },
                 )
@@ -202,7 +201,7 @@ private fun TrackSortSheet(
                     checked = !sort.descending,
                     shapes = ButtonGroupDefaults.connectedLeadingButtonShapes(),
                     onClick = {
-                        haptics.click()
+                        haptics.tick()
                         onSortChange(sort.copy(descending = false))
                     },
                     modifier = Modifier.weight(1f),
@@ -213,7 +212,7 @@ private fun TrackSortSheet(
                     checked = sort.descending,
                     shapes = ButtonGroupDefaults.connectedTrailingButtonShapes(),
                     onClick = {
-                        haptics.click()
+                        haptics.tick()
                         onSortChange(sort.copy(descending = true))
                     },
                     modifier = Modifier.weight(1f),

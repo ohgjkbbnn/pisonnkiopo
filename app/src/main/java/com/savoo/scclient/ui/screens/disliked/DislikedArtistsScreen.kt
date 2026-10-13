@@ -41,7 +41,6 @@ import com.savoo.scclient.R
 import com.savoo.scclient.data.local.ExcludedArtistDao
 import com.savoo.scclient.data.model.ExcludedMixArtist
 import com.savoo.scclient.ui.components.EmptyState
-import com.savoo.scclient.ui.haptics.rememberHapticTick
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -107,7 +106,6 @@ fun DislikedArtistsScreen(
 
 @Composable
 private fun DislikedArtistRow(artist: ExcludedMixArtist, onRemove: () -> Unit, modifier: Modifier = Modifier) {
-    val haptic = rememberHapticTick()
     Surface(
         shape = RoundedCornerShape(16.dp),
         color = MaterialTheme.colorScheme.surfaceContainer,
@@ -136,7 +134,7 @@ private fun DislikedArtistRow(artist: ExcludedMixArtist, onRemove: () -> Unit, m
             Row(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.errorContainer, RoundedCornerShape(20.dp))
-                    .clickable { haptic(); onRemove() }
+                    .clickable { onRemove() }
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {

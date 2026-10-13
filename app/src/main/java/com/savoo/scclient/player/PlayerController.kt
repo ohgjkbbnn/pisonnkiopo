@@ -90,7 +90,10 @@ data class PlaybackState(
     // hold the same track id twice (playlists do this) - the id alone can't disambiguate which copy is
     // actually playing, which the Queue screen needs to highlight the right row.
     val queueIndex: Int = -1,
+    val loop: LoopRegion? = null,
 )
+
+data class LoopRegion(val startMs: Long, val endMs: Long)
 
 // Wraps a Track with a synthetic id that's stable for the life of this queue slot (assigned once, when
 // the entry is added) and untouched by later moves/removes - unlike Track.id, which a queue can hold
@@ -116,6 +119,7 @@ class PlayerController @Inject constructor(
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var controller: MediaController? = null
     private var positionJob: kotlinx.coroutines.Job? = null
+    private var loopJob: kotlinx.coroutines.Job? = null
     private var seedColorJob: kotlinx.coroutines.Job? = null
     private var seedColorUrl: String? = null
 
@@ -185,6 +189,12 @@ class PlayerController @Inject constructor(
         const val TAG = "PlayerController"
         private const val PENDING_SCHEME = "rawresource"
         private const val SCRUB_THROTTLE_MS = 140L
+        const val MIN_LOOP_MS = 1_000L
+        private const val LOOP_END_GUARD_MS = 300L
+        private const val LOOP_IDLE_POLL_MS = 200L
+        private const val LOOP_MIN_POLL_MS = 8L
+        private const val LOOP_MAX_POLL_MS = 250L
+        private const val LOOP_SEEK_SETTLE_MS = 120L
         private const val UNAVAILABLE_MARK_TTL_MS = 7L * 24 * 60 * 60 * 1000
         private const val FADE_STEP_MS = 60L
         private const val FULL_FAVORITES_QUEUE_LIMIT = 5000
@@ -393,6 +403,7 @@ class PlayerController @Inject constructor(
                     _state.value.currentTrack?.id == mediaId
                 if (!isSelfEcho) {
                     beginListenSegment(track)
+                    if (_state.value.currentTrack?.id != mediaId) clearLoop()
                     _state.update { it.copy(currentTrack = track, durationMs = track.durationMs, loadingTrackId = null) }
                     extractSeedColor(track.artworkUrl)
                     fadeOutStartedForMediaId = null
@@ -716,7 +727,7 @@ class PlayerController @Inject constructor(
     }
 
     private fun maybeStartFadeOut(pos: Long, dur: Long) {
-        if (dur <= 0 || isScrubbing || !crossfadeEnabled) return
+        if (dur <= 0 || isScrubbing || !crossfadeEnabled || _state.value.loop != null) return
         val mediaId = controller?.currentMediaItem?.mediaId?.toLongOrNull() ?: return
         val remaining = dur - pos
         if (remaining in 0..fadeOutLeadMs && fadeOutStartedForMediaId != mediaId) {
@@ -1371,6 +1382,41 @@ class PlayerController @Inject constructor(
     }
 
     fun currentPosition(): Long = controller?.currentPosition ?: 0L
+
+    fun setLoop(startMs: Long, endMs: Long) {
+        val duration = _state.value.durationMs
+        if (duration <= 0L) return
+        val end = endMs.coerceIn(MIN_LOOP_MS, (duration - LOOP_END_GUARD_MS).coerceAtLeast(MIN_LOOP_MS))
+        val start = startMs.coerceIn(0L, (end - MIN_LOOP_MS).coerceAtLeast(0L))
+        _state.update { it.copy(loop = LoopRegion(start, end)) }
+        if (loopJob?.isActive != true) loopJob = scope.launch { runLoop() }
+    }
+
+    fun clearLoop() {
+        loopJob?.cancel()
+        loopJob = null
+        _state.update { it.copy(loop = null) }
+    }
+
+    private suspend fun runLoop() {
+        while (true) {
+            val region = _state.value.loop ?: return
+            val player = controller
+            if (player == null || !player.isPlaying || isScrubbing) {
+                delay(LOOP_IDLE_POLL_MS)
+                continue
+            }
+            val position = player.currentPosition
+            if (position >= region.endMs) {
+                player.seekTo(region.startMs)
+                updatePosition()
+                delay(LOOP_SEEK_SETTLE_MS)
+                continue
+            }
+            val speed = _state.value.playbackSpeed.coerceAtLeast(0.1f)
+            delay(((region.endMs - position) / speed).toLong().coerceIn(LOOP_MIN_POLL_MS, LOOP_MAX_POLL_MS))
+        }
+    }
 
     fun release() {
         stopPositionPolling()

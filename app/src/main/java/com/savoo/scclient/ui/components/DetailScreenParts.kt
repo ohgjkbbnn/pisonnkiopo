@@ -207,14 +207,14 @@ fun DetailActionRow(
             )
         }
         if (onShare != null) {
-            IconButton(onClick = { haptic(); onShare() }, shapes = IconButtonDefaults.shapes()) {
+            IconButton(onClick = { onShare() }, shapes = IconButtonDefaults.shapes()) {
                 Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.action_share))
             }
         }
         extraActions()
         Spacer(Modifier.weight(1f))
         FilledTonalIconButton(
-            onClick = { haptic(); onShuffle() },
+            onClick = { onShuffle() },
             enabled = playEnabled,
             shapes = IconButtonDefaults.shapes(),
             modifier = Modifier.size(48.dp),
@@ -228,7 +228,7 @@ fun DetailActionRow(
             label = "detailPlayCorner",
         )
         FilledIconButton(
-            onClick = { haptic(); onPlay() },
+            onClick = { onPlay() },
             enabled = playEnabled,
             shapes = IconButtonDefaults.shapes(
                 shape = RoundedCornerShape(playCorner),
@@ -286,7 +286,6 @@ fun DetailCardCarousel(
     onClick: (Long) -> Unit,
     circular: Boolean = false,
 ) {
-    val haptic = rememberHapticTick()
     LazyRow(
         contentPadding = PaddingValues(horizontal = 20.dp),
         horizontalArrangement = Arrangement.spacedBy(14.dp),
@@ -297,7 +296,7 @@ fun DetailCardCarousel(
                 modifier = Modifier
                     .width(if (circular) 120.dp else 150.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .clickable { haptic(); onClick(item.id) }
+                    .clickable { onClick(item.id) }
                     .padding(bottom = 10.dp),
             ) {
                 Surface(

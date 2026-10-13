@@ -92,7 +92,6 @@ fun MixCustomizerSheet(
     onDismiss: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val haptic = rememberHapticTick()
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -140,7 +139,7 @@ fun MixCustomizerSheet(
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                     horizontalArrangement = Arrangement.End,
                 ) {
-                    IconButton(onClick = { haptic(); onDismiss() }) {
+                    IconButton(onClick = { onDismiss() }) {
                         Icon(Icons.Filled.Close, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
@@ -211,7 +210,7 @@ fun MixCustomizerSheet(
                 Spacer(Modifier.height(32.dp))
 
                 Surface(
-                    onClick = { haptic(); onStart() },
+                    onClick = { onStart() },
                     shape = RoundedCornerShape(50),
                     color = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -394,7 +393,6 @@ private fun SelectableArtistChip(artist: FavoriteArtist, selected: Boolean, onCl
 
 @Composable
 private fun BlockedArtistRow(artist: ExcludedMixArtist, onUnblock: () -> Unit) {
-    val haptic = rememberHapticTick()
     Surface(
         shape = RoundedCornerShape(16.dp),
         color = MaterialTheme.colorScheme.surfaceContainer,
@@ -419,7 +417,7 @@ private fun BlockedArtistRow(artist: ExcludedMixArtist, onUnblock: () -> Unit) {
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f),
             )
-            TextButton(onClick = { haptic(); onUnblock() }) {
+            TextButton(onClick = { onUnblock() }) {
                 Text(stringResource(R.string.mix_customizer_unblock))
             }
         }

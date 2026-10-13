@@ -95,13 +95,13 @@ fun EulaGateScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 OutlinedButton(
-                    onClick = { haptic(); onDecline() },
+                    onClick = { onDecline() },
                     modifier = Modifier.weight(1f),
                 ) {
                     Text(stringResource(R.string.eula_decline))
                 }
                 Button(
-                    onClick = { haptic(); onAccept() },
+                    onClick = { onAccept() },
                     enabled = checked,
                     modifier = Modifier.weight(1f),
                 ) {

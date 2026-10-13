@@ -94,7 +94,6 @@ import com.savoo.scclient.ui.components.followersCountText
 import com.savoo.scclient.ui.components.hiResArtwork
 import com.savoo.scclient.ui.components.rememberCollapseProgress
 import com.savoo.scclient.ui.components.rememberTrackSelection
-import com.savoo.scclient.ui.haptics.rememberHapticTick
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -290,7 +289,6 @@ fun ArtistScreen(
     var popularExpanded by remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
     val selection = rememberTrackSelection()
-    val haptic = rememberHapticTick()
     var playlistTargets by remember { mutableStateOf<List<Track>?>(null) }
 
     playlistTargets?.let { targets ->
@@ -449,7 +447,7 @@ fun ArtistScreen(
                             if (popularTracks.size > 5) {
                                 item(key = "popular_more") {
                                     Box(Modifier.fillMaxWidth().padding(top = 4.dp), contentAlignment = Alignment.Center) {
-                                        TextButton(onClick = { haptic(); popularExpanded = !popularExpanded }) {
+                                        TextButton(onClick = { popularExpanded = !popularExpanded }) {
                                             Text(stringResource(if (popularExpanded) R.string.detail_show_less else R.string.detail_show_more))
                                         }
                                     }
@@ -689,11 +687,10 @@ private fun ArtistMeta(user: User, trackCount: Int) {
 @Composable
 private fun ArtistAbout(user: User) {
     var expanded by remember { mutableStateOf(false) }
-    val haptic = rememberHapticTick()
     Column {
         DetailSectionTitle(stringResource(R.string.detail_about_artist))
         Surface(
-            onClick = { haptic(); expanded = !expanded },
+            onClick = { expanded = !expanded },
             shape = RoundedCornerShape(28.dp),
             color = MaterialTheme.colorScheme.surfaceContainerHigh,
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).animateContentSize(),

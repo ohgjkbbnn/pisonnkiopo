@@ -39,7 +39,6 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import com.savoo.scclient.R
 import com.savoo.scclient.data.model.GeniusAnnotation
-import com.savoo.scclient.ui.haptics.rememberHapticTick
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,7 +77,6 @@ internal fun LyricsAnnotationSheet(
 @Composable
 private fun AnnotationBlock(annotation: GeniusAnnotation, accent: androidx.compose.ui.graphics.Color) {
     val uriHandler = LocalUriHandler.current
-    val haptic = rememberHapticTick()
 
     Row(
         modifier = Modifier
@@ -131,7 +129,7 @@ private fun AnnotationBlock(annotation: GeniusAnnotation, accent: androidx.compo
     if (url != null) {
         Spacer(Modifier.height(16.dp))
         FilledTonalButton(
-            onClick = { haptic(); runCatching { uriHandler.openUri(url) } },
+            onClick = { runCatching { uriHandler.openUri(url) } },
             modifier = Modifier.fillMaxWidth(),
         ) {
             Icon(Icons.AutoMirrored.Filled.OpenInNew, contentDescription = null, modifier = Modifier.size(18.dp))

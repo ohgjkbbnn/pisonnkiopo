@@ -88,7 +88,6 @@ import com.savoo.scclient.data.repository.ProfileRepository
 import com.savoo.scclient.data.repository.ProfileUpdateException
 import com.savoo.scclient.data.repository.toProfileFields
 import com.savoo.scclient.ui.components.MorphingArtworkShape
-import com.savoo.scclient.ui.haptics.rememberHapticTick
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -181,10 +180,8 @@ fun ProfileEditSheet(
     val openedAt = rememberSaveable { System.nanoTime() }
     LaunchedEffect(openedAt) { viewModel.init(user, openedAt) }
     val state by viewModel.state.collectAsState()
-    val haptic = rememberHapticTick()
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
-            haptic()
             viewModel.pickAvatar(uri)
         }
     }
@@ -240,7 +237,7 @@ fun ProfileEditSheet(
                     (state.avatarChange == AvatarChange.NONE && !isDefaultAvatar(state.avatarUrl))
                 AnimatedVisibility(visible = canRemove, enter = fadeIn(), exit = fadeOut()) {
                     TextButton(
-                        onClick = { haptic(); viewModel.removeAvatar() },
+                        onClick = { viewModel.removeAvatar() },
                         enabled = !state.saving,
                     ) {
                         Icon(Icons.Filled.DeleteOutline, contentDescription = null, modifier = Modifier.size(18.dp))
@@ -348,7 +345,6 @@ fun ProfileEditSheet(
             Spacer(Modifier.height(18.dp))
             Button(
                 onClick = {
-                    haptic()
                     viewModel.save(onSaved)
                 },
                 enabled = state.hasChanges && state.nameValid && !state.saving,
