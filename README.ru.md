@@ -39,7 +39,7 @@
 
 ### iOS (бета)
 
-Скачайте IPA со страницы [GitHub Releases](https://github.com/savo-o/resona/releases/latest) (или более свежую сборку из [canary](https://github.com/savo-o/resona/releases/tag/canary)) и установите через [AltStore](https://altstore.io) или [SideStore](https://sidestore.io). IPA не подписан, в App Store Resona не появится. С бесплатным Apple ID подпись действует 7 дней, AltStore или SideStore будет её продлевать.
+Скачайте IPA со страницы [GitHub Releases](https://github.com/savo-o/resona/releases/latest) (или более свежую сборку из [canary](https://github.com/savo-o/resona/releases/tag/canary)) и установите через [Sideloadly](https://sideloadly.io) (рекомендуем), [AltStore](https://altstore.io) или [SideStore](https://sidestore.io). IPA не подписан, в App Store Resona не появится. С бесплатным Apple ID подпись действует 7 дней, поэтому её нужно продлевать раз в неделю (все три умеют делать это автоматически).
 
 Версия для iOS это отдельный порт Android-приложения, и обновляется она реже, поэтому её версия может отставать (например, `Resona-ios-1.7.ipa` в релизе 1.9). Исправления, когда SoundCloud что-то ломает, туда приходят, а новые функции сначала появляются на Android, и некоторые до iOS могут не дойти.
 
