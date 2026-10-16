@@ -883,11 +883,13 @@ class PlayerController @Inject constructor(
             val startEntry = wrapped[clampedStart]
             originalOrder.clear()
             originalOrder.addAll(wrapped)
-            val rest = wrapped.filterIndexed { i, _ -> i != clampedStart }.shuffled()
+            val previousEntry = if (startExact) wrapped.getOrNull(clampedStart - 1) else null
+            val rest = wrapped.filter { it.id != startEntry.id && it.id != previousEntry?.id }.shuffled()
             queue.clear()
+            previousEntry?.let { queue.add(it) }
             queue.add(startEntry)
             queue.addAll(rest)
-            queueIndex = 0
+            queueIndex = if (previousEntry != null) 1 else 0
         } else {
             originalOrder.clear()
             queue.clear()
@@ -1158,11 +1160,13 @@ class PlayerController @Inject constructor(
         if (enabling) {
             originalOrder.clear()
             originalOrder.addAll(queue)
-            val rest = queue.filterIndexed { i, _ -> i != queueIndex }.shuffled()
+            val previous = if (current != null) queue.getOrNull(queueIndex - 1) else null
+            val rest = queue.filter { it.id != current?.id && it.id != previous?.id }.shuffled()
             queue.clear()
+            previous?.let { queue.add(it) }
             current?.let { queue.add(it) }
             queue.addAll(rest)
-            queueIndex = 0
+            queueIndex = if (previous != null) 1 else 0
         } else if (originalOrder.isNotEmpty()) {
             queue.clear()
             queue.addAll(originalOrder)

@@ -197,7 +197,7 @@ class SearchViewModel @Inject constructor(
             if (track != null) {
                 playerController.playQueue(listOf(track), 0, tag = "search")
             } else {
-                onQueryChange("${match.artist} ${match.title}")
+                onQueryChange(lyricSearchRepository.fallbackQuery(match))
             }
         }
     }

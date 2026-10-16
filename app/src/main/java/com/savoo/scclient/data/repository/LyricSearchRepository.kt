@@ -68,6 +68,9 @@ class LyricSearchRepository @Inject constructor(
             }
     }
 
+    fun fallbackQuery(match: LyricMatch): String =
+        stripBrackets(match.title).replace(Regex("""\s+"""), " ").trim().ifEmpty { match.title }
+
     private fun bestSnippetLine(lyrics: String, query: String): String {
         val words = normalizeWords(query)
         return lyrics.lines()
