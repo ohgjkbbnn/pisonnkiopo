@@ -30,6 +30,10 @@ actual object Platform {
 
     actual val bundleId: String get() = NSBundle.mainBundle.bundleIdentifier ?: "com.savoo.resona"
 
+    actual val buildNumber: Int by lazy {
+        (NSBundle.mainBundle.objectForInfoDictionaryKey("CFBundleVersion") as? String)?.toIntOrNull() ?: 0
+    }
+
     @OptIn(ExperimentalNativeApi::class)
     actual val isDebug: Boolean get() = kotlin.native.Platform.isDebugBinary
 

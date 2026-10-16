@@ -4,6 +4,7 @@ expect object Platform {
     val filesDirPath: String
     val cacheDirPath: String
     val bundleId: String
+    val buildNumber: Int
     val isDebug: Boolean
     val languageTag: String
     fun openUrl(url: String): Boolean
@@ -19,7 +20,7 @@ expect object Platform {
 object BuildConfig {
     val DEBUG: Boolean get() = Platform.isDebug
     const val VERSION_NAME = "1.7"
-    const val VERSION_CODE = 16
+    val VERSION_CODE: Int get() = Platform.buildNumber
     const val APPLICATION_ID = "com.savoo.resona"
     const val BUILD_TYPE = "ios"
     const val SC_CLIENT_ID_FALLBACK = ""
