@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  An open source SoundCloud client for Android and iOS(beta!).<br>
+  An open source SoundCloud client for Android and iOS (beta!).<br>
   No ads. No account required.
   <a href="https://keepandroidopen.org" target="_blank" rel="noopener noreferrer">
     Resona supports #KeepAndroidOpen
