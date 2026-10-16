@@ -164,11 +164,8 @@ jobs:
           target_commitish: ${{ github.sha }}
           prerelease: true
           body: |
-            Automated Android and iOS canary build from `${{ steps.vars.outputs.sha_short }}` on `main`.
-
-            Not for production use.
-            Android: APK
-            iOS: unsigned IPA; signing is required for installation on a physical iPhone.
+            automated Android and iOS canary build from `${{ steps.vars.outputs.sha_short }}` on `main`.
+            not for production use. 
           files: |
             release-assets/android/*.apk
             release-assets/ios/*.ipa
