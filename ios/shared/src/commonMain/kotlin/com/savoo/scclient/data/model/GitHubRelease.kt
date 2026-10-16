@@ -12,4 +12,10 @@ data class GitHubRelease(
     val prerelease: Boolean = false,
     val draft: Boolean = false,
     @SerialName("html_url") val htmlUrl: String = "",
+    val assets: List<GitHubReleaseAsset> = emptyList(),
+)
+
+@Serializable
+data class GitHubReleaseAsset(
+    val name: String = "",
 )

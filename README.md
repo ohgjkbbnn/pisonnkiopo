@@ -18,6 +18,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Android-26+-3DDC84?logo=android&logoColor=white">
+  <img src="https://img.shields.io/badge/iOS-16+%20beta-000000?logo=apple&logoColor=white">
   <img src="https://img.shields.io/badge/Kotlin-2.x-7F52FF?logo=kotlin&logoColor=white">
   <img src="https://img.shields.io/badge/License-GPLv3-blue.svg">
 </p>
@@ -35,6 +36,12 @@
 Grab the latest APK from [GitHub Releases](https://github.com/savo-o/resona/releases/latest). Resona isn't on Google Play, so you'll need to allow installs from your file manager or browser.
 
 You can also track updates automatically with [Obtainium](https://github.com/ImranR98/Obtainium), just point it at this repo.
+
+### iOS (beta)
+
+Grab the IPA from [GitHub Releases](https://github.com/savo-o/resona/releases/latest) (or a fresher build from [canary](https://github.com/savo-o/resona/releases/tag/canary)) and sideload it with [AltStore](https://altstore.io) or [SideStore](https://sidestore.io). The IPA is unsigned and Resona will never be on the App Store. With a free Apple ID the signature lasts 7 days, so AltStore/SideStore has to refresh it.
+
+The iOS version is a separate port of the Android app, updated less often, so its version can lag behind (e.g. `Resona-ios-1.7.ipa` attached to a 1.9 release). It gets fixes when SoundCloud breaks something, but new features land on Android first and some may never make it to iOS.
 
 ## Features
 
@@ -54,6 +61,8 @@ Debug:
 ```bash
 ./gradlew assembleDebug
 ```
+
+iOS (macOS with Xcode required): open `ios/iosApp/iosApp.xcodeproj` and run the `iosApp` scheme.
 
 ## Philosophy
 

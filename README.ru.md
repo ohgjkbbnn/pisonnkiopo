@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  Опенсорсный клиент SoundCloud для Android.<br>
+  Опенсорсный клиент SoundCloud для Android и iOS (бета!).<br>
   Без рекламы. Без обязательной регистрации.
   <a href="https://keepandroidopen.org" target="_blank" rel="noopener noreferrer">
     Resona поддерживает #KeepAndroidOpen
@@ -18,6 +18,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Android-26+-3DDC84?logo=android&logoColor=white">
+  <img src="https://img.shields.io/badge/iOS-16+%20beta-000000?logo=apple&logoColor=white">
   <img src="https://img.shields.io/badge/Kotlin-2.x-7F52FF?logo=kotlin&logoColor=white">
   <img src="https://img.shields.io/badge/License-GPLv3-blue.svg">
 </p>
@@ -35,6 +36,12 @@
 Скачайте последний APK со страницы [GitHub Releases](https://github.com/savo-o/resona/releases/latest). Resona нет в Google Play, поэтому нужно разрешить установку из файлового менеджера или браузера.
 
 Ещё можно следить за обновлениями автоматически через [Obtainium](https://github.com/ImranR98/Obtainium), просто укажите ему этот репозиторий.
+
+### iOS (бета)
+
+Скачайте IPA со страницы [GitHub Releases](https://github.com/savo-o/resona/releases/latest) (или более свежую сборку из [canary](https://github.com/savo-o/resona/releases/tag/canary)) и установите через [AltStore](https://altstore.io) или [SideStore](https://sidestore.io). IPA не подписан, в App Store Resona не появится. С бесплатным Apple ID подпись действует 7 дней, AltStore или SideStore будет её продлевать.
+
+Версия для iOS это отдельный порт Android-приложения, и обновляется она реже, поэтому её версия может отставать (например, `Resona-ios-1.7.ipa` в релизе 1.9). Исправления, когда SoundCloud что-то ломает, туда приходят, а новые функции сначала появляются на Android, и некоторые до iOS могут не дойти.
 
 ## Возможности
 
@@ -55,6 +62,8 @@ Debug:
 ```bash
 ./gradlew assembleDebug
 ```
+
+iOS (нужен macOS с Xcode): откройте `ios/iosApp/iosApp.xcodeproj` и запустите схему `iosApp`.
 
 ## Философия
 

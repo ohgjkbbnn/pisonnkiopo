@@ -34,6 +34,10 @@ actual object Platform {
         (NSBundle.mainBundle.objectForInfoDictionaryKey("CFBundleVersion") as? String)?.toIntOrNull() ?: 0
     }
 
+    actual val versionName: String by lazy {
+        NSBundle.mainBundle.objectForInfoDictionaryKey("CFBundleShortVersionString") as? String ?: "0"
+    }
+
     @OptIn(ExperimentalNativeApi::class)
     actual val isDebug: Boolean get() = kotlin.native.Platform.isDebugBinary
 
