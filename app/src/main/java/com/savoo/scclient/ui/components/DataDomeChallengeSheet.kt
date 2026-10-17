@@ -46,14 +46,19 @@ import com.savoo.scclient.data.remote.BROWSER_USER_AGENT
 import com.savoo.scclient.data.remote.PendingChallenge
 import com.savoo.scclient.ui.haptics.rememberHaptics
 import kotlinx.coroutines.delay
-import org.json.JSONObject
+
+private fun htmlAttr(value: String): String = value
+    .replace("&", "&amp;")
+    .replace("\"", "&quot;")
+    .replace("<", "&lt;")
+    .replace(">", "&gt;")
 
 private fun hostPage(challengeUrl: String): String = """
     <!doctype html>
     <html><head><meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>html,body{margin:0;height:100%;background:#fff}iframe{border:0;width:100%;height:100%}</style>
+    <style>html,body{margin:0;height:100%;background:#fff}iframe{position:fixed;top:0;left:0;border:0;width:100%;height:100%}</style>
     </head><body>
-    <iframe src=${JSONObject.quote(challengeUrl)} allow="cross-origin-isolated"></iframe>
+    <iframe src="${htmlAttr(challengeUrl)}" allow="cross-origin-isolated"></iframe>
     <script>
     window.__ddCookie = null;
     window.addEventListener('message', function(e) {

@@ -16,12 +16,17 @@ import javax.inject.Singleton
 
 data class PendingChallenge(val url: String, val hardBlock: Boolean)
 
+enum class ReadOnlyReason { CHECK_LOOP, BLOCKED }
+
 @Singleton
 class DataDomeChallenge @Inject constructor(
     private val tokenStore: TokenStore,
 ) {
     private val _pending = MutableStateFlow<PendingChallenge?>(null)
     val pending = _pending.asStateFlow()
+
+    private val _readOnly = MutableStateFlow<ReadOnlyReason?>(null)
+    val readOnly = _readOnly.asStateFlow()
 
     private val lock = Any()
     private var result: CompletableDeferred<Boolean>? = null
@@ -32,7 +37,9 @@ class DataDomeChallenge @Inject constructor(
             if (SystemClock.elapsedRealtime() - dismissedAt < DISMISS_COOLDOWN_MS) return false
             result?.takeIf { it.isActive } ?: CompletableDeferred<Boolean>().also {
                 result = it
-                _pending.value = PendingChallenge(url, hardBlock = isHardBlock(url))
+                val hardBlock = isHardBlock(url)
+                if (hardBlock) _readOnly.value = ReadOnlyReason.BLOCKED
+                _pending.value = PendingChallenge(url, hardBlock = hardBlock)
                 DebugLog.log(TAG, "challenge shown: ${url.take(120)}")
             }
         }
@@ -58,6 +65,16 @@ class DataDomeChallenge @Inject constructor(
         tokenStore.replaceCookie(pair)
         DebugLog.log(TAG, "challenge passed")
         finish(true)
+    }
+
+    fun recordWrite(code: Int, body: String?, afterSolve: Boolean) {
+        when {
+            code in 200..299 -> _readOnly.value = null
+            afterSolve && challengeUrl(code, body) != null -> {
+                _readOnly.value = ReadOnlyReason.CHECK_LOOP
+                DebugLog.log(TAG, "still challenged after solve, read-only")
+            }
+        }
     }
 
     fun onDismissed() {

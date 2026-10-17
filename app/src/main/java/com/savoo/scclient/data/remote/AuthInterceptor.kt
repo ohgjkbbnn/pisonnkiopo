@@ -41,6 +41,8 @@ class AuthInterceptor @Inject constructor(
         }
 
         var response = chain.proceed(requestBuilder.build())
+        val isWrite = original.method != "GET"
+        if (isWrite && response.isSuccessful) challenge.recordWrite(response.code, null, afterSolve = false)
 
         val challengeUrl = DataDomeChallenge.challengeUrl(
             response.code,
@@ -57,7 +59,15 @@ class AuthInterceptor @Inject constructor(
                     tokenStore.webCookies?.let { addHeader("Cookie", it) }
                 }
                 .build()
-            return chain.proceed(retried)
+            val retriedResponse = chain.proceed(retried)
+            if (isWrite) {
+                challenge.recordWrite(
+                    retriedResponse.code,
+                    runCatching { retriedResponse.peekBody(64 * 1024).string() }.getOrNull(),
+                    afterSolve = true,
+                )
+            }
+            return retriedResponse
         }
 
         if (response.code == 401 || response.code == 403) {

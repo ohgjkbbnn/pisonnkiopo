@@ -32,6 +32,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.material.icons.filled.EditOff
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.platform.LocalContext
@@ -133,6 +134,8 @@ fun HomeScreen(
     val homeSections by viewModel.homeSections.collectAsState()
     val linkHintDismissed by viewModel.linkHintDismissed.collectAsState()
     val recapBanner by viewModel.recapBanner.collectAsState()
+    val readOnly by viewModel.readOnly.collectAsState()
+    var readOnlyHidden by rememberSaveable { mutableStateOf<String?>(null) }
     var recapOpen by rememberSaveable { mutableStateOf(false) }
     var showCreatePlaylist by remember { mutableStateOf(false) }
     if (showCreatePlaylist) {
@@ -212,6 +215,19 @@ fun HomeScreen(
                         viewModel.dismissLinkHint()
                     },
                 )
+            }
+
+            AnimatedVisibility(
+                visible = readOnly != null && readOnly?.name != readOnlyHidden,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically(),
+            ) {
+                readOnly?.let { reason ->
+                    ReadOnlyCard(
+                        reason = reason,
+                        onHide = { readOnlyHidden = reason.name },
+                    )
+                }
             }
 
             AnimatedVisibility(
@@ -951,6 +967,58 @@ private fun HomePlaylistCard(playlist: FavoritePlaylist, onClick: () -> Unit, mo
             overflow = TextOverflow.Ellipsis,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+    }
+}
+
+@Composable
+private fun ReadOnlyCard(
+    reason: com.savoo.scclient.data.remote.ReadOnlyReason,
+    onHide: () -> Unit,
+) {
+    Surface(
+        shape = RoundedCornerShape(24.dp),
+        color = MaterialTheme.colorScheme.errorContainer,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 8.dp),
+    ) {
+        Column(modifier = Modifier.padding(start = 20.dp, end = 12.dp, top = 16.dp, bottom = 8.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Filled.EditOff,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onErrorContainer,
+                    modifier = Modifier.size(22.dp),
+                )
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    stringResource(R.string.read_only_title),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                )
+            }
+            Spacer(Modifier.height(6.dp))
+            Text(
+                stringResource(
+                    when (reason) {
+                        com.savoo.scclient.data.remote.ReadOnlyReason.CHECK_LOOP -> R.string.read_only_check_loop
+                        com.savoo.scclient.data.remote.ReadOnlyReason.BLOCKED -> R.string.read_only_blocked
+                    }
+                ),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.8f),
+                modifier = Modifier.padding(end = 8.dp),
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                TextButton(onClick = onHide) {
+                    Text(stringResource(R.string.read_only_hide))
+                }
+            }
+        }
     }
 }
 

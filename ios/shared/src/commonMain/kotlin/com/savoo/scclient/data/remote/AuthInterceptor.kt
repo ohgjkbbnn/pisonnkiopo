@@ -42,6 +42,10 @@ class AuthInterceptor(
         applyCommonHeaders(request, clientId)
 
         var call = proceed(request).save()
+        val isWrite = request.method.value != "GET"
+        if (isWrite && call.response.status.value in 200..299) {
+            challenge.recordWrite(call.response.status.value, null, afterSolve = false)
+        }
 
         val challengeUrl = DataDomeChallenge.challengeUrl(
             call.response.status.value,
@@ -50,7 +54,15 @@ class AuthInterceptor(
         if (challengeUrl != null) {
             if (!challenge.solve(challengeUrl)) return call
             applyCommonHeaders(request, clientId)
-            return proceed(request)
+            val retried = proceed(request)
+            if (!isWrite) return retried
+            val saved = retried.save()
+            challenge.recordWrite(
+                saved.response.status.value,
+                runCatching { saved.response.bodyAsText().take(64 * 1024) }.getOrNull(),
+                afterSolve = true,
+            )
+            return saved
         }
 
         val code = call.response.status.value

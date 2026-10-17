@@ -209,10 +209,13 @@ class WebViewApiBridge @Inject constructor(
         solveChallenge: Boolean = true,
     ): BridgeResponse {
         val first = executeOnce(method, url, jsonBody, contentType, extraQuery, timeoutMs)
+        if (method != "GET") challenge.recordWrite(first.code, first.body, afterSolve = false)
         if (!solveChallenge) return first
         val challengeUrl = DataDomeChallenge.challengeUrl(first.code, first.body) ?: return first
         if (!challenge.solve(challengeUrl)) return first
-        return executeOnce(method, url, jsonBody, contentType, extraQuery, timeoutMs)
+        val retried = executeOnce(method, url, jsonBody, contentType, extraQuery, timeoutMs)
+        if (method != "GET") challenge.recordWrite(retried.code, retried.body, afterSolve = true)
+        return retried
     }
 
     private suspend fun executeOnce(

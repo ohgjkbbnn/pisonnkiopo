@@ -1017,5 +1017,9 @@
     <string name="datadome_subtitle">SoundCloud хочет убедиться, что вы не робот. После проверки действие повторится автоматически.</string>
     <string name="datadome_blocked_title">Доступ ограничен</string>
     <string name="datadome_blocked_subtitle">SoundCloud временно заблокировал эту сеть. Переключитесь на другую сеть или сервер VPN, затем выйдите из аккаунта и войдите снова.</string>
+    <string name="read_only_title">Режим только для чтения</string>
+    <string name="read_only_check_loop">SoundCloud снова просит проверку, даже после того как вы её прошли, поэтому лайки и комментарии не отправляются. Ваша сеть или аккаунт временно под подозрением. Подождите или переключитесь на другую сеть или сервер VPN.</string>
+    <string name="read_only_blocked">SoundCloud временно заблокировал эту сеть, поэтому лайки и комментарии не отправляются. Переключитесь на другую сеть или сервер VPN.</string>
+    <string name="read_only_hide">Скрыть</string>
     <string name="datadome_close">Закрыть</string>
 </resources>

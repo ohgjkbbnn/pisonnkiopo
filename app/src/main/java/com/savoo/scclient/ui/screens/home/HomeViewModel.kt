@@ -77,7 +77,10 @@ class HomeViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
     private val recapRepository: RecapRepository,
     private val playlistsRepository: PlaylistsRepository,
+    dataDomeChallenge: com.savoo.scclient.data.remote.DataDomeChallenge,
 ) : ViewModel() {
+
+    val readOnly = dataDomeChallenge.readOnly
 
     private val _user = MutableStateFlow<User?>(null)
     val user = _user.asStateFlow()
