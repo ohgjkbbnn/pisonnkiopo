@@ -21,6 +21,12 @@ object MintSeed {
     val Tertiary = Color(0xFFFFD166)
 }
 
+object ResonaSeed {
+    val Primary = Color(0xFF4B2CA4)
+    val Secondary = Color(0xFF7C5CD6)
+    val Tertiary = Color(0xFFE48AB8)
+}
+
 object OceanSeed {
     val Primary = Color(0xFF2979FF)
     val Secondary = Color(0xFF82B1FF)
@@ -32,7 +38,7 @@ enum class AppColorTheme(val displayName: String, val seedPrimary: Color, val se
     PURPLE("Ultraviolet", PurpleSeed.Primary, PurpleSeed.Secondary, PurpleSeed.Tertiary),
     MINT("Mint", MintSeed.Primary, MintSeed.Secondary, MintSeed.Tertiary),
     OCEAN("Ocean", OceanSeed.Primary, OceanSeed.Secondary, OceanSeed.Tertiary),
-    DYNAMIC("System (Material You)", OrangeSeed.Primary, OrangeSeed.Secondary, OrangeSeed.Tertiary),
+    DYNAMIC("System", ResonaSeed.Primary, ResonaSeed.Secondary, ResonaSeed.Tertiary),
     DYNAMIC_TRACK("From Track Cover", OrangeSeed.Primary, OrangeSeed.Secondary, OrangeSeed.Tertiary),
     CUSTOM("Custom", OrangeSeed.Primary, OrangeSeed.Secondary, OrangeSeed.Tertiary),
 }

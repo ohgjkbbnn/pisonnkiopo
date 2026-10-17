@@ -769,7 +769,7 @@
     <string name="theme_ultraviolet">Ультрафиолетовый</string>
     <string name="theme_mint">Мятный</string>
     <string name="theme_ocean">Океанский</string>
-    <string name="theme_system">Системная (Material You)</string>
+    <string name="theme_system">Системная</string>
     <string name="theme_from_track">Из обложки трека</string>
     <string name="player_close_lyrics">Закрыть текст песни</string>
     <string name="statistics_period_week">Неделя</string>
