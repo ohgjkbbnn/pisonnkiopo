@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.offline
 
+import com.savoo.scclient.ui.navigation.aboveDock
 import com.savoo.scclient.ui.navigation.withDock
 import com.savoo.scclient.compat.*
 import com.savoo.scclient.compat.Uri
@@ -266,7 +267,7 @@ fun OfflineTracksScreen(
                 },
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { SnackbarHost(snackbarHostState, Modifier.aboveDock()) },
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
             if (tracks.isNotEmpty()) {

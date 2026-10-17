@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -17,6 +18,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -28,6 +31,7 @@ object ToastHost {
 
     private val current = MutableStateFlow<Message?>(null)
     private var counter = 0L
+    var dockInset by mutableStateOf(0.dp)
 
     fun show(text: String, long: Boolean) {
         current.value = Message(text, long, ++counter)
@@ -41,7 +45,8 @@ object ToastHost {
             delay(if (shown.long) 3500 else 2000)
             if (current.value?.id == shown.id) current.value = null
         }
-        Box(Modifier.fillMaxSize().safeDrawingPadding(), contentAlignment = Alignment.BottomCenter) {
+        val bottom = if (dockInset > 0.dp) dockInset + 12.dp else 96.dp
+        Box(Modifier.fillMaxSize().then(if (dockInset > 0.dp) Modifier.statusBarsPadding() else Modifier.safeDrawingPadding()), contentAlignment = Alignment.BottomCenter) {
             AnimatedVisibility(
                 visible = message != null,
                 enter = fadeIn() + slideInVertically { it / 2 },
@@ -51,7 +56,7 @@ object ToastHost {
                     shape = RoundedCornerShape(24.dp),
                     color = MaterialTheme.colorScheme.inverseSurface,
                     contentColor = MaterialTheme.colorScheme.inverseOnSurface,
-                    modifier = Modifier.padding(bottom = 96.dp, start = 24.dp, end = 24.dp),
+                    modifier = Modifier.padding(bottom = bottom, start = 24.dp, end = 24.dp),
                 ) {
                     Text(
                         message?.text.orEmpty(),

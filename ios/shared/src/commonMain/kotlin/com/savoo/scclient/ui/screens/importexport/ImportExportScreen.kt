@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.importexport
 
+import com.savoo.scclient.ui.navigation.aboveDock
 import com.savoo.scclient.ui.navigation.dockInset
 import com.savoo.scclient.compat.*
 import com.savoo.scclient.compat.Uri
@@ -432,7 +433,7 @@ fun ImportExportScreen(
                 }
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState, Modifier.aboveDock()) }
     ) { padding ->
         Column(
             modifier = Modifier

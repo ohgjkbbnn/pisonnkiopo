@@ -591,6 +591,15 @@ fun CustomizationScreen(
                 }
             }
 
+            SettingsSectionCard(title = stringResource(Res.string.settings_liquid_glass)) {
+                SwitchItem(
+                    title = stringResource(Res.string.settings_liquid_glass),
+                    subtitle = stringResource(Res.string.settings_liquid_glass_desc),
+                    checked = settings.liquidGlass,
+                    onCheckedChange = { viewModel.setLiquidGlass(it) }
+                )
+            }
+
             SettingsSectionCard(title = stringResource(Res.string.settings_player_style)) {
                 run {
                     val styles = listOf(PlayerStyle.PIXEL, PlayerStyle.CLASSIC)

@@ -1,5 +1,7 @@
 package com.savoo.scclient.ui.screens.player
 
+import com.savoo.scclient.ui.components.LocalLiquidGlass
+import androidx.compose.material3.contentColorFor
 import com.savoo.scclient.compat.*
 import com.savoo.scclient.ui.components.liquidGlass
 import androidx.compose.runtime.CompositionLocalProvider
@@ -387,7 +389,7 @@ fun PlayerSheet(
             }
         }
         if (track != null || showDockBar) Surface(
-        color = Color.Transparent,
+        color = if (LocalLiquidGlass.current) Color.Transparent else MaterialTheme.colorScheme.surfaceContainerHigh,
         shape = RoundedCornerShape(28.dp),
         modifier = Modifier
             .fillMaxWidth()
@@ -1639,8 +1641,9 @@ private fun PixelPlayerContent(
             CompositionLocalProvider(LocalGlassState provides playerGlass) {
             Surface(
                 shape = RoundedCornerShape(28.dp),
-                color = Color.Transparent,
-                contentColor = palette.onBackground,
+                color = if (LocalLiquidGlass.current) Color.Transparent else palette.surface,
+                contentColor = if (LocalLiquidGlass.current) palette.onBackground else contentColorFor(palette.surface),
+                shadowElevation = if (LocalLiquidGlass.current) 0.dp else 8.dp,
                 modifier = Modifier
                     .width(240.dp)
                     .glassStretch(pressScale = 1.03f, stretch = 0.05f)

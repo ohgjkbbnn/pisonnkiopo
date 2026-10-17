@@ -58,6 +58,7 @@ import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
 import com.savoo.scclient.resources.*
 import com.savoo.scclient.ui.haptics.rememberHaptics
+import com.savoo.scclient.ui.navigation.dockInset
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -73,6 +74,7 @@ fun TrackSelectionBar(
     onRemoveFromPlaylist: (() -> Unit)? = null,
 ) {
     val haptics = rememberHaptics()
+    val dock = dockInset()
 
     AnimatedVisibility(
         visible = selectedCount > 0,
@@ -96,7 +98,7 @@ fun TrackSelectionBar(
             ),
         modifier = modifier
             .fillMaxWidth()
-            .navigationBarsPadding()
+            .then(if (dock > 0.dp) Modifier.padding(bottom = dock) else Modifier.navigationBarsPadding())
             .padding(horizontal = 16.dp, vertical = 12.dp),
     ) {
         Surface(

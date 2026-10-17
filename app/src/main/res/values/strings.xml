@@ -996,4 +996,6 @@
     <string name="read_only_blocked">SoundCloud temporarily blocked this network, so likes and comments are not sent. Switch to another network or VPN server.</string>
     <string name="read_only_hide">Hide</string>
     <string name="datadome_close">Close</string>
+    <string name="settings_liquid_glass">Liquid Glass</string>
+    <string name="settings_liquid_glass_desc">Translucent glass on the dock and player, like on iOS</string>
 </resources>

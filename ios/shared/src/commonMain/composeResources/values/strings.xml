@@ -999,4 +999,6 @@
     <string name="auto_export_folder">Backups folder</string>
     <string name="auto_export_folder_path">Files → On My iPhone → Resona → Backups</string>
     <string name="auto_export_ios_note">iOS decides when background tasks run, so an overdue backup is also made when you open or leave the app. The last 10 backups are kept.</string>
+    <string name="settings_liquid_glass">Liquid Glass</string>
+    <string name="settings_liquid_glass_desc">Translucent glass on the dock and player. When off, looks like the Android version</string>
 </resources>

@@ -1,5 +1,10 @@
 package com.savoo.scclient.ui.navigation
 
+import com.savoo.scclient.ui.components.LocalGlassState
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.haze
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -197,7 +202,9 @@ fun RootScreen(initialDeepLink: DeepLinkTarget? = null, deepLinkKey: Int = 0) {
     UpdateCheckHost()
     CrashReportHost()
 
+    val glassState = remember { HazeState() }
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        CompositionLocalProvider(LocalGlassState provides glassState) {
         val useRail = maxWidth >= 600.dp
         val selectDestination: (Screen) -> Unit = { screen ->
             navController.navigate(screen.route) {
@@ -256,7 +263,8 @@ fun RootScreen(initialDeepLink: DeepLinkTarget? = null, deepLinkKey: Int = 0) {
                         .align(Alignment.TopCenter)
                         .then(if (useRail && currentRoute != Screen.Home.route) Modifier.widthIn(max = 1040.dp) else Modifier)
                         .fillMaxSize()
-                        .padding(bottom = padding.calculateBottomPadding()),
+                        .padding(bottom = padding.calculateBottomPadding())
+                        .haze(glassState),
                     enterTransition = {
                         val from = initialState.destination.route ?: return@NavHost fadeIn(spring())
                         val to = targetState.destination.route ?: return@NavHost fadeIn(spring())
@@ -468,5 +476,6 @@ fun RootScreen(initialDeepLink: DeepLinkTarget? = null, deepLinkKey: Int = 0) {
         }
         }
         ConnectivityBanner(modifier = Modifier.align(Alignment.TopCenter))
+        }
     }
 }

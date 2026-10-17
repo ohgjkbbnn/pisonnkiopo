@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.account
 
+import com.savoo.scclient.ui.navigation.aboveDock
 import com.savoo.scclient.ui.navigation.dockInset
 import com.savoo.scclient.compat.*
 import com.savoo.scclient.ui.components.CopyableId
@@ -230,7 +231,7 @@ fun AccountScreen(
                 },
             )
         },
-        snackbarHost = { androidx.compose.material3.SnackbarHost(snackbarHostState) },
+        snackbarHost = { androidx.compose.material3.SnackbarHost(snackbarHostState, Modifier.aboveDock()) },
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding)) {
             when {

@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.settings
 
+import com.savoo.scclient.ui.navigation.aboveDock
 import com.savoo.scclient.ui.navigation.dockInset
 import com.savoo.scclient.compat.*
 import kotlinx.coroutines.IO
@@ -170,6 +171,7 @@ class SettingsViewModel(
     fun setDarkMode(mode: DarkModeOption) = viewModelScope.launch { repository.setDarkMode(mode) }
     fun setAutoplayNext(value: Boolean) = viewModelScope.launch { repository.setAutoplayNext(value) }
     fun setDynamicFromTrack(value: Boolean) = viewModelScope.launch { repository.setDynamicFromTrack(value) }
+    fun setLiquidGlass(value: Boolean) = viewModelScope.launch { repository.setLiquidGlass(value) }
     fun setDeveloperMode(value: Boolean) = viewModelScope.launch { repository.setDeveloperMode(value) }
     fun setHapticsEnabled(value: Boolean) = viewModelScope.launch { repository.setHapticsEnabled(value) }
     fun setHapticsIntensity(value: HapticsIntensity) = viewModelScope.launch { repository.setHapticsIntensity(value) }
@@ -490,7 +492,7 @@ fun SettingsScreen(
                 }
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState, Modifier.aboveDock()) }
     ) { padding ->
         Column(
             modifier = Modifier

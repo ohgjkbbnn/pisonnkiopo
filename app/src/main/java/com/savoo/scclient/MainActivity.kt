@@ -215,6 +215,7 @@ class MainActivity : FragmentActivity() {
                     com.savoo.scclient.ui.components.LocalMarqueeTitles provides settings.marqueeTitles,
                     com.savoo.scclient.ui.components.LocalArtworkGlowSource provides settings.artworkGlowSource,
                     com.savoo.scclient.ui.components.LocalAnimatedArtwork provides settings.animatedArtwork,
+                    com.savoo.scclient.ui.components.LocalLiquidGlass provides settings.liquidGlass,
                 ) {
                     var eulaDismissed by androidx.compose.runtime.remember { mutableStateOf(false) }
                     var onboardingDismissed by androidx.compose.runtime.remember { mutableStateOf(false) }

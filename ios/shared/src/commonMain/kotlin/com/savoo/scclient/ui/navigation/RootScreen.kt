@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.navigation
 
+import androidx.compose.runtime.SideEffect
 import androidx.savedstate.read
 import androidx.compose.foundation.LocalOverscrollFactory
 import androidx.compose.runtime.remember
@@ -256,7 +257,9 @@ fun RootScreen(initialDeepLink: DeepLinkTarget? = null, deepLinkKey: Int = 0) {
                 )
             }
         ) { padding ->
-            CompositionLocalProvider(LocalDockInset provides padding.calculateBottomPadding()) {
+            val dock = padding.calculateBottomPadding()
+            SideEffect { ToastHost.dockInset = dock }
+            CompositionLocalProvider(LocalDockInset provides dock) {
             Box(modifier = Modifier.fillMaxSize()) {
                 NavHost(
                     navController = navController,

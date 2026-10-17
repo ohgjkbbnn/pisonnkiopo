@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.favorites
 
+import com.savoo.scclient.ui.navigation.aboveDock
 import com.savoo.scclient.ui.navigation.withDock
 import com.savoo.scclient.compat.*
 import kotlinx.coroutines.IO
@@ -399,7 +400,7 @@ fun FavoritesScreen(
                 },
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { SnackbarHost(snackbarHostState, Modifier.aboveDock()) },
     ) { padding ->
         ExpressivePullToRefreshBox(
             isRefreshing = isRefreshing,

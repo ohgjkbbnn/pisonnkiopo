@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.debug
 
+import com.savoo.scclient.ui.navigation.aboveDock
 import com.savoo.scclient.ui.navigation.dockInset
 import org.jetbrains.compose.resources.StringResource
 import com.savoo.scclient.compat.*
@@ -382,7 +383,7 @@ fun DebugMenuScreen(
                 }
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState, Modifier.aboveDock()) }
     ) { padding ->
         Column(
             modifier = Modifier

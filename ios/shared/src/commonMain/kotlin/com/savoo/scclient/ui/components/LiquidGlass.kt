@@ -34,6 +34,7 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 
 val LocalGlassState = staticCompositionLocalOf<HazeState?> { null }
+val LocalLiquidGlass = staticCompositionLocalOf { true }
 
 @Composable
 fun Modifier.liquidGlass(
@@ -42,6 +43,7 @@ fun Modifier.liquidGlass(
     density: Float = 0.16f,
     blurRadius: Dp = 14.dp,
 ): Modifier {
+    if (!LocalLiquidGlass.current) return this
     val state = LocalGlassState.current ?: return this
     val dark = tint.luminance() < 0.5f
     val style = HazeStyle(
@@ -59,7 +61,9 @@ fun Modifier.liquidGlass(
         .glassHighlight(shape, dark)
 }
 
-fun Modifier.glassHighlight(shape: Shape, dark: Boolean, strength: Float = 1f): Modifier = drawWithContent {
+fun Modifier.glassHighlight(shape: Shape, dark: Boolean, strength: Float = 1f): Modifier = composed {
+    if (!LocalLiquidGlass.current) return@composed Modifier
+    Modifier.drawWithContent {
     drawContent()
     val rimBright = Color.White.copy(alpha = (if (dark) 0.55f else 0.9f) * strength)
     val rimFaint = Color.White.copy(alpha = (if (dark) 0.05f else 0.15f) * strength)
@@ -85,6 +89,7 @@ fun Modifier.glassHighlight(shape: Shape, dark: Boolean, strength: Float = 1f): 
         ),
         style = Stroke(width = 1.dp.toPx()),
     )
+    }
 }
 
 private val GlassPressSpring = spring<Float>(dampingRatio = 0.6f, stiffness = 520f)
@@ -92,11 +97,12 @@ private val GlassReleaseSpring = spring<Float>(dampingRatio = 0.42f, stiffness =
 private val GlassShiftReleaseSpring = spring<Offset>(dampingRatio = 0.42f, stiffness = 380f)
 
 fun Modifier.glassStretch(pressScale: Float = 1.06f, stretch: Float = 0.14f): Modifier = composed {
+    if (!LocalLiquidGlass.current) return@composed Modifier
     val scope = rememberCoroutineScope()
     val scaleX = remember { Animatable(1f) }
     val scaleY = remember { Animatable(1f) }
     val shift = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
-    this
+    Modifier
         .pointerInput(Unit) {
             awaitEachGesture {
                 val down = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
