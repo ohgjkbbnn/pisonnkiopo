@@ -65,6 +65,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -209,6 +211,7 @@ class AccountViewModel(
 fun AccountScreen(
     viewModel: AccountViewModel = koinViewModel(),
     onOpenSettings: () -> Unit = {},
+    onBack: () -> Unit = {},
 ) {
     val state by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { androidx.compose.material3.SnackbarHostState() }
@@ -217,7 +220,16 @@ fun AccountScreen(
     var editingProfile by remember { mutableStateOf(false) }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(stringResource(Res.string.account_title), maxLines = 1, overflow = TextOverflow.Ellipsis) }) },
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(Res.string.account_title), maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(Res.string.back))
+                    }
+                },
+            )
+        },
         snackbarHost = { androidx.compose.material3.SnackbarHost(snackbarHostState) },
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding)) {

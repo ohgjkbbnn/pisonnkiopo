@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
@@ -35,16 +36,21 @@ import dev.chrisbanes.haze.hazeEffect
 val LocalGlassState = staticCompositionLocalOf<HazeState?> { null }
 
 @Composable
-fun Modifier.liquidGlass(shape: Shape, tint: Color = MaterialTheme.colorScheme.surfaceContainerHigh): Modifier {
+fun Modifier.liquidGlass(
+    shape: Shape,
+    tint: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    density: Float = 0.16f,
+    blurRadius: Dp = 14.dp,
+): Modifier {
     val state = LocalGlassState.current ?: return this
     val dark = tint.luminance() < 0.5f
     val style = HazeStyle(
         backgroundColor = tint,
         tints = listOf(
-            HazeTint(tint.copy(alpha = if (dark) 0.16f else 0.22f)),
+            HazeTint(tint.copy(alpha = if (dark) density else density + 0.06f)),
             HazeTint(Color.White.copy(alpha = if (dark) 0.06f else 0.28f)),
         ),
-        blurRadius = 14.dp,
+        blurRadius = blurRadius,
         noiseFactor = 0f,
     )
     return this

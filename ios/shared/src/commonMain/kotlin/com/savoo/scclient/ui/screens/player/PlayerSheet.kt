@@ -1644,7 +1644,7 @@ private fun PixelPlayerContent(
                 modifier = Modifier
                     .width(240.dp)
                     .glassStretch(pressScale = 1.03f, stretch = 0.05f)
-                    .liquidGlass(RoundedCornerShape(28.dp), tint = palette.surface),
+                    .liquidGlass(RoundedCornerShape(28.dp), tint = palette.background, density = 0.72f, blurRadius = 24.dp),
             ) {
                 Column(
                     modifier = Modifier.padding(6.dp),
