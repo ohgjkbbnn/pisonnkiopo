@@ -272,6 +272,7 @@ fun OfflineTracksScreen(
         Column(modifier = Modifier.padding(padding)) {
             if (tracks.isNotEmpty()) {
                 SearchBarDefaults.InputField(
+                    colors = SearchBarDefaults.filledInputFieldColors(),
                     query = searchQuery,
                     onQueryChange = { searchQuery = it },
                     onSearch = {},

@@ -296,8 +296,8 @@ class DebugMenuViewModel(
         appendLine("Version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
         appendLine("Build type: ${BuildConfig.BUILD_TYPE}")
         appendLine("Application ID: ${BuildConfig.APPLICATION_ID}")
-        appendLine("Device: ${Build.MANUFACTURER} ${Build.MODEL}")
-        appendLine("Android: ${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})")
+        appendLine("Device: Apple ${Platform.deviceModel}")
+        appendLine("OS: ${Platform.osVersion}")
         appendLine("SC Client ID: ${maskClientId(_clientId.value)}")
         appendLine("Favorites: ${_favoriteTracks.value} tracks, ${_favoriteArtists.value} artists, ${_favoritePlaylists.value} playlists")
         appendLine("Offline tracks: ${_offlineTracks.value}")
@@ -399,7 +399,7 @@ fun DebugMenuScreen(
                 Text("${stringResource(Res.string.debug_menu_version)}: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})", style = MaterialTheme.typography.bodyMedium)
                 Text("${stringResource(Res.string.debug_menu_build_type)}: ${BuildConfig.BUILD_TYPE}", style = MaterialTheme.typography.bodyMedium)
                 Text("${stringResource(Res.string.debug_menu_application_id)}: ${BuildConfig.APPLICATION_ID}", style = MaterialTheme.typography.bodyMedium)
-                Text("${stringResource(Res.string.debug_menu_device)}: ${Build.MANUFACTURER} ${Build.MODEL} · Android ${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})", style = MaterialTheme.typography.bodyMedium)
+                Text("${stringResource(Res.string.debug_menu_device)}: Apple ${Platform.deviceModel} · ${Platform.osVersion}", style = MaterialTheme.typography.bodyMedium)
             }
 
             DebugSectionCard(title = stringResource(Res.string.debug_menu_client_id)) {

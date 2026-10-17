@@ -249,6 +249,7 @@ fun HistoryScreen(
         Column(modifier = Modifier.padding(padding)) {
             if (!isEmpty) {
                 SearchBarDefaults.InputField(
+                    colors = SearchBarDefaults.filledInputFieldColors(),
                     query = query,
                     onQueryChange = viewModel::onQueryChange,
                     onSearch = {},

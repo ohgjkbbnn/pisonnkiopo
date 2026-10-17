@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.search
 
+import com.savoo.scclient.ui.navigation.aboveDock
 import com.savoo.scclient.ui.navigation.withDock
 import com.savoo.scclient.compat.*
 import androidx.compose.animation.AnimatedContent
@@ -137,6 +138,7 @@ fun SearchScreen(
                 )
 
                 SearchBarDefaults.InputField(
+                    colors = SearchBarDefaults.filledInputFieldColors(),
                     query = state.query,
                     onQueryChange = viewModel::onQueryChange,
                     onSearch = { viewModel.onQuerySubmit() },
@@ -262,7 +264,7 @@ fun SearchScreen(
                             )
                         }
                         state.query.isBlank() && history.isEmpty() -> SearchEmptyState(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier.fillMaxSize().aboveDock(),
                         )
                         else -> AnimatedContent(
                             targetState = state.activeTab,
@@ -385,7 +387,7 @@ private fun PullableCenteredContent(content: @Composable () -> Unit) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             Box(
-                modifier = Modifier.fillParentMaxSize(),
+                modifier = Modifier.fillParentMaxSize().aboveDock(),
                 contentAlignment = Alignment.Center,
             ) {
                 content()

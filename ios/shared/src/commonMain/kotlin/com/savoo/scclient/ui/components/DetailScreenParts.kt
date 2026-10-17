@@ -93,7 +93,12 @@ fun rememberArtworkColor(url: String?): Color? {
     var color by remember(url) { mutableStateOf<Color?>(null) }
     LaunchedEffect(url) {
         if (url == null) return@LaunchedEffect
-        runCatching { Palette.loadSwatchColor(hiResArtwork(url) ?: url)?.let { color = it } }
+        runCatching {
+            val bitmap = loadPaletteBitmap(hiResArtwork(url) ?: url, size = 128) ?: return@runCatching
+            val palette = Palette.from(bitmap).generate()
+            val swatch = palette.vibrantSwatch ?: palette.dominantSwatch ?: palette.mutedSwatch
+            swatch?.let { color = Color(it.rgb) }
+        }
     }
     return color
 }

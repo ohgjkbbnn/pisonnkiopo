@@ -1,6 +1,15 @@
 package com.savoo.scclient.compat
 
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.alloc
+import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.ptr
+import kotlinx.cinterop.toKString
 import platform.Foundation.NSBundle
+import platform.Foundation.NSProcessInfo
+import platform.UIKit.UIDevice
+import platform.posix.uname
+import platform.posix.utsname
 import platform.Foundation.NSDate
 import platform.Foundation.NSHTTPCookie
 import platform.Foundation.distantPast
@@ -45,6 +54,20 @@ actual object Platform {
     }
 
     actual val bundleId: String get() = NSBundle.mainBundle.bundleIdentifier ?: "com.savoo.resona"
+
+    @OptIn(ExperimentalForeignApi::class)
+    actual val deviceModel: String by lazy {
+        NSProcessInfo.processInfo.environment["SIMULATOR_MODEL_IDENTIFIER"]?.let { return@lazy "$it (Simulator)" }
+        memScoped {
+            val info = alloc<utsname>()
+            uname(info.ptr)
+            info.machine.toKString()
+        }
+    }
+
+    actual val osVersion: String by lazy {
+        "${UIDevice.currentDevice.systemName} ${UIDevice.currentDevice.systemVersion}"
+    }
 
     actual val buildNumber: Int by lazy {
         (NSBundle.mainBundle.objectForInfoDictionaryKey("CFBundleVersion") as? String)?.toIntOrNull() ?: 0

@@ -59,6 +59,7 @@ internal fun CollectionSearchField(
     modifier: Modifier = Modifier,
 ) {
     SearchBarDefaults.InputField(
+        colors = SearchBarDefaults.filledInputFieldColors(),
         query = query,
         onQueryChange = onQueryChange,
         onSearch = {},

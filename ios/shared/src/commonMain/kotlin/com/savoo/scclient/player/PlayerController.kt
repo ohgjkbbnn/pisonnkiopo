@@ -1567,14 +1567,14 @@ class PlayerController(
         }
         seedColorJob = scope.launch {
             try {
-                val color = Palette.loadSwatchColor(artworkUrl.replace("-large", "-t500x500"))
+                val bitmap = loadPaletteBitmap(artworkUrl.replace("-large", "-t500x500"))
+                val swatch = bitmap?.let { Palette.from(it).generate() }?.let { it.vibrantSwatch ?: it.dominantSwatch }
                 ensureActive()
-                if (color != null) {
-                    val rgb = color.toArgb()
-                    _seedColor.value = color
+                if (swatch != null) {
+                    _seedColor.value = Color(swatch.rgb)
                     prefs.edit()
                         .putString("seed_color_url", artworkUrl)
-                        .putInt("seed_color", rgb)
+                        .putInt("seed_color", swatch.rgb)
                         .apply()
                 } else {
                     _seedColor.value = fallback

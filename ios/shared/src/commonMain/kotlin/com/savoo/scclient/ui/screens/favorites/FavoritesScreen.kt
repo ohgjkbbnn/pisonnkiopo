@@ -410,6 +410,7 @@ fun FavoritesScreen(
         Column(modifier = Modifier.fillMaxSize()) {
             if (hasFavorites) {
                 SearchBarDefaults.InputField(
+                    colors = SearchBarDefaults.filledInputFieldColors(),
                     query = searchQuery,
                     onQueryChange = { viewModel.setSearchQuery(it) },
                     onSearch = {},

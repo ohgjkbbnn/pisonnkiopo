@@ -9,6 +9,8 @@ expect object Platform {
     val versionName: String
     val isDebug: Boolean
     val languageTag: String
+    val deviceModel: String
+    val osVersion: String
     fun openUrl(url: String): Boolean
     fun share(text: String)
     fun shareFile(path: String, mimeType: String)
