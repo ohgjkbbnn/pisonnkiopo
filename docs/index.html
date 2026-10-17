@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>resona</title>
-<meta name="description" content="Resona is an open source SoundCloud client for Android. Material 3 Expressive, synced lyrics with Genius notes, search by a lyric line, Telegram import, waveform seek and offline playback.">
+<meta name="description" content="Resona is an open source SoundCloud client for Android, with an iOS version in beta. Material 3 Expressive, synced lyrics with Genius notes, search by a lyric line, Telegram import, waveform seek and offline playback.">
 <link rel="icon" type="image/png" href="favicon.png">
 <script>
     (function () {
@@ -134,6 +134,8 @@
     .btn .material-symbols-rounded { font-size: 20px; }
     .btn-filled { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
     .btn-filled:hover { box-shadow: 0 8px 24px -10px var(--md-sys-color-primary); }
+    .btn-tonal { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
+    .btn-tonal:hover { box-shadow: 0 8px 24px -12px var(--md-sys-color-secondary); }
     .btn-text { background: transparent; color: var(--md-sys-color-primary); padding: 0 14px; }
     .btn-text:hover { background: color-mix(in srgb, var(--md-sys-color-primary) 10%, transparent); }
     .btn-small { height: 38px; padding: 0 16px; font-size: 14px; border-radius: 19px; }
@@ -656,17 +658,21 @@
 
 <main>
     <header class="hero wrap">
-        <div class="eyebrow reveal">SoundCloud client for Android</div>
+        <div class="eyebrow reveal">SoundCloud client for Android and iOS</div>
         <h1 class="display reveal">Music, <em>your way.</em></h1>
         <p class="lede reveal">An open source SoundCloud client with Material 3 Expressive at its core. Lyrics with Genius notes, a waveform you can feel, and your Telegram music in the same library.</p>
         <div class="actions reveal">
             <a class="btn btn-filled" href="https://github.com/savo-o/resona/releases" target="_blank">
                 <span class="material-symbols-rounded">download</span> Download APK
             </a>
+            <a class="btn btn-tonal" href="https://github.com/savo-o/resona#ios-version-beta" target="_blank">
+                <span class="material-symbols-rounded">phone_iphone</span> iOS version (beta)
+            </a>
             <a class="btn btn-text" href="#tour">Take the tour <span class="material-symbols-rounded">arrow_downward</span></a>
         </div>
         <div class="meta reveal">
             <span><i></i>Android 8+</span>
+            <span><i></i>iOS 16+</span>
             <span><i></i>GPL v3</span>
             <span><i></i>No account needed</span>
         </div>
@@ -820,10 +826,13 @@
     <section class="cta wrap">
         <div class="eyebrow reveal">Free, open source, no ads</div>
         <h2 class="display reveal">Ready to <em>press play?</em></h2>
-        <p class="lede reveal">Grab the latest APK from GitHub releases. No store and no account.</p>
+        <p class="lede reveal">Grab the latest APK, or the IPA for the iOS version (still in beta), from GitHub releases. No store and no account.</p>
         <div class="actions reveal">
             <a class="btn btn-filled" href="https://github.com/savo-o/resona/releases" target="_blank">
                 <span class="material-symbols-rounded">download</span> Download
+            </a>
+            <a class="btn btn-tonal" href="https://github.com/savo-o/resona#ios-version-beta" target="_blank">
+                <span class="material-symbols-rounded">phone_iphone</span> iOS version (beta)
             </a>
             <a class="btn btn-text" href="https://github.com/savo-o/resona" target="_blank">Star on GitHub <span class="material-symbols-rounded">arrow_outward</span></a>
         </div>

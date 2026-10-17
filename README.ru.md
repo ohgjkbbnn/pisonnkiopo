@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  Опенсорсный клиент SoundCloud для Android и iOS (бета!).<br>
+  Опенсорсный клиент SoundCloud для Android, версия для iOS в бете.<br>
   Без рекламы. Без обязательной регистрации.
   <a href="https://keepandroidopen.org" target="_blank" rel="noopener noreferrer">
     Resona поддерживает #KeepAndroidOpen
@@ -18,7 +18,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Android-26+-3DDC84?logo=android&logoColor=white">
-  <img src="https://img.shields.io/badge/iOS-16+%20beta-000000?logo=apple&logoColor=white">
+  <img src="https://img.shields.io/badge/iOS-16+-000000?logo=apple&logoColor=white">
   <img src="https://img.shields.io/badge/Kotlin-2.x-7F52FF?logo=kotlin&logoColor=white">
   <img src="https://img.shields.io/badge/License-GPLv3-blue.svg">
 </p>
@@ -37,7 +37,7 @@
 
 Ещё можно следить за обновлениями автоматически через [Obtainium](https://github.com/ImranR98/Obtainium), просто укажите ему этот репозиторий.
 
-### iOS (бета)
+### Версия для iOS (бета)
 
 Скачайте IPA со страницы [GitHub Releases](https://github.com/savo-o/resona/releases/latest) (или более свежую сборку из [canary](https://github.com/savo-o/resona/releases/tag/canary)) и установите через [Sideloadly](https://sideloadly.io) (рекомендуем), [AltStore](https://altstore.io) или [SideStore](https://sidestore.io). IPA не подписан, в App Store Resona не появится. С бесплатным Apple ID подпись действует 7 дней, поэтому её нужно продлевать раз в неделю (все три умеют делать это автоматически).
 

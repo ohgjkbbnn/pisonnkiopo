@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  An open source SoundCloud client for Android and iOS (beta!).<br>
+  An open source SoundCloud client for Android, with an iOS version in beta.<br>
   No ads. No account required.
   <a href="https://keepandroidopen.org" target="_blank" rel="noopener noreferrer">
     Resona supports #KeepAndroidOpen
@@ -18,7 +18,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Android-26+-3DDC84?logo=android&logoColor=white">
-  <img src="https://img.shields.io/badge/iOS-16+%20beta-000000?logo=apple&logoColor=white">
+  <img src="https://img.shields.io/badge/iOS-16+-000000?logo=apple&logoColor=white">
   <img src="https://img.shields.io/badge/Kotlin-2.x-7F52FF?logo=kotlin&logoColor=white">
   <img src="https://img.shields.io/badge/License-GPLv3-blue.svg">
 </p>
@@ -37,7 +37,7 @@ Grab the latest APK from [GitHub Releases](https://github.com/savo-o/resona/rele
 
 You can also track updates automatically with [Obtainium](https://github.com/ImranR98/Obtainium), just point it at this repo.
 
-### iOS (beta)
+### iOS version (beta)
 
 Grab the IPA from [GitHub Releases](https://github.com/savo-o/resona/releases/latest) (or a fresher build from [canary](https://github.com/savo-o/resona/releases/tag/canary)) and sideload it with [Sideloadly](https://sideloadly.io) (recommended), [AltStore](https://altstore.io) or [SideStore](https://sidestore.io). The IPA is unsigned and Resona will never be on the App Store. With a free Apple ID the signature lasts 7 days, so it has to be refreshed weekly (all three can do it automatically).
 
