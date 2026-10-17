@@ -6,7 +6,9 @@ import platform.Foundation.NSHTTPCookie
 import platform.Foundation.distantPast
 import platform.WebKit.WKWebsiteDataStore
 import platform.Foundation.NSCachesDirectory
+import platform.Foundation.NSApplicationSupportDirectory
 import platform.Foundation.NSDocumentDirectory
+import platform.Foundation.NSFileManager
 import platform.Foundation.NSLocale
 import platform.Foundation.NSSearchPathForDirectoriesInDomains
 import platform.Foundation.NSURL
@@ -20,8 +22,22 @@ import platform.UIKit.UIViewController
 import kotlin.experimental.ExperimentalNativeApi
 
 actual object Platform {
-    actual val filesDirPath: String by lazy {
+    actual val documentsDirPath: String by lazy {
         (NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, true).first() as String)
+    }
+
+    actual val filesDirPath: String by lazy {
+        val support = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, true).first() as String
+        val manager = NSFileManager.defaultManager
+        manager.createDirectoryAtPath(support, true, null, null)
+        manager.contentsOfDirectoryAtPath(documentsDirPath, null).orEmpty()
+            .mapNotNull { it as? String }
+            .filterNot { it in VISIBLE_DOCUMENTS }
+            .forEach { name ->
+                val target = "$support/$name"
+                if (!manager.fileExistsAtPath(target)) manager.moveItemAtPath("$documentsDirPath/$name", target, null)
+            }
+        support
     }
 
     actual val cacheDirPath: String by lazy {
@@ -83,6 +99,8 @@ actual object Platform {
         else defaults.setObject(listOf(tag), "AppleLanguages")
         Locale.setDefault(Locale.forLanguageTag(tag ?: languageTag))
     }
+
+    private val VISIBLE_DOCUMENTS = setOf("Backups", "Exports", ".Trash")
 
     private fun present(controller: UIViewController) {
         var top = UIApplication.sharedApplication.keyWindow?.rootViewController ?: return

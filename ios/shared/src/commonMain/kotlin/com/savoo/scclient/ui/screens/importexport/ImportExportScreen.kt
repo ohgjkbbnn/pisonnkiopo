@@ -243,7 +243,12 @@ class ImportExportViewModel(
         viewModelScope.launch {
             settingsRepository.setAutoExportEnabled(value)
             autoExportManager.syncSchedule()
+            if (value) autoExportManager.catchUpIfDue()
         }
+    }
+
+    fun openBackupsFolder() {
+        Platform.openUrl("shareddocuments://" + autoExportManager.backupsDir.path)
     }
 
     fun setTelegramImportMode(mode: TelegramImportMode) {
@@ -486,6 +491,130 @@ fun ImportExportScreen(
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
+                    }
+                }
+            }
+
+            ImportExportSectionCard {
+                val settings by viewModel.settings.collectAsState()
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 18.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        Icons.Filled.Schedule,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(Modifier.width(16.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(stringResource(Res.string.auto_export), style = MaterialTheme.typography.bodyLarge)
+                        Text(
+                            stringResource(Res.string.auto_export_desc),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Spacer(Modifier.width(12.dp))
+                    Switch(
+                        checked = settings.autoExportEnabled,
+                        onCheckedChange = { viewModel.setAutoExportEnabled(it) },
+                    )
+                }
+
+                ImportExportDivider()
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { viewModel.openBackupsFolder() }
+                        .padding(horizontal = 20.dp, vertical = 18.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        Icons.Filled.Folder,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(Modifier.width(16.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(stringResource(Res.string.auto_export_folder), style = MaterialTheme.typography.bodyLarge)
+                        Text(
+                            stringResource(Res.string.auto_export_folder_path),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+
+                if (settings.autoExportEnabled) {
+                    ImportExportDivider()
+
+                    val intervals = AutoExportInterval.entries
+                    val intervalLabelResIds = listOf(
+                        Res.string.auto_export_interval_6h,
+                        Res.string.auto_export_interval_daily,
+                        Res.string.auto_export_interval_weekly,
+                    )
+                    ButtonGroup(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 16.dp)
+                    ) {
+                        intervals.forEachIndexed { index, interval ->
+                            val shapes = when (index) {
+                                0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                intervals.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                            }
+                            ToggleButton(
+                                checked = settings.autoExportInterval == interval,
+                                onCheckedChange = { checked ->
+                                    if (checked) viewModel.setAutoExportInterval(interval)
+                                },
+                                modifier = Modifier.weight(1f),
+                                shapes = shapes,
+                            ) {
+                                Text(
+                                    stringResource(intervalLabelResIds[index]),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    maxLines = 1,
+                                )
+                            }
+                        }
+                    }
+
+                    Text(
+                        if (settings.autoExportLastRunAt == 0L) {
+                            stringResource(Res.string.auto_export_never)
+                        } else {
+                            stringResource(
+                                Res.string.auto_export_last_run,
+                                DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                                    .format(Date(settings.autoExportLastRunAt)),
+                            )
+                        },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 20.dp),
+                    )
+
+                    Text(
+                        stringResource(Res.string.auto_export_ios_note),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+                    )
+
+                    TextButton(
+                        onClick = { viewModel.exportNow() },
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                    ) {
+                        Text(stringResource(Res.string.auto_export_run_now))
                     }
                 }
             }

@@ -55,6 +55,8 @@ data class BulkDownloadProgress(
     val inProgress: Int get() = (completed + active.size.coerceAtLeast(1)).coerceAtMost(total)
     val fraction: Float get() = if (total <= 0) 1f else ((completed + active.values.sumOf { it.fraction.toDouble() }.toFloat()) / total).coerceIn(0f, 1f)
 }
+private val HLS_URI = Regex("URI=\"([^\"]+)\"")
+
 class OfflineTrackManager(
     private val context: Context,
     private val offlineDao: OfflineDao,
@@ -230,7 +232,8 @@ class OfflineTrackManager(
     suspend fun saveForOffline(track: Track, onProgress: ((Float) -> Unit)? = null): Result<Unit> = withContext(Dispatchers.IO) {
         _downloadingTrackIds.update { it + track.id }
         try {
-            val audioFile = File(offlineDir, "${track.id}.mp3")
+            val audioFile = listOf("mp3", "m4a").map { File(offlineDir, "${track.id}.$it") }
+                .firstOrNull { it.exists() } ?: File(offlineDir, "${track.id}.mp3")
             if (audioFile.exists() && audioFile.length() > 0 && looksLikeAudioFile(audioFile)) {
                 val artwork = offlineArtworkUri(track.id)
                     ?: downloadArtwork(track.id, track.artworkUrl)
@@ -265,39 +268,43 @@ class OfflineTrackManager(
                 return@withContext Result.failure(Exception("Track is restricted by SoundCloud ($reason)"))
             }
 
-            val stream = runCatching { trackRepository.resolvePlayableStream(fullTrack) }
+            val stream = runCatching { trackRepository.resolveDownloadStream(fullTrack) }
                 .onFailure { if (it.isRateLimit()) throw RateLimitedException("Rate limited by SoundCloud") }
                 .getOrThrow()
-                ?: return@withContext Result.failure(Exception("Cannot resolve track URL"))
-            if (stream.isHls) return@withContext Result.failure(Exception("Track has no downloadable stream"))
+                ?: return@withContext Result.failure(Exception("Track has no downloadable stream"))
 
             val tmpAudioFile = File(offlineDir, "${track.id}.mp3.tmp")
-            val request = Request.Builder().url(stream.url).build()
-            httpClient.newCall(request).execute().use { response ->
-                if (response.code == 429) {
-                    return@withContext Result.failure(RateLimitedException("Download rate limited: 429"))
-                }
-                if (!response.isSuccessful) {
-                    return@withContext Result.failure(Exception("Download failed: ${response.code}"))
-                }
-                response.body?.let { body ->
-                    val totalBytes = body.contentLength()
-                    body.byteStream().use { input ->
-                        tmpAudioFile.outputStream().use { output ->
-                            val buffer = ByteArray(64 * 1024)
-                            var copied = 0L
-                            var lastPercent = -1
-                            while (true) {
-                                ensureActive()
-                                val read = input.read(buffer)
-                                if (read < 0) break
-                                output.write(buffer, 0, read)
-                                copied += read
-                                if (onProgress != null && totalBytes > 0) {
-                                    val percent = (copied * 100 / totalBytes).toInt()
-                                    if (percent != lastPercent) {
-                                        lastPercent = percent
-                                        onProgress(percent / 100f)
+            val targetFile = File(offlineDir, "${track.id}." + if (stream.isMp4) "m4a" else "mp3")
+            if (stream.isHls) {
+                downloadHls(stream.url, tmpAudioFile, onProgress)?.let { return@withContext Result.failure(it) }
+            } else {
+                val request = Request.Builder().url(stream.url).build()
+                httpClient.newCall(request).execute().use { response ->
+                    if (response.code == 429) {
+                        return@withContext Result.failure(RateLimitedException("Download rate limited: 429"))
+                    }
+                    if (!response.isSuccessful) {
+                        return@withContext Result.failure(Exception("Download failed: ${response.code}"))
+                    }
+                    response.body?.let { body ->
+                        val totalBytes = body.contentLength()
+                        body.byteStream().use { input ->
+                            tmpAudioFile.outputStream().use { output ->
+                                val buffer = ByteArray(64 * 1024)
+                                var copied = 0L
+                                var lastPercent = -1
+                                while (true) {
+                                    ensureActive()
+                                    val read = input.read(buffer)
+                                    if (read < 0) break
+                                    output.write(buffer, 0, read)
+                                    copied += read
+                                    if (onProgress != null && totalBytes > 0) {
+                                        val percent = (copied * 100 / totalBytes).toInt()
+                                        if (percent != lastPercent) {
+                                            lastPercent = percent
+                                            onProgress(percent / 100f)
+                                        }
                                     }
                                 }
                             }
@@ -305,13 +312,14 @@ class OfflineTrackManager(
                     }
                 }
             }
-            if (tmpAudioFile.length() <= 0 || !looksLikeAudioFile(tmpAudioFile) || !tmpAudioFile.renameTo(audioFile)) {
+            targetFile.delete()
+            if (tmpAudioFile.length() <= 0 || !looksLikeAudioFile(tmpAudioFile) || !tmpAudioFile.renameTo(targetFile)) {
                 tmpAudioFile.delete()
                 return@withContext Result.failure(Exception("Downloaded file is empty or invalid"))
             }
 
             val artwork = downloadArtwork(track.id, track.artworkUrl)
-                ?: extractEmbeddedArtwork(track.id, audioFile)
+                ?: extractEmbeddedArtwork(track.id, targetFile)
 
             offlineDao.saveTrack(
                 OfflineTrack(
@@ -323,12 +331,12 @@ class OfflineTrackManager(
                     permalinkUrl = track.permalinkUrl,
                     userId = track.user.id,
                     userAvatarUrl = track.user.avatarUrl,
-                    localPath = audioFile.absolutePath,
-                    fileSizeBytes = audioFile.length(),
+                    localPath = targetFile.absolutePath,
+                    fileSizeBytes = targetFile.length(),
                     genre = track.genre,
                 )
             )
-            DebugLog.log("OfflineTrack", "Saved ${track.title} (${audioFile.length()} bytes)")
+            DebugLog.log("OfflineTrack", "Saved ${track.title} (${targetFile.length()} bytes)")
             repairScope.launch { runCatching { waveformRepository.getWaveform(track) } }
             Result.success(Unit)
         } catch (e: Exception) {
@@ -338,6 +346,46 @@ class OfflineTrackManager(
         } finally {
             _downloadingTrackIds.update { it - track.id }
         }
+    }
+
+    private fun downloadHls(url: String, target: File, onProgress: ((Float) -> Unit)?): Exception? {
+        var playlistUrl = url
+        var playlist = fetchBytes(playlistUrl)?.decodeToString() ?: return Exception("Cannot load HLS playlist")
+        if ("#EXT-X-STREAM-INF" in playlist) {
+            val variant = playlist.lines().map { it.trim() }.firstOrNull { it.isNotEmpty() && !it.startsWith("#") }
+                ?: return Exception("Empty HLS master playlist")
+            playlistUrl = resolveUrl(playlistUrl, variant)
+            playlist = fetchBytes(playlistUrl)?.decodeToString() ?: return Exception("Cannot load HLS playlist")
+        }
+        val lines = playlist.lines().map { it.trim() }
+        if (lines.any { it.startsWith("#EXT-X-KEY") && !it.contains("METHOD=NONE") }) {
+            return Exception("Track is encrypted")
+        }
+        val init = lines.firstOrNull { it.startsWith("#EXT-X-MAP") }
+            ?.let { HLS_URI.find(it)?.groupValues?.get(1) }
+        val segments = listOfNotNull(init) + lines.filter { it.isNotEmpty() && !it.startsWith("#") }
+        if (segments.isEmpty()) return Exception("Empty HLS playlist")
+        target.delete()
+        target.outputStream().use { out ->
+            segments.forEachIndexed { index, segment ->
+                val bytes = fetchBytes(resolveUrl(playlistUrl, segment)) ?: return Exception("Segment download failed")
+                out.write(bytes)
+                onProgress?.invoke((index + 1).toFloat() / segments.size)
+            }
+        }
+        return null
+    }
+
+    private fun fetchBytes(url: String): ByteArray? =
+        httpClient.newCall(Request.Builder().url(url).build()).execute().use { response ->
+            if (response.code == 429) throw RateLimitedException("Download rate limited: 429")
+            if (response.isSuccessful) response.body?.bytes() else null
+        }
+
+    private fun resolveUrl(base: String, ref: String): String = when {
+        ref.startsWith("http://") || ref.startsWith("https://") -> ref
+        ref.startsWith("/") -> base.substringBefore("://") + "://" + base.substringAfter("://").substringBefore('/') + ref
+        else -> base.substringBefore('?').substringBeforeLast('/') + "/" + ref
     }
 
     private fun Throwable.isRateLimit(): Boolean =
@@ -385,7 +433,8 @@ class OfflineTrackManager(
             DebugLog.log("OfflineTrack", "getLocalPath($trackId): not in DB")
             return null
         }
-        val file = File(offlineTrack.localPath)
+        val file = File(offlineTrack.localPath).takeIf { it.exists() }
+            ?: File(offlineDir, offlineTrack.localPath.substringAfterLast('/'))
         val exists = file.exists()
         val size = if (exists) file.length() else 0L
         DebugLog.log("OfflineTrack", "getLocalPath($trackId): exists=$exists, size=$size, path=${offlineTrack.localPath}")

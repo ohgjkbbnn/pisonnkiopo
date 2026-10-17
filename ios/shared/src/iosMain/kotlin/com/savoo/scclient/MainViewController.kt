@@ -26,6 +26,7 @@ import com.savoo.scclient.di.appModule
 import com.savoo.scclient.player.AudioPlayer
 import com.savoo.scclient.player.IosAudioPlayer
 import com.savoo.scclient.player.PlayerController
+import com.savoo.scclient.work.AutoExportManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -69,6 +70,11 @@ private fun startApp() {
         if (provider.cachedOrFallback().isBlank()) provider.refresh()
     }
     koin.get<PlayerController>()
+    CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+        val autoExport = koin.get<AutoExportManager>()
+        autoExport.catchUpIfDue()
+        autoExport.syncSchedule()
+    }
 }
 
 private fun attachBridgeWebView() {
@@ -101,5 +107,19 @@ fun MainViewController(): UIViewController {
 }
 
 fun onAppBackground() {
-    KoinPlatform.getKoinOrNull()?.getOrNull<PlayerController>()?.saveState()
+    val koin = KoinPlatform.getKoinOrNull() ?: return
+    koin.getOrNull<PlayerController>()?.saveState()
+    CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+        koin.getOrNull<AutoExportManager>()?.catchUpIfDue()
+    }
+}
+
+fun runBackgroundExport(onDone: (Boolean) -> Unit) {
+    startApp()
+    CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+        val autoExport = KoinPlatform.getKoin().get<AutoExportManager>()
+        val ok = runCatching { autoExport.catchUpIfDue() }.isSuccess
+        runCatching { autoExport.syncSchedule() }
+        onDone(ok)
+    }
 }

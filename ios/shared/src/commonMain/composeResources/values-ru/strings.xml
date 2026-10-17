@@ -1022,4 +1022,7 @@
     <string name="read_only_blocked">SoundCloud временно заблокировал эту сеть, поэтому лайки и комментарии не отправляются. Переключитесь на другую сеть или сервер VPN.</string>
     <string name="read_only_hide">Скрыть</string>
     <string name="datadome_close">Закрыть</string>
+    <string name="auto_export_folder">Папка бэкапов</string>
+    <string name="auto_export_folder_path">Файлы → На iPhone → Resona → Backups</string>
+    <string name="auto_export_ios_note">iOS сама решает, когда запускать фоновые задачи, поэтому просроченный бэкап делается и при открытии или сворачивании приложения. Хранятся последние 10 бэкапов.</string>
 </resources>

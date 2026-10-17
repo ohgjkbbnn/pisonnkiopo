@@ -196,6 +196,36 @@ class TrackRepository(
         return null
     }
 
+    data class DownloadStream(val url: String, val isHls: Boolean, val isMp4: Boolean)
+
+    suspend fun resolveDownloadStream(track: Track): DownloadStream? {
+        fun rank(t: com.savoo.scclient.data.model.Transcoding): Int = when {
+            t.format.protocol == "progressive" -> 0
+            t.format.protocol == "hls" && "mpeg" in t.format.mimeType -> 1
+            t.format.protocol == "hls" && ("mp4" in t.format.mimeType || "aac" in t.format.mimeType) -> 2
+            else -> -1
+        }
+        val candidates = (track.media?.transcodings ?: return null)
+            .filter { rank(it) >= 0 }
+            .sortedBy { rank(it) }
+        var lastNotFound: HttpException? = null
+        for (candidate in candidates) {
+            try {
+                val url = api.resolveStreamUrl(candidate.url).url
+                return DownloadStream(
+                    url = url,
+                    isHls = candidate.format.protocol == "hls",
+                    isMp4 = "mp4" in candidate.format.mimeType || "aac" in candidate.format.mimeType,
+                )
+            } catch (e: HttpException) {
+                if (e.code() != 404) throw e
+                lastNotFound = e
+            }
+        }
+        lastNotFound?.let { throw it }
+        return null
+    }
+
     companion object {
         const val SEARCH_PAGE_SIZE = 25
         const val RELATED_PAGE_SIZE = 15

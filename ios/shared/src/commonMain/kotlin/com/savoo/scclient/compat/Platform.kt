@@ -2,6 +2,7 @@ package com.savoo.scclient.compat
 
 expect object Platform {
     val filesDirPath: String
+    val documentsDirPath: String
     val cacheDirPath: String
     val bundleId: String
     val buildNumber: Int

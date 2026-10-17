@@ -1,6 +1,7 @@
 package com.savoo.scclient.ui.navigation
 
 import androidx.savedstate.read
+import androidx.compose.foundation.LocalOverscrollFactory
 import androidx.compose.runtime.remember
 import androidx.compose.material3.MaterialTheme
 import com.savoo.scclient.ui.components.LocalGlassState
@@ -431,12 +432,14 @@ fun RootScreen(initialDeepLink: DeepLinkTarget? = null, deepLinkKey: Int = 0) {
                         },
                     ) { backStackEntry ->
                         val userId = backStackEntry.arguments?.read { getLong("userId") } ?: return@composable
-                        ArtistScreen(
-                            userId = userId,
-                            onBack = { navController.popBackStack() },
-                            onArtistClick = { id -> navController.navigate(Screen.Artist.createRoute(id)) },
-                            onPlaylistClick = { id -> navController.navigate(Screen.Playlist.createRoute(id)) },
-                        )
+                        CompositionLocalProvider(LocalOverscrollFactory provides null) {
+                            ArtistScreen(
+                                userId = userId,
+                                onBack = { navController.popBackStack() },
+                                onArtistClick = { id -> navController.navigate(Screen.Artist.createRoute(id)) },
+                                onPlaylistClick = { id -> navController.navigate(Screen.Playlist.createRoute(id)) },
+                            )
+                        }
                     }
                     composable(
                         route = Screen.Playlist.route,
@@ -467,12 +470,14 @@ fun RootScreen(initialDeepLink: DeepLinkTarget? = null, deepLinkKey: Int = 0) {
                         },
                     ) { backStackEntry ->
                         val playlistId = backStackEntry.arguments?.read { getLong("playlistId") } ?: return@composable
-                        PlaylistScreen(
-                            playlistId = playlistId,
-                            onBack = { navController.popBackStack() },
-                            onArtistClick = { id -> navController.navigate(Screen.Artist.createRoute(id)) },
-                            onPlaylistClick = { id -> navController.navigate(Screen.Playlist.createRoute(id)) },
-                        )
+                        CompositionLocalProvider(LocalOverscrollFactory provides null) {
+                            PlaylistScreen(
+                                playlistId = playlistId,
+                                onBack = { navController.popBackStack() },
+                                onArtistClick = { id -> navController.navigate(Screen.Artist.createRoute(id)) },
+                                onPlaylistClick = { id -> navController.navigate(Screen.Playlist.createRoute(id)) },
+                            )
+                        }
                     }
                 }
             }
