@@ -23,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
@@ -92,7 +91,6 @@ internal fun AdaptivePlayerLayout(
                             Box(
                                 Modifier.fillMaxSize().graphicsLayer {
                                     alpha = 1f - lyricsAlpha.value
-                                    compositingStrategy = CompositingStrategy.ModulateAlpha
                                 },
                             ) { middle(compact, landscape) }
                         }
@@ -100,7 +98,6 @@ internal fun AdaptivePlayerLayout(
                             Box(
                                 Modifier.fillMaxSize().graphicsLayer {
                                     alpha = lyricsAlpha.value
-                                    compositingStrategy = CompositingStrategy.ModulateAlpha
                                 },
                             ) { lyricsInline() }
                         }

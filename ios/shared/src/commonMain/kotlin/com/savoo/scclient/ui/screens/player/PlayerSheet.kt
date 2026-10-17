@@ -2,6 +2,12 @@ package com.savoo.scclient.ui.screens.player
 
 import com.savoo.scclient.compat.*
 import com.savoo.scclient.ui.components.liquidGlass
+import androidx.compose.runtime.CompositionLocalProvider
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.HazeState
+import com.savoo.scclient.ui.components.LocalGlassState
+import com.savoo.scclient.ui.components.glassStretch
+import com.savoo.scclient.ui.components.glassHighlight
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
@@ -387,6 +393,7 @@ fun PlayerSheet(
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 6.dp)
             .navigationBarsPadding()
+            .glassStretch(pressScale = 1.02f, stretch = 0.04f)
             .liquidGlass(RoundedCornerShape(28.dp))
             // Extra clearance on top of the system nav-bar inset: on some devices (MIUI's gesture
             // nav in particular) touches near the very bottom edge get eaten by the OS gesture
@@ -1064,11 +1071,11 @@ private fun PixelPlayerContent(
             }
     }
 
+    val playerGlass = remember { HazeState() }
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.92f)
-            .navigationBarsPadding(),
+            .fillMaxHeight(0.92f),
     ) {
     PlayerInfoBanner(
         message = infoMessage,
@@ -1077,7 +1084,7 @@ private fun PixelPlayerContent(
     )
     AdaptivePlayerLayout(
         showLyrics = showLyrics,
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(palette.background).hazeSource(playerGlass),
         lyrics = {
             PlayerLyricsScreen(
                 backgroundColor = palette.background,
@@ -1530,6 +1537,7 @@ private fun PixelPlayerContent(
                     tint = palette.accentInk,
                     iconSize = 32.dp,
                     isLoading = state.isBuffering || state.loadingTrackId != null,
+                    glassStrength = 0.5f,
                     interactionSource = playSource,
                     height = if (compact) 48.dp else 72.dp,
                     modifier = Modifier.weight(playWeight),
@@ -1552,7 +1560,10 @@ private fun PixelPlayerContent(
             Surface(
                 shape = RoundedCornerShape(50),
                 color = palette.surface,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .glassStretch(pressScale = 1.03f, stretch = 0.06f)
+                    .glassHighlight(RoundedCornerShape(50), palette.surface.luminance() < 0.5f),
             ) {
                 Row(
                     modifier = Modifier
@@ -1625,11 +1636,15 @@ private fun PixelPlayerContent(
                 .align(Alignment.TopEnd)
                 .padding(top = 76.dp, end = 24.dp),
         ) {
+            CompositionLocalProvider(LocalGlassState provides playerGlass) {
             Surface(
                 shape = RoundedCornerShape(28.dp),
-                color = palette.surface,
-                shadowElevation = 8.dp,
-                modifier = Modifier.width(240.dp),
+                color = Color.Transparent,
+                contentColor = palette.onBackground,
+                modifier = Modifier
+                    .width(240.dp)
+                    .glassStretch(pressScale = 1.03f, stretch = 0.05f)
+                    .liquidGlass(RoundedCornerShape(28.dp), tint = palette.surface),
             ) {
                 Column(
                     modifier = Modifier.padding(6.dp),
@@ -1704,6 +1719,7 @@ private fun PixelPlayerContent(
                         },
                     )
                 }
+            }
             }
         }
 
@@ -2112,7 +2128,12 @@ internal fun PixelIconButton(
         shape = CircleShape,
         color = background,
         contentColor = tint,
-        modifier = modifier.size(size),
+        modifier = modifier
+            .size(size)
+            .then(
+                if (background.alpha > 0f) Modifier.glassStretch().glassHighlight(CircleShape, background.luminance() < 0.5f)
+                else Modifier
+            ),
     ) {
         Box(
             contentAlignment = Alignment.Center,
@@ -2136,6 +2157,7 @@ internal fun PixelPillButton(
     height: Dp = 72.dp,
     iconSize: Dp = 26.dp,
     isLoading: Boolean = false,
+    glassStrength: Float = 1f,
 ) {
     Surface(
         onClick = onClick,
@@ -2143,7 +2165,10 @@ internal fun PixelPillButton(
         shape = PixelPillShape,
         color = background,
         contentColor = tint,
-        modifier = modifier.height(height),
+        modifier = modifier
+            .height(height)
+            .glassStretch()
+            .glassHighlight(PixelPillShape, background.luminance() < 0.5f, glassStrength),
     ) {
         Box(contentAlignment = Alignment.Center) {
             if (isLoading) {
@@ -2171,7 +2196,7 @@ internal fun LyricsSyncControls(
     val adjusted = !state.sync.isDefault
     val manuallyAdjusted = state.sync != state.automatic
     val offsetText = "%+.1fs".format(state.sync.offsetMs / 1000f)
-    val driftText = stringResource(Res.string.player_lyrics_drift_value, state.sync.driftMsPerMin / 1000f)
+    val driftText = stringResource(Res.string.player_lyrics_drift_value).formatArgs(state.sync.driftMsPerMin / 1000f)
 
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -2595,7 +2620,7 @@ private fun ClassicPlayerContent(
         }
     }
 
-    Box(Modifier.fillMaxWidth().fillMaxHeight(0.92f).navigationBarsPadding()) {
+    Box(Modifier.fillMaxWidth().fillMaxHeight(0.92f)) {
     PlayerInfoBanner(
         message = infoMessage,
         onHide = { infoMessage = null },

@@ -698,11 +698,11 @@
     <string name="about_github">GitHub</string>
     <string name="about_version">Version %1$s (%2$s)</string>
     <string name="about_build_canary">Canary-build</string>
-    <string name="easter_egg_caption">None of this does anything</string>
+    <string name="easter_egg_caption">Material You on iOS. None of this does anything</string>
     <string name="easter_egg_press_me">Press me</string>
     <string name="easter_egg_launch">Launch</string>
     <string name="easter_egg_gravity">Gravity</string>
-    <string name="easter_egg_party">Okay, this one does something</string>
+    <string name="easter_egg_party">Okay, this one does something. Even on iOS</string>
 
     <!-- Badges -->
     <string name="badge_developer">Developer Badge</string>

@@ -722,11 +722,11 @@
     <string name="about_github">GitHub</string>
     <string name="about_version">Версия %1$s (%2$s)</string>
     <string name="about_build_canary">Canary-build</string>
-    <string name="easter_egg_caption">Всё это ничего не делает</string>
+    <string name="easter_egg_caption">Material You на iOS. Всё это ничего не делает</string>
     <string name="easter_egg_press_me">Нажмите на меня</string>
     <string name="easter_egg_launch">Запуск</string>
     <string name="easter_egg_gravity">Гравитация</string>
-    <string name="easter_egg_party">А вот это уже кое-что делает</string>
+    <string name="easter_egg_party">А вот это уже кое-что делает. Даже на iOS</string>
 
     <!-- Badges -->
     <string name="badge_developer">Значок разработчика</string>

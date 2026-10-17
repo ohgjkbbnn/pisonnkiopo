@@ -27,12 +27,13 @@ fun String.formatArgs(vararg args: Any?): String {
             "c" -> arg.toString()
             else -> arg.toString()
         }
+        val signed = if ('+' in flags && (conv == "d" || conv == "f") && !body.startsWith("-")) "+$body" else body
         val padChar = if ('0' in flags && conv != "s") '0' else ' '
         when {
-            body.length >= width -> body
-            '-' in flags -> body.padEnd(width)
-            padChar == '0' && body.startsWith("-") -> "-" + body.drop(1).padStart(width - 1, '0')
-            else -> body.padStart(width, padChar)
+            signed.length >= width -> signed
+            '-' in flags -> signed.padEnd(width)
+            padChar == '0' && (signed.startsWith("-") || signed.startsWith("+")) -> signed.take(1) + signed.drop(1).padStart(width - 1, '0')
+            else -> signed.padStart(width, padChar)
         }
     }
 }

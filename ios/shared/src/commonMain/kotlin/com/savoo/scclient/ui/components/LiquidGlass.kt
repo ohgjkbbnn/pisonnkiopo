@@ -1,5 +1,18 @@
 package com.savoo.scclient.ui.components
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
+import kotlinx.coroutines.launch
+import kotlin.math.abs
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -27,35 +40,84 @@ fun Modifier.liquidGlass(shape: Shape, tint: Color = MaterialTheme.colorScheme.s
     val dark = tint.luminance() < 0.5f
     val style = HazeStyle(
         backgroundColor = tint,
-        tints = listOf(HazeTint(tint.copy(alpha = if (dark) 0.42f else 0.5f))),
-        blurRadius = 28.dp,
+        tints = listOf(
+            HazeTint(tint.copy(alpha = if (dark) 0.16f else 0.22f)),
+            HazeTint(Color.White.copy(alpha = if (dark) 0.06f else 0.28f)),
+        ),
+        blurRadius = 14.dp,
         noiseFactor = 0f,
     )
-    val rimStrong = Color.White.copy(alpha = if (dark) 0.34f else 0.75f)
-    val rimSoft = Color.White.copy(alpha = if (dark) 0.06f else 0.18f)
-    val sheen = Color.White.copy(alpha = if (dark) 0.07f else 0.22f)
     return this
         .clip(shape)
         .hazeEffect(state = state, style = style)
-        .drawWithContent {
-            drawContent()
-            val outline = shape.createOutline(size, layoutDirection, this)
-            drawOutline(
-                outline = outline,
-                brush = Brush.verticalGradient(
-                    0f to sheen,
-                    0.45f to Color.Transparent,
-                    1f to Color.Transparent,
-                ),
-            )
-            drawOutline(
-                outline = outline,
-                brush = Brush.linearGradient(
-                    colors = listOf(rimStrong, rimSoft, rimSoft, rimStrong.copy(alpha = rimStrong.alpha * 0.6f)),
-                    start = Offset.Zero,
-                    end = Offset(size.width, size.height),
-                ),
-                style = Stroke(width = 1.2.dp.toPx()),
-            )
+        .glassHighlight(shape, dark)
+}
+
+fun Modifier.glassHighlight(shape: Shape, dark: Boolean, strength: Float = 1f): Modifier = drawWithContent {
+    drawContent()
+    val rimBright = Color.White.copy(alpha = (if (dark) 0.55f else 0.9f) * strength)
+    val rimFaint = Color.White.copy(alpha = (if (dark) 0.05f else 0.15f) * strength)
+    val sheen = Color.White.copy(alpha = (if (dark) 0.08f else 0.2f) * strength)
+    val outline = shape.createOutline(size, layoutDirection, this)
+    drawOutline(
+        outline = outline,
+        brush = Brush.verticalGradient(
+            0f to sheen,
+            0.35f to Color.Transparent,
+            1f to Color.Transparent,
+        ),
+    )
+    drawOutline(
+        outline = outline,
+        brush = Brush.linearGradient(
+            0f to rimBright,
+            0.3f to rimFaint,
+            0.7f to rimFaint,
+            1f to rimBright.copy(alpha = rimBright.alpha * 0.7f),
+            start = Offset.Zero,
+            end = Offset(size.width, size.height),
+        ),
+        style = Stroke(width = 1.dp.toPx()),
+    )
+}
+
+private val GlassPressSpring = spring<Float>(dampingRatio = 0.6f, stiffness = 520f)
+private val GlassReleaseSpring = spring<Float>(dampingRatio = 0.42f, stiffness = 380f)
+private val GlassShiftReleaseSpring = spring<Offset>(dampingRatio = 0.42f, stiffness = 380f)
+
+fun Modifier.glassStretch(pressScale: Float = 1.06f, stretch: Float = 0.14f): Modifier = composed {
+    val scope = rememberCoroutineScope()
+    val scaleX = remember { Animatable(1f) }
+    val scaleY = remember { Animatable(1f) }
+    val shift = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
+    this
+        .pointerInput(Unit) {
+            awaitEachGesture {
+                val down = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+                scope.launch { scaleX.animateTo(pressScale, GlassPressSpring) }
+                scope.launch { scaleY.animateTo(pressScale, GlassPressSpring) }
+                while (true) {
+                    val event = awaitPointerEvent(PointerEventPass.Initial)
+                    val change = event.changes.firstOrNull { it.id == down.id } ?: break
+                    if (!change.pressed) break
+                    val delta = change.position - down.position
+                    val nx = (delta.x / size.width.coerceAtLeast(1)).coerceIn(-1f, 1f)
+                    val ny = (delta.y / size.height.coerceAtLeast(1)).coerceIn(-1f, 1f)
+                    scope.launch {
+                        scaleX.snapTo(pressScale + abs(nx) * stretch - abs(ny) * stretch * 0.35f)
+                        scaleY.snapTo(pressScale + abs(ny) * stretch - abs(nx) * stretch * 0.35f)
+                        shift.snapTo(Offset(nx * size.width * 0.05f, ny * size.height * 0.05f))
+                    }
+                }
+                scope.launch { scaleX.animateTo(1f, GlassReleaseSpring) }
+                scope.launch { scaleY.animateTo(1f, GlassReleaseSpring) }
+                scope.launch { shift.animateTo(Offset.Zero, GlassShiftReleaseSpring) }
+            }
+        }
+        .graphicsLayer {
+            this.scaleX = scaleX.value
+            this.scaleY = scaleY.value
+            translationX = shift.value.x
+            translationY = shift.value.y
         }
 }
