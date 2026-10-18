@@ -1547,7 +1547,7 @@ private fun PixelPlayerContent(
                     tint = palette.accentInk,
                     iconSize = 32.dp,
                     isLoading = state.isBuffering || state.loadingTrackId != null,
-                    glassStrength = 0.5f,
+                    glassStrength = 0.15f,
                     interactionSource = playSource,
                     height = if (compact) 48.dp else 72.dp,
                     modifier = Modifier.weight(playWeight),
@@ -1573,7 +1573,7 @@ private fun PixelPlayerContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .glassStretch(pressScale = 1.03f, stretch = 0.06f)
-                    .glassHighlight(RoundedCornerShape(50), palette.surface.luminance() < 0.5f),
+                    .glassHighlight(RoundedCornerShape(50), palette.surface.luminance() < 0.5f, 0.3f),
             ) {
                 Row(
                     modifier = Modifier
@@ -2168,7 +2168,7 @@ internal fun PixelPillButton(
     height: Dp = 72.dp,
     iconSize: Dp = 26.dp,
     isLoading: Boolean = false,
-    glassStrength: Float = 1f,
+    glassStrength: Float = 0.3f,
 ) {
     Surface(
         onClick = onClick,
