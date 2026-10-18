@@ -32,6 +32,7 @@ interface AudioPlayer {
     var remoteCommands: RemoteCommandHandler?
     var volume: Float
     var rate: Float
+    var pitch: Float
     fun load(url: String, info: NowPlayingInfo, playWhenReady: Boolean, startPositionMs: Long)
     fun updateInfo(info: NowPlayingInfo)
     fun play()

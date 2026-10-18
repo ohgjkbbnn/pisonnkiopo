@@ -389,11 +389,11 @@
     <string name="settings_font_roundness">Закруглённый шрифт</string>
     <string name="settings_font_roundness_desc">Сглаживает углы шрифта Google Sans Flex. Кириллица использует свой шрифт и не меняется</string>
     <string name="settings_font_roundness_level">Закругление</string>
-    <string name="settings_font_roundness_format">%1$d%%</string>
+    <string name="settings_font_roundness_format">%1$d%</string>
     <string name="settings_font_sample">Resona · Playback 123</string>
     <string name="settings_artwork_shape">Форма обложки</string>
     <string name="settings_artwork_size">Размер обложки</string>
-    <string name="settings_artwork_size_format">%1$d%%</string>
+    <string name="settings_artwork_size_format">%1$d%</string>
     <string name="settings_artwork_ring">Обводка обложки</string>
     <string name="settings_artwork_ring_desc">Показывать прогресс трека обводкой вокруг обложки</string>
     <string name="artwork_shape_blob">Волна</string>
@@ -860,7 +860,7 @@
     <string name="custom_language_warning_title">Проблемы в файле перевода</string>
     <string name="custom_language_warning_size">Размер файла: %1$s</string>
     <string name="custom_language_warning_long">Строк, которые намного длиннее оригинала: %1$d. Они могут сломать интерфейс и замедлить приложение.</string>
-    <string name="custom_language_warning_placeholders">Строк с ошибками в подстановках вроде %%s или %%d: %1$d. Вместо них будет показан оригинальный текст.</string>
+    <string name="custom_language_warning_placeholders">Строк с ошибками в подстановках вроде %s или %d: %1$d. Вместо них будет показан оригинальный текст.</string>
     <string name="custom_language_warning_hint">Можно пропустить эти строки и оставить остальные или загрузить файл как есть.</string>
     <string name="custom_language_warning_skip">Пропустить проблемные строки</string>
     <string name="custom_language_warning_anyway">Загрузить как есть</string>
@@ -933,7 +933,7 @@
     <string name="sound_rate">Темп и тон</string>
     <string name="sound_reverb">Реверберация</string>
     <string name="sound_bass">Басы</string>
-    <string name="sound_percent_format">%1$d%%</string>
+    <string name="sound_percent_format">%1$d%</string>
     <string name="settings_beat_pulse">Пульсация в такт</string>
     <string name="settings_beat_pulse_desc">Свечение за обложкой реагирует на басы трека</string>
     <string name="settings_animated_artwork">Живые сгенерированные обложки</string>

@@ -381,11 +381,11 @@
     <string name="settings_font_roundness">Rounded font</string>
     <string name="settings_font_roundness_desc">Softens the corners of Google Sans Flex. Cyrillic text keeps its own font and does not change</string>
     <string name="settings_font_roundness_level">Roundness</string>
-    <string name="settings_font_roundness_format">%1$d%%</string>
+    <string name="settings_font_roundness_format">%1$d%</string>
     <string name="settings_font_sample">Resona · Playback 123</string>
     <string name="settings_artwork_shape">Artwork shape</string>
     <string name="settings_artwork_size">Artwork size</string>
-    <string name="settings_artwork_size_format">%1$d%%</string>
+    <string name="settings_artwork_size_format">%1$d%</string>
     <string name="settings_artwork_ring">Artwork outline</string>
     <string name="settings_artwork_ring_desc">Show track progress as an outline around the artwork</string>
     <string name="artwork_shape_blob">Wave</string>
@@ -836,7 +836,7 @@
     <string name="custom_language_warning_title">Problems in the translation file</string>
     <string name="custom_language_warning_size">File size: %1$s</string>
     <string name="custom_language_warning_long">Strings that are much longer than the original: %1$d. They can break the layout and slow the app down.</string>
-    <string name="custom_language_warning_placeholders">Strings with broken placeholders like %%s or %%d: %1$d. The original text will be shown instead.</string>
+    <string name="custom_language_warning_placeholders">Strings with broken placeholders like %s or %d: %1$d. The original text will be shown instead.</string>
     <string name="custom_language_warning_hint">You can skip these strings and keep the rest, or load the file as it is.</string>
     <string name="custom_language_warning_skip">Skip problem strings</string>
     <string name="custom_language_warning_anyway">Load as is</string>
@@ -909,7 +909,7 @@
     <string name="sound_rate">Tempo and pitch</string>
     <string name="sound_reverb">Reverb</string>
     <string name="sound_bass">Bass</string>
-    <string name="sound_percent_format">%1$d%%</string>
+    <string name="sound_percent_format">%1$d%</string>
     <string name="settings_beat_pulse">Pulse to the beat</string>
     <string name="settings_beat_pulse_desc">The glow behind the artwork reacts to the bass of the track</string>
     <string name="settings_animated_artwork">Moving generated covers</string>

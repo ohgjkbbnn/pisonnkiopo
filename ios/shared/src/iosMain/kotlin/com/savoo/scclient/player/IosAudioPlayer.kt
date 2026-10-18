@@ -18,6 +18,12 @@ import platform.AVFAudio.AVAudioSessionInterruptionOptionShouldResume
 import platform.AVFAudio.AVAudioSessionInterruptionTypeBegan
 import platform.AVFAudio.AVAudioSessionInterruptionTypeKey
 import platform.AVFAudio.setActive
+import platform.AVFoundation.AVAssetTrack
+import platform.AVFoundation.AVAudioTimePitchAlgorithmTimeDomain
+import platform.AVFoundation.AVAudioTimePitchAlgorithmVarispeed
+import platform.AVFoundation.AVMediaTypeAudio
+import platform.AVFoundation.AVMutableAudioMix
+import platform.AVFoundation.AVMutableAudioMixInputParameters
 import platform.AVFoundation.AVPlayer
 import platform.AVFoundation.AVPlayerItem
 import platform.AVFoundation.AVPlayerItemDidPlayToEndTimeNotification
@@ -26,9 +32,13 @@ import platform.AVFoundation.AVPlayerItemStatusFailed
 import platform.AVFoundation.AVPlayerItemStatusReadyToPlay
 import platform.AVFoundation.AVPlayerTimeControlStatusPlaying
 import platform.AVFoundation.AVPlayerTimeControlStatusWaitingToPlayAtSpecifiedRate
+import platform.AVFoundation.asset
+import platform.AVFoundation.audioMix
+import platform.AVFoundation.audioTimePitchAlgorithm
 import platform.AVFoundation.currentItem
 import platform.AVFoundation.currentTime
 import platform.AVFoundation.duration
+import platform.AVFoundation.loadTracksWithMediaType
 import platform.AVFoundation.pause
 import platform.AVFoundation.play
 import platform.AVFoundation.replaceCurrentItemWithPlayerItem
@@ -37,9 +47,11 @@ import platform.AVFoundation.setDefaultRate
 import platform.AVFoundation.setRate
 import platform.AVFoundation.setVolume
 import platform.AVFoundation.timeControlStatus
+import platform.CoreFoundation.CFRelease
 import platform.CoreMedia.CMTime
 import platform.CoreMedia.CMTimeGetSeconds
 import platform.CoreMedia.CMTimeMakeWithSeconds
+import platform.Foundation.NSError
 import platform.Foundation.NSNotificationCenter
 import platform.Foundation.NSNumber
 import platform.Foundation.NSOperationQueue
@@ -64,7 +76,7 @@ import platform.darwin.dispatch_async
 import platform.darwin.dispatch_get_main_queue
 import kotlin.math.roundToLong
 
-class IosAudioPlayer : AudioPlayer {
+class IosAudioPlayer(private val effects: SoundEffects) : AudioPlayer {
 
     private val player = AVPlayer()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
@@ -87,6 +99,12 @@ class IosAudioPlayer : AudioPlayer {
             player.setDefaultRate(value)
             if (wantsPlay) player.setRate(value)
             updateNowPlaying()
+        }
+
+    override var pitch: Float = 1f
+        set(value) {
+            field = value
+            player.currentItem?.audioTimePitchAlgorithm = pitchAlgorithm()
         }
 
     private var wantsPlay = false
@@ -135,6 +153,7 @@ class IosAudioPlayer : AudioPlayer {
         removeItemObservers()
         failureReported = false
         val item = AVPlayerItem(uRL = nsUrl)
+        item.audioTimePitchAlgorithm = pitchAlgorithm()
         val center = NSNotificationCenter.defaultCenter
         itemObservers = listOf(
             center.addObserverForName(AVPlayerItemDidPlayToEndTimeNotification, item, NSOperationQueue.mainQueue) { _ ->
@@ -146,6 +165,7 @@ class IosAudioPlayer : AudioPlayer {
         )
         updateInfo(info)
         player.replaceCurrentItemWithPlayerItem(item)
+        attachEffects(item)
         if (startPositionMs > 0) player.seekToTime(CMTimeMakeWithSeconds(startPositionMs / 1000.0, 1000))
         _status.value = PlaybackStatus(isBuffering = true, positionMs = startPositionMs)
         wantsPlay = playWhenReady
@@ -188,6 +208,22 @@ class IosAudioPlayer : AudioPlayer {
         removeItemObservers()
         player.replaceCurrentItemWithPlayerItem(null)
         _status.value = PlaybackStatus()
+    }
+
+    private fun pitchAlgorithm() = if (pitch != 1f) AVAudioTimePitchAlgorithmVarispeed else AVAudioTimePitchAlgorithmTimeDomain
+
+    private fun attachEffects(item: AVPlayerItem) {
+        item.asset.loadTracksWithMediaType(AVMediaTypeAudio) { tracks: List<*>?, _: NSError? ->
+            val track = tracks?.firstOrNull() as? AVAssetTrack ?: return@loadTracksWithMediaType
+            dispatch_async(dispatch_get_main_queue()) {
+                if (player.currentItem !== item) return@dispatch_async
+                val tap = createSoundEffectsTap(effects) ?: return@dispatch_async
+                val parameters = AVMutableAudioMixInputParameters.audioMixInputParametersWithTrack(track)
+                parameters.setAudioTapProcessor(tap)
+                CFRelease(tap)
+                item.audioMix = AVMutableAudioMix().apply { setInputParameters(listOf(parameters)) }
+            }
+        }
     }
 
     private fun startPlayback() {

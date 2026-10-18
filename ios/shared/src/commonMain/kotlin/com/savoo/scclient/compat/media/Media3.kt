@@ -128,6 +128,7 @@ class MediaController private constructor(private val engine: AudioPlayer) : Rem
         set(value) {
             field = value
             engine.rate = value.speed
+            engine.pitch = value.pitch
             listeners.toList().forEach { it.onPlaybackParametersChanged(value) }
         }
 

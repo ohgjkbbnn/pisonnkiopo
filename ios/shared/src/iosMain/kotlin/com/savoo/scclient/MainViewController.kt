@@ -40,7 +40,7 @@ import platform.UIKit.UIApplication
 import platform.UIKit.UIViewController
 
 private val iosModule = module {
-    single<AudioPlayer> { IosAudioPlayer() }
+    single<AudioPlayer> { IosAudioPlayer(get()) }
 }
 
 private var started = false
