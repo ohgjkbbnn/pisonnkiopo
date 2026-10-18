@@ -41,6 +41,8 @@ You can also track updates automatically with [Obtainium](https://github.com/Imr
 
 Grab the IPA from [GitHub Releases](https://github.com/savo-o/resona/releases/latest) (or a fresher build from [canary](https://github.com/savo-o/resona/releases/tag/canary)) and sideload it with [Sideloadly](https://sideloadly.io) (recommended), [AltStore](https://altstore.io) or [SideStore](https://sidestore.io). The IPA is unsigned and Resona will never be on the App Store. With a free Apple ID the signature lasts 7 days, so it has to be refreshed weekly (all three can do it automatically).
 
+New to sideloading? Follow the [step-by-step install guide](https://savo-o.github.io/resona/ios.html).
+
 The iOS version is a separate port of the Android app, updated less often, so its version can lag behind (e.g. `Resona-ios-1.7.ipa` attached to a 1.9 release). It gets fixes when SoundCloud breaks something, but new features land on Android first and some may never make it to iOS.
 
 ## Features

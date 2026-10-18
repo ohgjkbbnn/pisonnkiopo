@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>resona_ios</title>
+    <meta name="description" content="How to install the Resona iOS beta on iPhone or iPad without the App Store.">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <script>
+        (function () {
+            var storedTheme = localStorage.getItem('theme');
+            var dark = storedTheme ? storedTheme === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+
+            var storedLang = localStorage.getItem('lang');
+            var lang = storedLang ? storedLang : (navigator.language && navigator.language.toLowerCase().indexOf('ru') === 0 ? 'ru' : 'en');
+            document.documentElement.setAttribute('lang', lang);
+            document.documentElement.setAttribute('data-lang', lang);
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --md-sys-color-primary: #5B5DF0;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-primary-container: #E0DEFF;
+            --md-sys-color-on-primary-container: #1705A3;
+            --md-sys-color-tertiary-container: #FFD8E8;
+            --md-sys-color-on-tertiary-container: #3B0720;
+            --md-sys-color-surface: #FFFBFF;
+            --md-sys-color-on-surface: #1C1B1F;
+            --md-sys-color-on-surface-variant: #49454E;
+            --md-sys-color-surface-container-low: #F7F2FA;
+            --md-sys-color-surface-container-high: #ECE6EF;
+            --md-sys-color-surface-container-highest: #E6E0E9;
+            --md-sys-motion-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --md-sys-motion-emphasized: cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        [data-theme="dark"] {
+            --md-sys-color-primary: #C3C1FF;
+            --md-sys-color-on-primary: #2700C3;
+            --md-sys-color-primary-container: #3F3DC4;
+            --md-sys-color-on-primary-container: #E0DEFF;
+            --md-sys-color-tertiary-container: #5E2140;
+            --md-sys-color-on-tertiary-container: #FFD8E8;
+            --md-sys-color-surface: #141218;
+            --md-sys-color-on-surface: #E6E0E9;
+            --md-sys-color-on-surface-variant: #CAC4D0;
+            --md-sys-color-surface-container-low: #1D1B20;
+            --md-sys-color-surface-container-high: #2B2930;
+            --md-sys-color-surface-container-highest: #36343B;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        html[data-lang="en"] .t-ru { display: none !important; }
+        html[data-lang="ru"] .t-en { display: none !important; }
+
+        body {
+            font-family: 'Google Sans Flex', system-ui, -apple-system, sans-serif;
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            line-height: 1.6;
+        }
+
+        a { color: var(--md-sys-color-primary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .material-symbols-rounded {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--md-sys-color-surface-container-highest);
+            padding: 0 20px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: color-mix(in srgb, var(--md-sys-color-surface) 85%, transparent);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .nav-brand img {
+            width: 32px;
+            height: 32px;
+            border-radius: 30% 70% 65% 35% / 40% 35% 65% 60%;
+            transition: border-radius 0.6s var(--md-sys-motion-spring);
+        }
+
+        .nav-brand:hover img { border-radius: 50%; }
+        .nav-brand span { font-weight: 600; font-size: 19px; letter-spacing: -0.4px; }
+
+        .nav-links { display: flex; gap: 6px; align-items: center; }
+
+        .nav-links a.nav-item {
+            text-decoration: none;
+            color: var(--md-sys-color-on-surface-variant);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav-links a.nav-item:hover {
+            background: var(--md-sys-color-surface-container-high);
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .lang-switch {
+            display: flex;
+            background: var(--md-sys-color-surface-container-high);
+            border-radius: 100px;
+            padding: 3px;
+            gap: 2px;
+        }
+
+        .lang-switch button {
+            border: none;
+            background: transparent;
+            color: var(--md-sys-color-on-surface-variant);
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            padding: 6px 11px;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.25s var(--md-sys-motion-emphasized);
+        }
+
+        .lang-switch button.active {
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            border: none;
+            background: transparent;
+            color: var(--md-sys-color-on-surface-variant);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, border-radius 0.35s var(--md-sys-motion-spring);
+        }
+
+        .icon-btn:hover { background: var(--md-sys-color-surface-container-high); border-radius: 14px; }
+        .icon-btn:active { transform: scale(0.88); }
+        .icon-btn .material-symbols-rounded { font-size: 22px; }
+
+        main {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 128px 24px 100px;
+        }
+
+        h1 {
+            font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+            font-size: clamp(32px, 5vw, 44px);
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            margin-bottom: 16px;
+        }
+
+        h2 {
+            font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+            font-size: clamp(24px, 3.6vw, 30px);
+            font-weight: 600;
+            letter-spacing: -0.2px;
+            margin: 56px 0 8px;
+            scroll-margin-top: 88px;
+        }
+
+        h2 .tag {
+            font-family: 'Google Sans Flex', system-ui, sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            vertical-align: middle;
+            margin-left: 8px;
+            padding: 4px 10px;
+            border-radius: 100px;
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        main p {
+            font-size: 16px;
+            color: var(--md-sys-color-on-surface-variant);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        main p.lede { font-size: 18px; margin-bottom: 28px; }
+
+        b, strong { color: var(--md-sys-color-on-surface); font-weight: 600; }
+
+        code {
+            font-family: 'Roboto Mono', ui-monospace, monospace;
+            font-size: 0.88em;
+            background: var(--md-sys-color-surface-container-high);
+            color: var(--md-sys-color-on-surface);
+            padding: 2px 7px;
+            border-radius: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .path {
+            color: var(--md-sys-color-on-surface);
+            font-weight: 500;
+        }
+
+        .actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0 12px; }
+
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px; text-decoration: none; border: none; cursor: pointer;
+            font: inherit; font-weight: 600; font-size: 15px; height: 48px; padding: 0 24px;
+            border-radius: 24px; transition: transform 0.25s var(--md-sys-motion-spring), box-shadow .25s;
+        }
+        .btn:hover { text-decoration: none; }
+        .btn:active { transform: scale(0.96); }
+        .btn .material-symbols-rounded { font-size: 20px; }
+        .btn-filled { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+        .btn-filled:hover { box-shadow: 0 8px 24px -10px var(--md-sys-color-primary); }
+        .btn-tonal { background: var(--md-sys-color-surface-container-high); color: var(--md-sys-color-on-surface); }
+
+        .card {
+            background: var(--md-sys-color-surface-container-low);
+            border-radius: 28px;
+            padding: 24px 26px;
+            margin: 20px 0 28px;
+        }
+
+        .card h3 {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card ul { list-style: none; display: grid; gap: 10px; }
+
+        .card li {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            color: var(--md-sys-color-on-surface-variant);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .card li .material-symbols-rounded {
+            font-size: 20px;
+            color: var(--md-sys-color-primary);
+            margin-top: 1px;
+            flex-shrink: 0;
+        }
+
+        ol.steps {
+            list-style: none;
+            counter-reset: step;
+            display: grid;
+            gap: 12px;
+            margin: 20px 0 28px;
+        }
+
+        ol.steps > li {
+            counter-increment: step;
+            position: relative;
+            background: var(--md-sys-color-surface-container-low);
+            border-radius: 24px;
+            padding: 18px 22px 18px 72px;
+            color: var(--md-sys-color-on-surface-variant);
+            font-size: 15px;
+            line-height: 1.7;
+            transition: border-radius 0.4s var(--md-sys-motion-spring);
+        }
+
+        ol.steps > li:hover { border-radius: 32px; }
+
+        ol.steps > li::before {
+            content: counter(step);
+            position: absolute;
+            left: 18px;
+            top: 16px;
+            width: 38px;
+            height: 38px;
+            border-radius: 30% 70% 65% 35% / 40% 35% 65% 60%;
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            font-weight: 700;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        ol.steps > li > b:first-child { display: block; font-size: 16px; margin-bottom: 2px; }
+
+        .note {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            background: var(--md-sys-color-tertiary-container);
+            color: var(--md-sys-color-on-tertiary-container);
+            border-radius: 24px;
+            padding: 18px 22px;
+            margin: 20px 0 28px;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .note .material-symbols-rounded { font-size: 22px; margin-top: 2px; flex-shrink: 0; }
+        .note b { color: inherit; }
+        .note a { color: inherit; text-decoration: underline; }
+
+        .faq details {
+            background: var(--md-sys-color-surface-container-low);
+            border-radius: 20px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .faq summary {
+            cursor: pointer;
+            list-style: none;
+            padding: 16px 22px;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .faq summary::-webkit-details-marker { display: none; }
+        .faq summary::after {
+            content: 'expand_more';
+            font-family: 'Material Symbols Rounded';
+            font-size: 22px;
+            color: var(--md-sys-color-on-surface-variant);
+            transition: transform 0.3s var(--md-sys-motion-emphasized);
+        }
+        .faq details[open] summary::after { transform: rotate(180deg); }
+
+        .faq details p {
+            padding: 0 22px 16px;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 24px 48px;
+            font-size: 13px;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        @media (max-width: 480px) {
+            .nav-brand span { display: none; }
+            main { padding: 108px 16px 72px; }
+            .nav-links a.nav-translations { display: none; }
+            ol.steps > li { padding: 16px 18px 16px 64px; }
+            ol.steps > li::before { left: 14px; width: 34px; height: 34px; font-size: 15px; }
+            .card { padding: 20px; }
+            .btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="http://savo-o.github.io/resona/index.html" class="nav-brand">
+        <img src="logo.png" alt="Resona">
+        <span>Resona</span>
+    </a>
+    <div class="nav-links">
+        <a href="index.html" class="nav-item">
+            <span class="t-en">Home</span><span class="t-ru">Главная</span>
+        </a>
+        <a href="api.html" class="nav-item nav-translations">
+            <span class="t-en">API Docs</span><span class="t-ru">API</span>
+        </a>
+        <div class="lang-switch">
+            <button id="langEnBtn" onclick="setLang('en')">EN</button>
+            <button id="langRuBtn" onclick="setLang('ru')">RU</button>
+        </div>
+        <button class="icon-btn" onclick="toggleTheme()" ondblclick="event.preventDefault(); resetTheme()" aria-label="Toggle theme">
+            <span class="material-symbols-rounded" id="themeIcon">dark_mode</span>
+        </button>
+    </div>
+</nav>
+
+<main>
+    <h1><span class="t-en">Install on iPhone</span><span class="t-ru">Установка на iPhone</span></h1>
+
+    <p class="lede t-en">Resona for iOS is not in the App Store, so you install the <code>.ipa</code> file yourself. This is called sideloading. It is free and takes about ten minutes the first time.</p>
+    <p class="lede t-ru">Resona для iOS нет в App Store, поэтому файл <code>.ipa</code> ставится вручную. Это называется сайдлоад. Это бесплатно и в первый раз занимает минут десять.</p>
+
+    <div class="card">
+        <h3><span class="material-symbols-rounded">checklist</span><span class="t-en">You will need</span><span class="t-ru">Что понадобится</span></h3>
+        <ul>
+            <li><span class="material-symbols-rounded">smartphone</span><span class="t-en">An iPhone or iPad on iOS 16 or newer</span><span class="t-ru">iPhone или iPad на iOS 16 или новее</span></li>
+            <li><span class="material-symbols-rounded">person</span><span class="t-en">An Apple ID. A free one works, and it can be a spare account</span><span class="t-ru">Apple ID. Подойдёт бесплатный, можно завести отдельный</span></li>
+            <li><span class="material-symbols-rounded">computer</span><span class="t-en">A Windows PC or a Mac and a USB cable for the first install</span><span class="t-ru">Компьютер на Windows или Mac и кабель для первой установки</span></li>
+        </ul>
+    </div>
+
+    <h2 id="download"><span class="t-en">1. Download the app</span><span class="t-ru">1. Скачайте приложение</span></h2>
+    <p class="t-en">Open the latest release on GitHub and download the file named <code>Resona-ios-…ipa</code> to your computer.</p>
+    <p class="t-ru">Откройте последний релиз на GitHub и скачайте на компьютер файл <code>Resona-ios-…ipa</code>.</p>
+    <div class="actions">
+        <a class="btn btn-filled" href="https://github.com/savo-o/resona/releases/latest" target="_blank">
+            <span class="material-symbols-rounded">download</span>
+            <span class="t-en">Latest release</span><span class="t-ru">Последний релиз</span>
+        </a>
+    </div>
+
+    <h2 id="sideloadly"><span class="t-en">2. Install with Sideloadly</span><span class="t-ru">2. Установите через Sideloadly</span><span class="tag"><span class="t-en">Easiest</span><span class="t-ru">Проще всего</span></span></h2>
+    <p class="t-en">Sideloadly is a free desktop app that signs the file with your Apple ID and puts it on your phone over the cable.</p>
+    <p class="t-ru">Sideloadly это бесплатная программа для компьютера. Она подписывает файл вашим Apple ID и ставит его на телефон по кабелю.</p>
+
+    <ol class="steps">
+        <li>
+            <b><span class="t-en">Get Sideloadly</span><span class="t-ru">Скачайте Sideloadly</span></b>
+            <span class="t-en">Download it from <a href="https://sideloadly.io" target="_blank">sideloadly.io</a> and install it. On Windows, also install iTunes and iCloud from Apple's website, not from the Microsoft Store.</span>
+            <span class="t-ru">Скачайте с <a href="https://sideloadly.io" target="_blank">sideloadly.io</a> и установите. На Windows также поставьте iTunes и iCloud с сайта Apple, а не из Microsoft Store.</span>
+        </li>
+        <li>
+            <b><span class="t-en">Connect your iPhone</span><span class="t-ru">Подключите iPhone</span></b>
+            <span class="t-en">Plug it in with the cable, unlock it and tap <span class="path">Trust</span> when it asks about this computer.</span>
+            <span class="t-ru">Подключите кабелем, разблокируйте и нажмите <span class="path">Доверять</span>, когда телефон спросит про компьютер.</span>
+        </li>
+        <li>
+            <b><span class="t-en">Drop in the file</span><span class="t-ru">Перетащите файл</span></b>
+            <span class="t-en">Drag the <code>.ipa</code> into the Sideloadly window, type your Apple ID and press <span class="path">Start</span>. Enter your password and the two-factor code when asked.</span>
+            <span class="t-ru">Перетащите <code>.ipa</code> в окно Sideloadly, введите Apple ID и нажмите <span class="path">Start</span>. Когда попросит, введите пароль и код двухфакторной проверки.</span>
+        </li>
+        <li>
+            <b><span class="t-en">Trust yourself on the phone</span><span class="t-ru">Разрешите приложение на телефоне</span></b>
+            <span class="t-en">Go to <span class="path">Settings → General → VPN &amp; Device Management</span>, tap your Apple ID and then <span class="path">Trust</span>.</span>
+            <span class="t-ru">Откройте <span class="path">Настройки → Основные → VPN и управление устройством</span>, выберите свой Apple ID и нажмите <span class="path">Доверять</span>.</span>
+        </li>
+        <li>
+            <b><span class="t-en">Turn on Developer Mode</span><span class="t-ru">Включите режим разработчика</span></b>
+            <span class="t-en">Go to <span class="path">Settings → Privacy &amp; Security → Developer Mode</span>, switch it on and restart. After the restart, confirm with <span class="path">Turn On</span>. That's it, open Resona.</span>
+            <span class="t-ru">Откройте <span class="path">Настройки → Конфиденциальность и безопасность → Режим разработчика</span>, включите и перезагрузите телефон. После перезагрузки подтвердите <span class="path">Включить</span>. Готово, открывайте Resona.</span>
+        </li>
+    </ol>
+
+    <div class="note">
+        <span class="material-symbols-rounded">schedule</span>
+        <div>
+            <span class="t-en"><b>With a free Apple ID the app works for 7 days.</b> After that it stops opening until you install it again the same way. Your music and settings stay. A paid Apple developer account makes it last a year.</span>
+            <span class="t-ru"><b>С бесплатным Apple ID приложение работает 7 дней.</b> Потом оно перестанет открываться, пока вы не установите его заново тем же способом. Музыка и настройки сохранятся. С платным аккаунтом разработчика Apple подпись живёт год.</span>
+        </div>
+    </div>
+
+    <h2 id="sidestore"><span class="t-en">Without a computer: SideStore</span><span class="t-ru">Без компьютера: SideStore</span></h2>
+    <p class="t-en"><a href="https://sidestore.io" target="_blank">SideStore</a> lives on your phone and renews the app itself, so you only need a computer once, to set SideStore up. Follow their <a href="https://docs.sidestore.io" target="_blank">official guide</a>, then in SideStore open <span class="path">My Apps</span>, tap <span class="path">+</span> and pick the Resona <code>.ipa</code>. Every few days, open SideStore and tap <span class="path">Refresh</span>.</p>
+    <p class="t-ru"><a href="https://sidestore.io" target="_blank">SideStore</a> живёт прямо на телефоне и сам продлевает подпись. Компьютер нужен только один раз, чтобы его настроить. Следуйте <a href="https://docs.sidestore.io" target="_blank">официальной инструкции</a>, потом в SideStore откройте <span class="path">My Apps</span>, нажмите <span class="path">+</span> и выберите <code>.ipa</code> Resona. Раз в несколько дней заходите в SideStore и нажимайте <span class="path">Refresh</span>.</p>
+
+    <h2 id="update"><span class="t-en">Updating</span><span class="t-ru">Обновление</span></h2>
+    <p class="t-en">Download the new <code>.ipa</code> and install it over the old one with the <b>same Apple ID</b>. Don't delete the app first, or your favorites and settings go with it.</p>
+    <p class="t-ru">Скачайте новый <code>.ipa</code> и поставьте поверх старого <b>с тем же Apple ID</b>. Не удаляйте приложение перед этим, иначе вместе с ним пропадут избранное и настройки.</p>
+    <div class="note">
+        <span class="material-symbols-rounded">folder_open</span>
+        <div>
+            <span class="t-en"><b>Keep a backup.</b> Turn on auto-export in <span class="path">Settings → Import / Export</span> and Resona will save your favorites to <span class="path">Files → On My iPhone → Resona → Backups</span>.</span>
+            <span class="t-ru"><b>Делайте резервную копию.</b> Включите автоэкспорт в <span class="path">Настройки → Импорт / Экспорт</span>, и Resona будет сохранять избранное в <span class="path">Файлы → На iPhone → Resona → Backups</span>.</span>
+        </div>
+    </div>
+
+    <h2 id="help"><span class="t-en">If something goes wrong</span><span class="t-ru">Если что-то не так</span></h2>
+    <div class="faq">
+        <details>
+            <summary><span class="t-en">"Untrusted Developer" when opening the app</span><span class="t-ru">«Ненадёжный разработчик» при запуске</span></summary>
+            <p class="t-en">You skipped step 4. Trust your Apple ID in <span class="path">Settings → General → VPN &amp; Device Management</span>.</p>
+            <p class="t-ru">Пропущен шаг 4. Разрешите свой Apple ID в <span class="path">Настройки → Основные → VPN и управление устройством</span>.</p>
+        </details>
+        <details>
+            <summary><span class="t-en">There's no Developer Mode in settings</span><span class="t-ru">В настройках нет режима разработчика</span></summary>
+            <p class="t-en">It only shows up after a sideloaded app is installed. Finish the install first, then look again.</p>
+            <p class="t-ru">Он появляется только после установки приложения через сайдлоад. Сначала закончите установку, потом проверьте ещё раз.</p>
+        </details>
+        <details>
+            <summary><span class="t-en">The app stopped opening after a week</span><span class="t-ru">Через неделю приложение перестало открываться</span></summary>
+            <p class="t-en">The free 7 day signature ran out. Install it again with Sideloadly, or tap Refresh in SideStore. Nothing is lost.</p>
+            <p class="t-ru">Закончилась бесплатная 7-дневная подпись. Поставьте приложение заново через Sideloadly или нажмите Refresh в SideStore. Ничего не потеряется.</p>
+        </details>
+        <details>
+            <summary><span class="t-en">Sideloadly says I have too many apps</span><span class="t-ru">Sideloadly пишет, что приложений слишком много</span></summary>
+            <p class="t-en">A free Apple ID can keep only 3 sideloaded apps at once. Remove one you don't use, or sign in with another Apple ID.</p>
+            <p class="t-ru">С бесплатным Apple ID одновременно можно держать только 3 приложения через сайдлоад. Удалите ненужное или войдите под другим Apple ID.</p>
+        </details>
+        <details>
+            <summary><span class="t-en">The app crashes on launch</span><span class="t-ru">Приложение вылетает при запуске</span></summary>
+            <p class="t-en">Open an issue on <a href="https://github.com/savo-o/resona/issues" target="_blank">GitHub</a> and attach the crash report from <span class="path">Settings → Privacy &amp; Security → Analytics &amp; Improvements → Analytics Data</span>, the file that starts with <code>Resona</code>.</p>
+            <p class="t-ru">Создайте issue на <a href="https://github.com/savo-o/resona/issues" target="_blank">GitHub</a> и приложите отчёт о сбое из <span class="path">Настройки → Конфиденциальность и безопасность → Аналитика и улучшения → Данные аналитики</span>, файл, который начинается с <code>Resona</code>.</p>
+        </details>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; Resona</p>
+</footer>
+
+<script>
+    function toggleTheme() {
+        const root = document.documentElement;
+        const icon = document.getElementById('themeIcon');
+        if (root.getAttribute('data-theme') === 'dark') {
+            root.removeAttribute('data-theme');
+            icon.textContent = 'dark_mode';
+            localStorage.setItem('theme', 'light');
+        } else {
+            root.setAttribute('data-theme', 'dark');
+            icon.textContent = 'light_mode';
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    function resetTheme() {
+        localStorage.removeItem('theme');
+        const root = document.documentElement;
+        const icon = document.getElementById('themeIcon');
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            root.setAttribute('data-theme', 'dark');
+            icon.textContent = 'light_mode';
+        } else {
+            root.removeAttribute('data-theme');
+            icon.textContent = 'dark_mode';
+        }
+    }
+
+    if (document.documentElement.getAttribute('data-theme') === 'dark') {
+        document.getElementById('themeIcon').textContent = 'light_mode';
+    }
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+            const root = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            if (e.matches) {
+                root.setAttribute('data-theme', 'dark');
+                icon.textContent = 'light_mode';
+            } else {
+                root.removeAttribute('data-theme');
+                icon.textContent = 'dark_mode';
+            }
+        }
+    });
+
+    function setLang(lang) {
+        document.documentElement.setAttribute('lang', lang);
+        document.documentElement.setAttribute('data-lang', lang);
+        localStorage.setItem('lang', lang);
+        syncLangButtons();
+    }
+
+    function syncLangButtons() {
+        const lang = document.documentElement.getAttribute('data-lang');
+        document.getElementById('langEnBtn').classList.toggle('active', lang === 'en');
+        document.getElementById('langRuBtn').classList.toggle('active', lang === 'ru');
+    }
+    syncLangButtons();
+</script>
+</body>
+</html>
