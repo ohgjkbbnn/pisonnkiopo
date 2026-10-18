@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.settings
 
+import com.savoo.scclient.ui.components.ChipLabel
 import com.savoo.scclient.ui.navigation.dockInset
 import org.jetbrains.compose.resources.StringResource
 import com.savoo.scclient.compat.*
@@ -387,7 +388,7 @@ fun CustomizationScreen(
                             modifier = Modifier.weight(1f),
                             shapes = shapes,
                         ) {
-                            Text(stringResource(iconLabelResIds[index]), style = MaterialTheme.typography.labelLarge)
+                            ChipLabel(stringResource(iconLabelResIds[index]), style = MaterialTheme.typography.labelLarge)
                         }
                     }
                 }
@@ -415,7 +416,7 @@ fun CustomizationScreen(
                             modifier = Modifier.weight(1f),
                             shapes = shapes,
                         ) {
-                            Text(stringResource(labelResIds[index]), style = MaterialTheme.typography.labelLarge)
+                            ChipLabel(stringResource(labelResIds[index]), style = MaterialTheme.typography.labelLarge)
                         }
                     }
                 }
@@ -491,11 +492,9 @@ fun CustomizationScreen(
                                         modifier = Modifier.weight(1f),
                                         shapes = shapes,
                                     ) {
-                                        Text(
+                                        ChipLabel(
                                             stringResource(modeLabelResIds[index]),
                                             style = MaterialTheme.typography.labelLarge,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis,
                                         )
                                     }
                                 }
@@ -546,10 +545,9 @@ fun CustomizationScreen(
                                 modifier = Modifier.weight(1f),
                                 shapes = shapes,
                             ) {
-                                Text(
+                                ChipLabel(
                                     stringResource(dividerLabelResIds[index]),
                                     style = MaterialTheme.typography.labelLarge,
-                                    maxLines = 1,
                                 )
                             }
                         }
@@ -578,7 +576,7 @@ fun CustomizationScreen(
                                 modifier = Modifier.weight(1f),
                                 shapes = shapes,
                             ) {
-                                Text(stringResource(labels[index]), style = MaterialTheme.typography.labelLarge)
+                                ChipLabel(stringResource(labels[index]), style = MaterialTheme.typography.labelLarge)
                             }
                         }
                     }
@@ -623,7 +621,7 @@ fun CustomizationScreen(
                                 modifier = Modifier.weight(1f),
                                 shapes = shapes,
                             ) {
-                                Text(stringResource(styleLabelResIds[index]), style = MaterialTheme.typography.labelLarge)
+                                ChipLabel(stringResource(styleLabelResIds[index]), style = MaterialTheme.typography.labelLarge)
                             }
                         }
                     }
@@ -744,7 +742,7 @@ fun CustomizationScreen(
                                     modifier = Modifier.weight(1f),
                                     shapes = shapes,
                                 ) {
-                                    Text(stringResource(styleLabelResIds[index]), style = MaterialTheme.typography.labelLarge)
+                                    ChipLabel(stringResource(styleLabelResIds[index]), style = MaterialTheme.typography.labelLarge)
                                 }
                             }
                         }
@@ -769,7 +767,7 @@ fun CustomizationScreen(
                                 modifier = Modifier.weight(1f),
                                 shapes = shapes,
                             ) {
-                                Text(stringResource(styleLabelResIds[index]), style = MaterialTheme.typography.labelLarge)
+                                ChipLabel(stringResource(styleLabelResIds[index]), style = MaterialTheme.typography.labelLarge)
                             }
                         }
                     }

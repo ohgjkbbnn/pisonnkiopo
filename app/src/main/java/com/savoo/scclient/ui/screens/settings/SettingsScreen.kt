@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.settings
 
+import com.savoo.scclient.ui.components.ChipLabel
 import com.savoo.scclient.ui.navigation.dockInset
 import com.savoo.scclient.ui.navigation.aboveDock
 import android.content.Context
@@ -554,7 +555,7 @@ fun SettingsScreen(
                             modifier = Modifier.weight(1f),
                             shapes = shapes,
                         ) {
-                            Text(stringResource(langLabelResIds[index]), style = MaterialTheme.typography.labelLarge)
+                            ChipLabel(stringResource(langLabelResIds[index]), style = MaterialTheme.typography.labelLarge)
                         }
                     }
                 }
@@ -778,7 +779,7 @@ fun SettingsScreen(
                             modifier = Modifier.weight(1f),
                             shapes = shapes,
                         ) {
-                            Text(stringResource(channelLabelResIds[index]), style = MaterialTheme.typography.labelLarge)
+                            ChipLabel(stringResource(channelLabelResIds[index]), style = MaterialTheme.typography.labelLarge)
                         }
                     }
                 }
@@ -899,7 +900,7 @@ fun SettingsScreen(
                                 modifier = Modifier.weight(1f),
                                 shapes = shapes,
                             ) {
-                                Text(stringResource(rateLabels[index]), style = MaterialTheme.typography.labelMedium)
+                                ChipLabel(stringResource(rateLabels[index]), style = MaterialTheme.typography.labelMedium)
                             }
                         }
                     }
@@ -958,7 +959,7 @@ fun SettingsScreen(
                                 modifier = Modifier.weight(1f),
                                 shapes = shapes,
                             ) {
-                                Text(stringResource(intensityLabelResIds[index]), style = MaterialTheme.typography.labelLarge)
+                                ChipLabel(stringResource(intensityLabelResIds[index]), style = MaterialTheme.typography.labelLarge)
                             }
                         }
                     }
@@ -1077,11 +1078,9 @@ fun SettingsScreen(
                             shapes = shapes,
                             contentPadding = PaddingValues(horizontal = 6.dp),
                         ) {
-                            Text(
+                            ChipLabel(
                                 cacheLimitLabel(limitMb),
                                 style = MaterialTheme.typography.labelLarge,
-                                maxLines = 1,
-                                softWrap = false,
                             )
                         }
                     }
@@ -1173,10 +1172,9 @@ fun SettingsScreen(
                             modifier = Modifier.weight(1f),
                             shapes = shapes,
                         ) {
-                            Text(
+                            ChipLabel(
                                 stringResource(drmLabelResIds[index]),
                                 style = MaterialTheme.typography.labelLarge,
-                                maxLines = 1,
                             )
                         }
                     }

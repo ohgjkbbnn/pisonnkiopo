@@ -189,7 +189,7 @@ fun DetailActionRow(
                 modifier = Modifier.size(18.dp).graphicsLayer { scaleX = likeScale; scaleY = likeScale },
             )
             Spacer(Modifier.width(6.dp))
-            Text(
+            ChipLabel(
                 stringResource(if (isFavorite) Res.string.detail_in_favorites else Res.string.detail_add_to_favorites),
                 style = MaterialTheme.typography.labelLarge,
             )

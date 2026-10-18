@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.search
 
+import com.savoo.scclient.ui.components.ChipLabel
 import androidx.compose.foundation.layout.BoxWithConstraints
 import com.savoo.scclient.ui.navigation.withDock
 import com.savoo.scclient.ui.navigation.aboveDock
@@ -232,20 +233,10 @@ fun SearchScreen(
                                 shapes = shapes,
                                 contentPadding = if (compactTabs) PaddingValues(horizontal = 8.dp) else ToggleButtonDefaults.ContentPadding,
                             ) {
-                                if (!compactTabs) {
-                                    Icon(
-                                        iconFor(tab),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(ToggleButtonDefaults.IconSize),
-                                    )
-                                    Spacer(Modifier.width(ToggleButtonDefaults.IconSpacing))
-                                }
-                                Text(
+                                ChipLabel(
                                     text = stringResource(tab.labelRes),
                                     style = MaterialTheme.typography.labelLarge,
-                                    maxLines = 1,
-                                    softWrap = false,
-                                    overflow = TextOverflow.Ellipsis,
+                                    icon = iconFor(tab),
                                 )
                             }
                         }

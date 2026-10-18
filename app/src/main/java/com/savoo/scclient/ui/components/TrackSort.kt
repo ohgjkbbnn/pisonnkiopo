@@ -300,8 +300,6 @@ private fun DirectionButton(
         shapes = shapes,
         modifier = modifier,
     ) {
-        Icon(icon, contentDescription = null, modifier = Modifier.size(ToggleButtonDefaults.IconSize))
-        Spacer(Modifier.width(ToggleButtonDefaults.IconSpacing))
-        Text(label, style = MaterialTheme.typography.labelLarge)
+        ChipLabel(label, style = MaterialTheme.typography.labelLarge, icon = icon)
     }
 }

@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.playlist
 
+import com.savoo.scclient.ui.components.ChipLabel
 import com.savoo.scclient.compat.*
 import kotlinx.coroutines.IO
 import com.savoo.scclient.compat.Toast
@@ -480,9 +481,7 @@ private fun SourceButton(
         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 10.dp),
         modifier = modifier,
     ) {
-        Icon(icon, contentDescription = null, modifier = Modifier.size(ToggleButtonDefaults.IconSize))
-        Spacer(Modifier.width(6.dp))
-        Text(label, style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        ChipLabel(label, style = MaterialTheme.typography.labelLarge, icon = icon)
     }
 }
 

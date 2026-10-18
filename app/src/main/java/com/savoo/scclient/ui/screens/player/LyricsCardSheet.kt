@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.player
 
+import com.savoo.scclient.ui.components.ChipLabel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -143,7 +144,7 @@ fun LyricsCardSheet(
                         modifier = Modifier.weight(1f),
                         shapes = shapes,
                     ) {
-                        Text(
+                        ChipLabel(
                             stringResource(
                                 when (option) {
                                     LyricsCardStyle.ARTWORK -> R.string.lyrics_card_style_artwork

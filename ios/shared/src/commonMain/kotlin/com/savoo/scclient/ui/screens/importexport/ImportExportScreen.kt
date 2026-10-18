@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.importexport
 
+import com.savoo.scclient.ui.components.ChipLabel
 import com.savoo.scclient.ui.navigation.aboveDock
 import com.savoo.scclient.ui.navigation.dockInset
 import com.savoo.scclient.compat.*
@@ -580,10 +581,9 @@ fun ImportExportScreen(
                                 modifier = Modifier.weight(1f),
                                 shapes = shapes,
                             ) {
-                                Text(
+                                ChipLabel(
                                     stringResource(intervalLabelResIds[index]),
                                     style = MaterialTheme.typography.labelLarge,
-                                    maxLines = 1,
                                 )
                             }
                         }
@@ -974,7 +974,7 @@ private fun TelegramImportSection(
                     shapes = if (index == 0) ButtonGroupDefaults.connectedLeadingButtonShapes()
                     else ButtonGroupDefaults.connectedTrailingButtonShapes(),
                 ) {
-                    Text(
+                    ChipLabel(
                         stringResource(
                             if (mode == TelegramImportMode.MATCH_FIRST) Res.string.import_tg_mode_match
                             else Res.string.import_tg_mode_download_all

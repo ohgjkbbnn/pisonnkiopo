@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.stats
 
+import com.savoo.scclient.ui.components.ChipLabel
 import com.savoo.scclient.ui.navigation.withDock
 import org.jetbrains.compose.resources.StringResource
 import com.savoo.scclient.compat.*
@@ -238,10 +239,9 @@ fun StatisticsScreen(
                                 shapes = shapes,
                                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 10.dp),
                             ) {
-                                Text(
+                                ChipLabel(
                                     stringResource(periodLabelRes(option)),
                                     style = MaterialTheme.typography.labelLarge,
-                                    maxLines = 1,
                                 )
                             }
                         }
