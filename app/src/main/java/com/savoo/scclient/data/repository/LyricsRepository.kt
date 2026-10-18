@@ -16,6 +16,7 @@ import com.savoo.scclient.data.remote.LyricsApi
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -173,6 +174,19 @@ class LyricsRepository @Inject constructor(
         )
     }
 
+    private suspend fun <T> withLrcLibRetry(request: suspend () -> T): T {
+        repeat(LRCLIB_ATTEMPTS - 1) { attempt ->
+            try {
+                return request()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: Exception) {
+                delay(LRCLIB_RETRY_DELAY_MS * (attempt + 1))
+            }
+        }
+        return request()
+    }
+
     private suspend fun fetchFromLrcLib(track: Track): LyricsResult? {
         val durationSec = track.durationMs / 1000.0
         fun withinTolerance(candidate: LyricsSearchResult) =
@@ -208,14 +222,14 @@ class LyricsRepository @Inject constructor(
         }
 
         for (artist in info.artistCandidates) {
-            consider(api.search(trackName = info.cleanTitle, artistName = artist))?.let { return it }
+            consider(withLrcLibRetry { api.search(trackName = info.cleanTitle, artistName = artist) })?.let { return it }
         }
 
         for (artist in info.artistCandidates) {
-            consider(api.searchQuery("$artist ${info.cleanTitle}"))?.let { return it }
+            consider(withLrcLibRetry { api.searchQuery("$artist ${info.cleanTitle}") })?.let { return it }
         }
 
-        val (byTitleAndArtist, byTitleOnly) = api.searchByTitle(info.cleanTitle)
+        val (byTitleAndArtist, byTitleOnly) = withLrcLibRetry { api.searchByTitle(info.cleanTitle) }
             .filter { it.id == null || it.id !in seenIds }
             .partition { candidate -> info.artistCandidates.any { looselyMatches(candidate.artistName.orEmpty(), it) } }
         consider(byTitleAndArtist)?.let { return it }
@@ -432,6 +446,8 @@ class LyricsRepository @Inject constructor(
 
     private companion object {
         const val PROVIDER = "LRCLIB"
+        const val LRCLIB_ATTEMPTS = 3
+        const val LRCLIB_RETRY_DELAY_MS = 400L
         const val MAX_REFERENT_PAGES = 4
         const val REFERENTS_PER_PAGE = 50
         const val ANNOTATION_CACHE_SIZE = 40
