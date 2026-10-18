@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.account
 
+import com.savoo.scclient.ui.navigation.aboveDock
 import com.savoo.scclient.compat.*
 import com.savoo.scclient.compat.Log
 import androidx.compose.foundation.background
@@ -123,6 +124,7 @@ fun LoginScreen(
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
                 .heightIn(min = availableHeight)
+                .aboveDock()
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
