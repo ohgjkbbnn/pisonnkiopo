@@ -1022,7 +1022,7 @@
     <string name="read_only_blocked">SoundCloud временно заблокировал эту сеть, поэтому лайки и комментарии не отправляются. Переключитесь на другую сеть или сервер VPN.</string>
     <string name="read_only_hide">Скрыть</string>
     <string name="datadome_close">Закрыть</string>
-    <string name="settings_liquid_glass">Liquid Glass</string>
+    <string name="settings_liquid_glass">Liquid Glass (может вызывать лаги!)</string>
     <string name="settings_liquid_glass_desc">Полупрозрачное стекло на доке и в плеере, как на iOS</string>
     <string name="settings_dock_background">Фон под доком</string>
     <string name="settings_dock_background_desc">Сплошной фон за доком. Если выключить, контент будет виден сквозь него</string>
