@@ -131,6 +131,15 @@ class PlayerController @Inject constructor(
     val seedColor = _seedColor.asStateFlow()
     private val _skippedTrackEvents = MutableSharedFlow<SkippedTrack>(extraBufferCapacity = 1)
     val skippedTrackEvents = _skippedTrackEvents.asSharedFlow()
+
+    private val _expandRequests = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    val expandRequests = _expandRequests.asSharedFlow()
+
+    private fun expandIfCurrent(trackId: Long): Boolean {
+        if (_state.value.currentTrack?.id != trackId) return false
+        _expandRequests.tryEmit(Unit)
+        return true
+    }
     val unavailableReasons: StateFlow<Map<Long, UnavailableReason>> = unavailableTrackDao.observeAll()
         .map { list -> list.associate { it.trackId to it.reason } }
         .stateIn(scope, SharingStarted.Eagerly, emptyMap())
@@ -813,6 +822,7 @@ class PlayerController @Inject constructor(
     }
 
     fun play(track: Track) {
+        if (expandIfCurrent(track.id)) return
         knownReason(track)?.let { reason ->
             DebugLog.log(TAG, "play: id=${track.id} title=${track.title} known unavailable ($reason), not touching playback")
             _skippedTrackEvents.tryEmit(SkippedTrack(track, reason))
@@ -850,6 +860,7 @@ class PlayerController @Inject constructor(
     ) {
         if (sourceTracks.isEmpty()) return
         val requested = sourceTracks[startIndex.coerceIn(0, sourceTracks.lastIndex)]
+        if (startExact && startPositionMs == 0L && expandIfCurrent(requested.id)) return
         if (startExact) {
             knownReason(requested)?.let { reason ->
                 DebugLog.log(TAG, "playQueue: requested id=${requested.id} title=${requested.title} unavailable ($reason), not starting a queue")
@@ -903,6 +914,7 @@ class PlayerController @Inject constructor(
     }
 
     fun playFavorites(filter: FavoriteTrackFilter, index: Int, track: Track, repeatAll: Boolean = false) {
+        if (expandIfCurrent(track.id)) return
         scope.launch {
             val loaded = runCatching {
                 withContext(Dispatchers.IO) {

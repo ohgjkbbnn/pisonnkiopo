@@ -252,7 +252,7 @@ fun HistoryScreen(
                     colors = SearchBarDefaults.filledInputFieldColors(),
                     query = query,
                     onQueryChange = viewModel::onQueryChange,
-                    onSearch = {},
+                    onSearch = hideKeyboardOnSearch(),
                     expanded = false,
                     onExpandedChange = {},
                     placeholder = { Text(stringResource(Res.string.search_hint)) },

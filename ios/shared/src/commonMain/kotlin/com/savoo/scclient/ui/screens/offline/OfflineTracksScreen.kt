@@ -275,7 +275,7 @@ fun OfflineTracksScreen(
                     colors = SearchBarDefaults.filledInputFieldColors(),
                     query = searchQuery,
                     onQueryChange = { searchQuery = it },
-                    onSearch = {},
+                    onSearch = hideKeyboardOnSearch(),
                     expanded = false,
                     onExpandedChange = {},
                     placeholder = { Text(stringResource(Res.string.search_hint)) },

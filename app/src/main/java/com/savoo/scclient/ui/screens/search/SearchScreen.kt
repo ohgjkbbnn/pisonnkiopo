@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.search
 
+import androidx.compose.foundation.layout.BoxWithConstraints
 import com.savoo.scclient.ui.navigation.withDock
 import com.savoo.scclient.ui.navigation.aboveDock
 import androidx.compose.animation.AnimatedContent
@@ -211,11 +212,13 @@ fun SearchScreen(
                 } else {
                     val tabs = SearchTab.entries
                     val selectedIndex = tabs.indexOf(state.activeTab).coerceAtLeast(0)
-                    ButtonGroup(
+                    BoxWithConstraints(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 20.dp, vertical = 4.dp),
                     ) {
+                    val compactTabs = maxWidth / tabs.size < 130.dp
+                    ButtonGroup(modifier = Modifier.fillMaxWidth()) {
                         tabs.forEachIndexed { index, tab ->
                             val shapes = when (index) {
                                 0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
@@ -227,19 +230,26 @@ fun SearchScreen(
                                 onCheckedChange = { checked -> if (checked) { haptic(); viewModel.onTabChange(tab) } },
                                 modifier = Modifier.weight(1f),
                                 shapes = shapes,
+                                contentPadding = if (compactTabs) PaddingValues(horizontal = 8.dp) else ToggleButtonDefaults.ContentPadding,
                             ) {
-                                Icon(
-                                    iconFor(tab),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(ToggleButtonDefaults.IconSize),
-                                )
-                                Spacer(Modifier.width(ToggleButtonDefaults.IconSpacing))
+                                if (!compactTabs) {
+                                    Icon(
+                                        iconFor(tab),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(ToggleButtonDefaults.IconSize),
+                                    )
+                                    Spacer(Modifier.width(ToggleButtonDefaults.IconSpacing))
+                                }
                                 Text(
                                     text = stringResource(tab.labelRes),
                                     style = MaterialTheme.typography.labelLarge,
+                                    maxLines = 1,
+                                    softWrap = false,
+                                    overflow = TextOverflow.Ellipsis,
                                 )
                             }
                         }
+                    }
                     }
 
                     Spacer(Modifier.height(4.dp))

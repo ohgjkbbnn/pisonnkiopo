@@ -279,6 +279,10 @@ fun PlayerSheet(
     }
 
     LaunchedEffect(Unit) {
+        viewModel.controller.expandRequests.collect { showFullPlayer = true }
+    }
+
+    LaunchedEffect(Unit) {
         viewModel.controller.skippedTrackEvents.collect { skipped ->
             skippedTrack = skipped
             delay(5000)

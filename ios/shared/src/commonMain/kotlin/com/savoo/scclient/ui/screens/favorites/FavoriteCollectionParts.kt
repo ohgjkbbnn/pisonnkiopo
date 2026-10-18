@@ -62,7 +62,7 @@ internal fun CollectionSearchField(
         colors = SearchBarDefaults.filledInputFieldColors(),
         query = query,
         onQueryChange = onQueryChange,
-        onSearch = {},
+        onSearch = hideKeyboardOnSearch(),
         expanded = false,
         onExpandedChange = {},
         placeholder = { Text(placeholder, maxLines = 1, overflow = TextOverflow.Ellipsis) },

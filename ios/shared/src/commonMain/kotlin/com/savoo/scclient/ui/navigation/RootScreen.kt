@@ -263,7 +263,7 @@ fun RootScreen(initialDeepLink: DeepLinkTarget? = null, deepLinkKey: Int = 0) {
             val inset = if (dockBackground) 0.dp else dock
             SideEffect { ToastHost.dockInset = dock }
             CompositionLocalProvider(LocalDockInset provides inset) {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.fillMaxSize().dismissKeyboardOnTapOrScroll()) {
                 NavHost(
                     navController = navController,
                     startDestination = Screen.Home.route,
