@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.components
 
+import com.savoo.scclient.ui.navigation.aboveDock
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,7 +26,7 @@ fun EmptyState(
     text: String,
     modifier: Modifier = Modifier,
 ) {
-    Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(modifier.fillMaxSize().aboveDock(), contentAlignment = Alignment.Center) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp),

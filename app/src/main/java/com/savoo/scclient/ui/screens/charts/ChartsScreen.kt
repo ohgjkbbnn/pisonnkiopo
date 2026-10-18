@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.charts
 
+import com.savoo.scclient.ui.navigation.withDock
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -130,7 +131,7 @@ fun ChartsScreen(
                     )
                     else -> LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
+                        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp).withDock(),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                     ) {
                         itemsIndexed(tracks, key = { _, track -> track.id }) { index, track ->

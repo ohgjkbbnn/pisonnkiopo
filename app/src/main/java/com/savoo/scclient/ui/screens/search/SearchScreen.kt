@@ -1,5 +1,7 @@
 package com.savoo.scclient.ui.screens.search
 
+import com.savoo.scclient.ui.navigation.withDock
+import com.savoo.scclient.ui.navigation.aboveDock
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -194,7 +196,7 @@ fun SearchScreen(
                     }
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 4.dp),
+                        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 4.dp).withDock(),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         items(history, key = { it }) { query ->
@@ -262,7 +264,7 @@ fun SearchScreen(
                             )
                         }
                         state.query.isBlank() && history.isEmpty() -> SearchEmptyState(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier.fillMaxSize().aboveDock(),
                         )
                         else -> AnimatedContent(
                             targetState = state.activeTab,
@@ -275,7 +277,7 @@ fun SearchScreen(
                             when (tab) {
                             SearchTab.TRACKS -> LazyColumn(
                                 modifier = Modifier.fillMaxSize(),
-                                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
+                                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp).withDock(),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
                                 if (state.lyricMatches.isNotEmpty()) {
@@ -321,7 +323,7 @@ fun SearchScreen(
                                 }
                                 SearchTab.ARTISTS -> LazyColumn(
                                     modifier = Modifier.fillMaxSize(),
-                                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
+                                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp).withDock(),
                                     verticalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
                                     items(state.artists, key = { it.id }) { user ->
@@ -341,7 +343,7 @@ fun SearchScreen(
                                 }
                                 SearchTab.ALBUMS -> LazyColumn(
                                     modifier = Modifier.fillMaxSize(),
-                                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
+                                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp).withDock(),
                                     verticalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
                                     items(state.albums, key = { it.id }) { playlist ->
@@ -385,7 +387,7 @@ private fun PullableCenteredContent(content: @Composable () -> Unit) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             Box(
-                modifier = Modifier.fillParentMaxSize(),
+                modifier = Modifier.fillParentMaxSize().aboveDock(),
                 contentAlignment = Alignment.Center,
             ) {
                 content()

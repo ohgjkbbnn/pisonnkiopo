@@ -998,4 +998,6 @@
     <string name="datadome_close">Close</string>
     <string name="settings_liquid_glass">Liquid Glass</string>
     <string name="settings_liquid_glass_desc">Translucent glass on the dock and player, like on iOS</string>
+    <string name="settings_dock_background">Background behind the dock</string>
+    <string name="settings_dock_background_desc">Solid background behind the dock. When off, content shows through it</string>
 </resources>

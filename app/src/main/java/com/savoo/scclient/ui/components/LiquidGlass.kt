@@ -35,6 +35,7 @@ import dev.chrisbanes.haze.hazeChild
 
 val LocalGlassState = staticCompositionLocalOf<HazeState?> { null }
 val LocalLiquidGlass = staticCompositionLocalOf { false }
+val LocalDockBackground = staticCompositionLocalOf { true }
 
 @Composable
 fun Modifier.liquidGlass(

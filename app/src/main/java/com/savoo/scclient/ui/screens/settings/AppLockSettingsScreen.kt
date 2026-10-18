@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.settings
 
+import com.savoo.scclient.ui.navigation.dockInset
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -148,7 +149,8 @@ fun AppLockSettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = dockInset()),
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             Spacer(Modifier.height(0.dp))

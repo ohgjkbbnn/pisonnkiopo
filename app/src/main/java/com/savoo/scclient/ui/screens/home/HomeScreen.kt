@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.home
 
+import com.savoo.scclient.ui.navigation.dockInset
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.savoo.scclient.ui.screens.recap.RecapBanner
 import com.savoo.scclient.ui.screens.recap.RecapStoriesDialog
@@ -192,7 +193,8 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = dockInset()),
         ) {
             HomeTopBar(
                 avatarUrl = user?.avatarUrl,

@@ -1,6 +1,7 @@
 package com.savoo.scclient.ui.navigation
 
 import com.savoo.scclient.ui.components.LocalGlassState
+import com.savoo.scclient.ui.components.LocalDockBackground
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
 import androidx.compose.runtime.CompositionLocalProvider
@@ -255,6 +256,9 @@ fun RootScreen(initialDeepLink: DeepLinkTarget? = null, deepLinkKey: Int = 0) {
                 )
             }
         ) { padding ->
+            val dockBackground = LocalDockBackground.current
+            val dock = padding.calculateBottomPadding()
+            CompositionLocalProvider(LocalDockInset provides if (dockBackground) 0.dp else dock) {
             Box(modifier = Modifier.fillMaxSize()) {
                 NavHost(
                     navController = navController,
@@ -263,7 +267,7 @@ fun RootScreen(initialDeepLink: DeepLinkTarget? = null, deepLinkKey: Int = 0) {
                         .align(Alignment.TopCenter)
                         .then(if (useRail && currentRoute != Screen.Home.route) Modifier.widthIn(max = 1040.dp) else Modifier)
                         .fillMaxSize()
-                        .padding(bottom = padding.calculateBottomPadding())
+                        .padding(bottom = if (dockBackground) dock else 0.dp)
                         .haze(glassState),
                     enterTransition = {
                         val from = initialState.destination.route ?: return@NavHost fadeIn(spring())
@@ -472,6 +476,7 @@ fun RootScreen(initialDeepLink: DeepLinkTarget? = null, deepLinkKey: Int = 0) {
                         )
                     }
                 }
+            }
             }
         }
         }

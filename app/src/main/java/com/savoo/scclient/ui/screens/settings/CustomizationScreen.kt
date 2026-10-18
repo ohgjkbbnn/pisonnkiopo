@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.settings
 
+import com.savoo.scclient.ui.navigation.dockInset
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -331,7 +332,8 @@ fun CustomizationScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = dockInset()),
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             Spacer(Modifier.height(0.dp))
@@ -593,6 +595,12 @@ fun CustomizationScreen(
                     subtitle = stringResource(R.string.settings_liquid_glass_desc),
                     checked = settings.liquidGlass,
                     onCheckedChange = { viewModel.setLiquidGlass(it) }
+                )
+                SwitchItem(
+                    title = stringResource(R.string.settings_dock_background),
+                    subtitle = stringResource(R.string.settings_dock_background_desc),
+                    checked = settings.dockBackground,
+                    onCheckedChange = { viewModel.setDockBackground(it) }
                 )
             }
 

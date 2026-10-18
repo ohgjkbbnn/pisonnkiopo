@@ -1,5 +1,7 @@
 package com.savoo.scclient.ui.screens.favorites
 
+import com.savoo.scclient.ui.navigation.aboveDock
+import com.savoo.scclient.ui.navigation.withDock
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -405,7 +407,7 @@ fun FavoritesScreen(
                 },
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { SnackbarHost(snackbarHostState, Modifier.aboveDock()) },
     ) { padding ->
         ExpressivePullToRefreshBox(
             isRefreshing = isRefreshing,
@@ -453,7 +455,7 @@ fun FavoritesScreen(
                 else -> LazyColumn(
                     state = listState,
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp).withDock(),
                 ) {
                     items(
                         count = lazyTracks.itemCount,

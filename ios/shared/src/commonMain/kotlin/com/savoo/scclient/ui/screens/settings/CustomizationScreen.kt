@@ -598,6 +598,12 @@ fun CustomizationScreen(
                     checked = settings.liquidGlass,
                     onCheckedChange = { viewModel.setLiquidGlass(it) }
                 )
+                SwitchItem(
+                    title = stringResource(Res.string.settings_dock_background),
+                    subtitle = stringResource(Res.string.settings_dock_background_desc),
+                    checked = settings.dockBackground,
+                    onCheckedChange = { viewModel.setDockBackground(it) }
+                )
             }
 
             SettingsSectionCard(title = stringResource(Res.string.settings_player_style)) {

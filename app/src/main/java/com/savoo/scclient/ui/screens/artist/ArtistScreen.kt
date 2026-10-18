@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.artist
 
+import com.savoo.scclient.ui.navigation.withDock
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.animation.animateContentSize
@@ -400,7 +401,7 @@ fun ArtistScreen(
                     LazyColumn(
                         state = listState,
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(bottom = 100.dp),
+                        contentPadding = PaddingValues(bottom = 100.dp).withDock(),
                     ) {
                         item(key = "hero") {
                             val artistBadges by viewModel.getBadges(userId).collectAsState()

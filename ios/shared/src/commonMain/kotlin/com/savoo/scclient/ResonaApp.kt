@@ -1,6 +1,7 @@
 package com.savoo.scclient
 
 import com.savoo.scclient.ui.components.LocalLiquidGlass
+import com.savoo.scclient.ui.components.LocalDockBackground
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -107,6 +108,7 @@ fun ResonaApp(deepLinkTarget: DeepLinkTarget = DeepLinkTarget.None, deepLinkKey:
                 LocalArtworkGlowSource provides settings.artworkGlowSource,
                 LocalAnimatedArtwork provides settings.animatedArtwork,
                 LocalLiquidGlass provides settings.liquidGlass,
+                LocalDockBackground provides settings.dockBackground,
             ) {
                 var eulaDismissed by remember { mutableStateOf(false) }
                 var onboardingDismissed by remember { mutableStateOf(false) }

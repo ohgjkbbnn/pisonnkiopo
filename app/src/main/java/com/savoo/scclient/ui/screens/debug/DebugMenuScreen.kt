@@ -1,5 +1,7 @@
 package com.savoo.scclient.ui.screens.debug
 
+import com.savoo.scclient.ui.navigation.dockInset
+import com.savoo.scclient.ui.navigation.aboveDock
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -392,13 +394,14 @@ fun DebugMenuScreen(
                 }
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState, Modifier.aboveDock()) }
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = dockInset()),
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             Spacer(Modifier.height(0.dp))

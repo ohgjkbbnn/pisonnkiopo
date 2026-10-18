@@ -1,5 +1,7 @@
 package com.savoo.scclient.ui.screens.account
 
+import com.savoo.scclient.ui.navigation.dockInset
+import com.savoo.scclient.ui.navigation.aboveDock
 import com.savoo.scclient.ui.components.CopyableId
 import com.savoo.scclient.ui.components.badgeIcon
 import com.savoo.scclient.ui.components.badgeTint
@@ -225,7 +227,7 @@ fun AccountScreen(
 
     Scaffold(
         topBar = { TopAppBar(title = { Text(stringResource(R.string.account_title), maxLines = 1, overflow = TextOverflow.Ellipsis) }) },
-        snackbarHost = { androidx.compose.material3.SnackbarHost(snackbarHostState) },
+        snackbarHost = { androidx.compose.material3.SnackbarHost(snackbarHostState, Modifier.aboveDock()) },
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding)) {
             when {
@@ -356,6 +358,7 @@ private fun LoggedInContent(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
+            .padding(bottom = dockInset())
             .padding(horizontal = 20.dp)
             .padding(top = 8.dp, bottom = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,

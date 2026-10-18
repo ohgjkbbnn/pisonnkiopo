@@ -1024,4 +1024,6 @@
     <string name="datadome_close">Закрыть</string>
     <string name="settings_liquid_glass">Liquid Glass</string>
     <string name="settings_liquid_glass_desc">Полупрозрачное стекло на доке и в плеере, как на iOS</string>
+    <string name="settings_dock_background">Фон под доком</string>
+    <string name="settings_dock_background_desc">Сплошной фон за доком. Если выключить, контент будет виден сквозь него</string>
 </resources>

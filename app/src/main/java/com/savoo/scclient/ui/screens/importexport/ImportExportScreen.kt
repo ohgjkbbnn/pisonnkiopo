@@ -1,5 +1,7 @@
 package com.savoo.scclient.ui.screens.importexport
 
+import com.savoo.scclient.ui.navigation.dockInset
+import com.savoo.scclient.ui.navigation.aboveDock
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -435,13 +437,14 @@ fun ImportExportScreen(
                 }
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState, Modifier.aboveDock()) }
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
+                .padding(bottom = dockInset())
                 .padding(vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {

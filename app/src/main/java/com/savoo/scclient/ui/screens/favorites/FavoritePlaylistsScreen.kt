@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.favorites
 
+import com.savoo.scclient.ui.navigation.withDock
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -262,7 +263,7 @@ fun FavoritePlaylistsScreen(
                         LazyVerticalGrid(
                             columns = GridCells.Adaptive(minSize = 156.dp),
                             modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp),
+                            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp).withDock(),
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                             verticalArrangement = Arrangement.spacedBy(20.dp),
                         ) {

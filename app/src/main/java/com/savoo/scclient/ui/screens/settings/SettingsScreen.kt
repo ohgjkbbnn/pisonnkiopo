@@ -1,5 +1,7 @@
 package com.savoo.scclient.ui.screens.settings
 
+import com.savoo.scclient.ui.navigation.dockInset
+import com.savoo.scclient.ui.navigation.aboveDock
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -182,6 +184,7 @@ class SettingsViewModel @Inject constructor(
     fun setAutoplayNext(value: Boolean) = viewModelScope.launch { repository.setAutoplayNext(value) }
     fun setDynamicFromTrack(value: Boolean) = viewModelScope.launch { repository.setDynamicFromTrack(value) }
     fun setLiquidGlass(value: Boolean) = viewModelScope.launch { repository.setLiquidGlass(value) }
+    fun setDockBackground(value: Boolean) = viewModelScope.launch { repository.setDockBackground(value) }
     fun setDeveloperMode(value: Boolean) = viewModelScope.launch { repository.setDeveloperMode(value) }
     fun setHapticsEnabled(value: Boolean) = viewModelScope.launch { repository.setHapticsEnabled(value) }
     fun setHapticsIntensity(value: HapticsIntensity) = viewModelScope.launch { repository.setHapticsIntensity(value) }
@@ -511,13 +514,14 @@ fun SettingsScreen(
                 }
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState, Modifier.aboveDock()) }
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = dockInset()),
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             Spacer(Modifier.height(0.dp))

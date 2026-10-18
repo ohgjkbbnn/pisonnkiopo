@@ -1,5 +1,7 @@
 package com.savoo.scclient.ui.screens.offline
 
+import com.savoo.scclient.ui.navigation.aboveDock
+import com.savoo.scclient.ui.navigation.withDock
 import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -272,7 +274,7 @@ fun OfflineTracksScreen(
                 },
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { SnackbarHost(snackbarHostState, Modifier.aboveDock()) },
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
             if (tracks.isNotEmpty()) {
@@ -307,7 +309,7 @@ fun OfflineTracksScreen(
                 LazyColumn(
                     state = listState,
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp).withDock(),
                 ) {
                     items(filteredTracks, key = { it.id }) { track ->
                         val isCurrentTrack = playerState.currentTrack?.id == track.id

@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.disliked
 
+import com.savoo.scclient.ui.navigation.withDock
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -88,7 +89,7 @@ fun DislikedArtistsScreen(
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp).withDock(),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(dislikedArtists, key = { it.artistId }) { artist ->

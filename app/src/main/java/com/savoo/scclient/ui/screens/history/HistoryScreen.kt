@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.history
 
+import com.savoo.scclient.ui.navigation.withDock
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -286,7 +287,7 @@ fun HistoryScreen(
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp).withDock(),
                 ) {
                     days.forEach { day ->
                         item(key = "header_${day.dayStart}") {

@@ -6,6 +6,7 @@ import androidx.compose.foundation.LocalOverscrollFactory
 import androidx.compose.runtime.remember
 import androidx.compose.material3.MaterialTheme
 import com.savoo.scclient.ui.components.LocalGlassState
+import com.savoo.scclient.ui.components.LocalDockBackground
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.HazeState
 import androidx.compose.runtime.CompositionLocalProvider
@@ -257,9 +258,11 @@ fun RootScreen(initialDeepLink: DeepLinkTarget? = null, deepLinkKey: Int = 0) {
                 )
             }
         ) { padding ->
+            val dockBackground = LocalDockBackground.current
             val dock = padding.calculateBottomPadding()
+            val inset = if (dockBackground) 0.dp else dock
             SideEffect { ToastHost.dockInset = dock }
-            CompositionLocalProvider(LocalDockInset provides dock) {
+            CompositionLocalProvider(LocalDockInset provides inset) {
             Box(modifier = Modifier.fillMaxSize()) {
                 NavHost(
                     navController = navController,
@@ -268,6 +271,7 @@ fun RootScreen(initialDeepLink: DeepLinkTarget? = null, deepLinkKey: Int = 0) {
                         .align(Alignment.TopCenter)
                         .then(if (useRail && currentRoute != Screen.Home.route) Modifier.widthIn(max = 1040.dp) else Modifier)
                         .fillMaxSize()
+                        .padding(bottom = if (dockBackground) dock else 0.dp)
                         .hazeSource(glassState),
                     enterTransition = {
                         val from = initialState.destination.route ?: return@NavHost fadeIn(spring())

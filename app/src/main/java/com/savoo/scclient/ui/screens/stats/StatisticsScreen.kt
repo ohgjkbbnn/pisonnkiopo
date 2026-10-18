@@ -1,5 +1,6 @@
 package com.savoo.scclient.ui.screens.stats
 
+import com.savoo.scclient.ui.navigation.withDock
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
@@ -212,7 +213,7 @@ fun StatisticsScreen(
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize().padding(padding),
-                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 16.dp),
+                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 16.dp).withDock(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 recap?.let { stats ->

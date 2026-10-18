@@ -98,6 +98,7 @@ data class AppSettings(
     val darkMode: DarkModeOption = DarkModeOption.SYSTEM,
     val dynamicFromTrack: Boolean = true,
     val liquidGlass: Boolean = true,
+    val dockBackground: Boolean = false,
     val developerMode: Boolean = false,
     val language: LanguageOption = LanguageOption.ENGLISH,
     // Manual correction applied on top of the synced lyrics timestamps from the (community-sourced) lyrics
@@ -158,6 +159,7 @@ class SettingsRepository(
         val AUTOPLAY_NEXT = booleanPreferencesKey("autoplay_next")
         val DYNAMIC_FROM_TRACK = booleanPreferencesKey("dynamic_from_track")
         val LIQUID_GLASS = booleanPreferencesKey("liquid_glass")
+        val DOCK_BACKGROUND = booleanPreferencesKey("dock_background")
         val DEVELOPER_MODE = booleanPreferencesKey("developer_mode")
         val LANGUAGE = stringPreferencesKey("language")
         val GENIUS_FALLBACK_ENABLED = booleanPreferencesKey("genius_fallback_enabled")
@@ -221,6 +223,7 @@ class SettingsRepository(
             } ?: DarkModeOption.SYSTEM,
             dynamicFromTrack = prefs[Keys.DYNAMIC_FROM_TRACK] ?: true,
             liquidGlass = prefs[Keys.LIQUID_GLASS] ?: true,
+            dockBackground = prefs[Keys.DOCK_BACKGROUND] ?: false,
             developerMode = prefs[Keys.DEVELOPER_MODE] ?: false,
             language = prefs[Keys.LANGUAGE]?.let {
                 runCatching { LanguageOption.valueOf(it) }.getOrNull()
@@ -335,6 +338,10 @@ class SettingsRepository(
 
     suspend fun setLiquidGlass(value: Boolean) {
         context.dataStore.edit { it[Keys.LIQUID_GLASS] = value }
+    }
+
+    suspend fun setDockBackground(value: Boolean) {
+        context.dataStore.edit { it[Keys.DOCK_BACKGROUND] = value }
     }
 
     suspend fun setDeveloperMode(value: Boolean) {

@@ -1027,4 +1027,6 @@
     <string name="auto_export_ios_note">iOS сама решает, когда запускать фоновые задачи, поэтому просроченный бэкап делается и при открытии или сворачивании приложения. Хранятся последние 10 бэкапов.</string>
     <string name="settings_liquid_glass">Liquid Glass</string>
     <string name="settings_liquid_glass_desc">Полупрозрачное стекло на доке и в плеере. Если выключить, будет как на Android</string>
+    <string name="settings_dock_background">Фон под доком</string>
+    <string name="settings_dock_background_desc">Сплошной фон за доком. Если выключить, контент будет виден сквозь него</string>
 </resources>
