@@ -506,7 +506,7 @@ fun SettingsScreen(
             Spacer(Modifier.height(0.dp))
 
             SettingsSectionCard(title = stringResource(Res.string.settings_language)) {
-                val languages = LanguageOption.entries
+                val languages = LanguageOption.entries.filter { it != LanguageOption.CUSTOM }
                 val langLabelResIds = listOf(
                     Res.string.settings_language_en,
                     Res.string.settings_language_ru,
