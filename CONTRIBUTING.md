@@ -60,7 +60,11 @@ Before you dive in, have a look at [ARCHITECTURE.md](ARCHITECTURE.md). It's shor
 
 For small fixes, just send a PR. For anything bigger, a new screen or a new setting, please ask in Telegram or in an issue first. It would be sad if you spent a weekend on something that doesn't fit.
 
-Features land on Android first. You don't have to port your change to iOS, that's totally optional.
+New features land on Android first. You don't have to port them to iOS, that's totally optional.
+
+Bug fixes for iOS are very welcome though, it gets less attention than Android. A lot of bugs (especially the ones caused by SoundCloud) exist in both apps, so if you fixed one on Android, check if the same code in `ios/shared` needs it too. Fixing it in both places in one PR is great.
+
+No Mac? You can still test on an iPhone. Enable Actions in your fork, push to its `main` (or run the Canary build workflow by hand), then download `ios-ipa` from the run's artifacts and sideload it. The Android job will probably fail in a fork because it has no signing keys. That's fine, the IPA gets built anyway.
 
 ### Things that won't be merged
 
