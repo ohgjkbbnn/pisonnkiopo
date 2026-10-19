@@ -50,7 +50,7 @@ The iOS version is a separate port of the Android app, updated less often, so it
 - **Open source, no ads, no telemetry.**
 - No account required, log in only if you want to sync your own likes
 - Offline downloads, plus a folder watcher that picks up local files automatically
-- Import tracks straight from Telegram chats
+- Import tracks straight from Telegram chats (Android only)
 - Mix that keeps discovering new stuff from artists you already like
 - Lyrics for pretty much anything, even niche tracks, with a few sources chained as fallback and synced timing where it's available
 - Listening stats

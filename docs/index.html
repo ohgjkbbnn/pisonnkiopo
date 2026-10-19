@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>resona</title>
-<meta name="description" content="Resona is an open source SoundCloud client for Android, with an iOS version in beta. Material 3 Expressive, synced lyrics with Genius notes, search by a lyric line, Telegram import, waveform seek and offline playback.">
+<meta name="description" content="Resona is an open source SoundCloud client for Android, with an iOS version in beta. Material 3 Expressive, synced lyrics with Genius notes, search by a lyric line, Telegram import on Android, waveform seek and offline playback.">
 <link rel="icon" type="image/png" href="favicon.png">
 <script>
     (function () {
@@ -143,6 +143,10 @@
     .eyebrow {
         font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: 1.4px; text-transform: uppercase;
         color: var(--md-sys-color-primary);
+    }
+    .eyebrow .only {
+        margin-left: 8px; padding: 2px 8px; border-radius: 999px; letter-spacing: .6px; font-size: 10.5px; vertical-align: 1px;
+        background: var(--md-sys-color-tertiary-container); color: var(--md-sys-color-on-tertiary-container);
     }
     .display {
         font-family: var(--serif); font-weight: 500; letter-spacing: -1.5px; line-height: 1.02;
@@ -729,7 +733,7 @@
                     </ul>
                 </div>
                 <div class="chapter" data-c="4">
-                    <div class="eyebrow">Telegram</div>
+                    <div class="eyebrow">Telegram<span class="only">Android only</span></div>
                     <h3 class="display">Your Telegram music, <em>right here.</em></h3>
                     <p>Pick a chat or a channel. Resona scans it for audio, finds what is on SoundCloud, and saves the rest for offline.</p>
                     <ul>
