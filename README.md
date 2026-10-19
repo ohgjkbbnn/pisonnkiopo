@@ -66,6 +66,8 @@ Debug:
 
 iOS (macOS with Xcode required): open `ios/iosApp/iosApp.xcodeproj` and run the `iosApp` scheme.
 
+Want to dig into the code? [ARCHITECTURE.md](ARCHITECTURE.md) is a quick map of how everything fits together.
+
 ## Philosophy
 
 Resona will always be free and open source. No subscriptions, no paywalls, no telemetry, no analytics - ever.
@@ -73,6 +75,8 @@ Resona will always be free and open source. No subscriptions, no paywalls, no te
 ## Community
 
 Questions, bugs, ideas: [t.me/resona_tg](https://t.me/resona_tg)
+
+Want to help with code, translations or bug reports? Check out [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Star History
 
