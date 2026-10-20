@@ -1,6 +1,7 @@
 package com.savoo.scclient.ui.screens.playlist
 
 import com.savoo.scclient.ui.components.ChipLabel
+import com.savoo.scclient.ui.components.ChipIconGroup
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -320,34 +321,36 @@ fun AddTracksSheet(
                 modifier = Modifier.padding(horizontal = 4.dp),
             )
             Spacer(Modifier.height(14.dp))
-            ButtonGroup(
-                horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                SourceButton(
-                    label = stringResource(R.string.playlist_pick_favorites),
-                    icon = Icons.Filled.Favorite,
-                    checked = source == TrackPickSource.FAVORITES,
-                    shapes = ButtonGroupDefaults.connectedLeadingButtonShapes(),
-                    onClick = { haptic(); viewModel.setSource(TrackPickSource.FAVORITES) },
-                    modifier = Modifier.weight(1f),
-                )
-                SourceButton(
-                    label = stringResource(R.string.playlist_pick_offline),
-                    icon = Icons.Filled.DownloadDone,
-                    checked = source == TrackPickSource.OFFLINE,
-                    shapes = ButtonGroupDefaults.connectedMiddleButtonShapes(),
-                    onClick = { haptic(); viewModel.setSource(TrackPickSource.OFFLINE) },
-                    modifier = Modifier.weight(1f),
-                )
-                SourceButton(
-                    label = stringResource(R.string.playlist_pick_search),
-                    icon = Icons.Filled.Search,
-                    checked = source == TrackPickSource.SEARCH,
-                    shapes = ButtonGroupDefaults.connectedTrailingButtonShapes(),
-                    onClick = { haptic(); viewModel.setSource(TrackPickSource.SEARCH) },
-                    modifier = Modifier.weight(1f),
-                )
+            ChipIconGroup {
+                ButtonGroup(
+                    horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    SourceButton(
+                        label = stringResource(R.string.playlist_pick_favorites),
+                        icon = Icons.Filled.Favorite,
+                        checked = source == TrackPickSource.FAVORITES,
+                        shapes = ButtonGroupDefaults.connectedLeadingButtonShapes(),
+                        onClick = { haptic(); viewModel.setSource(TrackPickSource.FAVORITES) },
+                        modifier = Modifier.weight(1f),
+                    )
+                    SourceButton(
+                        label = stringResource(R.string.playlist_pick_offline),
+                        icon = Icons.Filled.DownloadDone,
+                        checked = source == TrackPickSource.OFFLINE,
+                        shapes = ButtonGroupDefaults.connectedMiddleButtonShapes(),
+                        onClick = { haptic(); viewModel.setSource(TrackPickSource.OFFLINE) },
+                        modifier = Modifier.weight(1f),
+                    )
+                    SourceButton(
+                        label = stringResource(R.string.playlist_pick_search),
+                        icon = Icons.Filled.Search,
+                        checked = source == TrackPickSource.SEARCH,
+                        shapes = ButtonGroupDefaults.connectedTrailingButtonShapes(),
+                        onClick = { haptic(); viewModel.setSource(TrackPickSource.SEARCH) },
+                        modifier = Modifier.weight(1f),
+                    )
+                }
             }
             Spacer(Modifier.height(10.dp))
             OutlinedTextField(

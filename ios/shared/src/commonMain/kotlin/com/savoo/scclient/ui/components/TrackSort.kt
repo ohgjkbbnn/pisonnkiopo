@@ -191,32 +191,34 @@ private fun TrackSortSheet(
                 modifier = Modifier.padding(bottom = 10.dp),
             )
 
-            ButtonGroup(
-                horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                DirectionButton(
-                    label = stringResource(sort.option.ascendingLabelRes),
-                    icon = Icons.Filled.ArrowUpward,
-                    checked = !sort.descending,
-                    shapes = ButtonGroupDefaults.connectedLeadingButtonShapes(),
-                    onClick = {
-                        haptics.tick()
-                        onSortChange(sort.copy(descending = false))
-                    },
-                    modifier = Modifier.weight(1f),
-                )
-                DirectionButton(
-                    label = stringResource(sort.option.descendingLabelRes),
-                    icon = Icons.Filled.ArrowDownward,
-                    checked = sort.descending,
-                    shapes = ButtonGroupDefaults.connectedTrailingButtonShapes(),
-                    onClick = {
-                        haptics.tick()
-                        onSortChange(sort.copy(descending = true))
-                    },
-                    modifier = Modifier.weight(1f),
-                )
+            ChipIconGroup {
+                ButtonGroup(
+                    horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    DirectionButton(
+                        label = stringResource(sort.option.ascendingLabelRes),
+                        icon = Icons.Filled.ArrowUpward,
+                        checked = !sort.descending,
+                        shapes = ButtonGroupDefaults.connectedLeadingButtonShapes(),
+                        onClick = {
+                            haptics.tick()
+                            onSortChange(sort.copy(descending = false))
+                        },
+                        modifier = Modifier.weight(1f),
+                    )
+                    DirectionButton(
+                        label = stringResource(sort.option.descendingLabelRes),
+                        icon = Icons.Filled.ArrowDownward,
+                        checked = sort.descending,
+                        shapes = ButtonGroupDefaults.connectedTrailingButtonShapes(),
+                        onClick = {
+                            haptics.tick()
+                            onSortChange(sort.copy(descending = true))
+                        },
+                        modifier = Modifier.weight(1f),
+                    )
+                }
             }
         }
     }

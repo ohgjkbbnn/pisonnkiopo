@@ -1,6 +1,7 @@
 package com.savoo.scclient.ui.screens.search
 
 import com.savoo.scclient.ui.components.ChipLabel
+import com.savoo.scclient.ui.components.ChipIconGroup
 import androidx.compose.foundation.layout.BoxWithConstraints
 import com.savoo.scclient.ui.navigation.aboveDock
 import com.savoo.scclient.ui.navigation.withDock
@@ -219,25 +220,27 @@ fun SearchScreen(
                             .padding(horizontal = 20.dp, vertical = 4.dp),
                     ) {
                     val compactTabs = maxWidth / tabs.size < 130.dp
-                    ButtonGroup(modifier = Modifier.fillMaxWidth()) {
-                        tabs.forEachIndexed { index, tab ->
-                            val shapes = when (index) {
-                                0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
-                                tabs.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
-                                else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
-                            }
-                            ToggleButton(
-                                checked = selectedIndex == index,
-                                onCheckedChange = { checked -> if (checked) { haptic(); viewModel.onTabChange(tab) } },
-                                modifier = Modifier.weight(1f),
-                                shapes = shapes,
-                                contentPadding = if (compactTabs) PaddingValues(horizontal = 8.dp) else ToggleButtonDefaults.ContentPadding,
-                            ) {
-                                ChipLabel(
-                                    text = stringResource(tab.labelRes),
-                                    style = MaterialTheme.typography.labelLarge,
-                                    icon = iconFor(tab),
-                                )
+                    ChipIconGroup {
+                        ButtonGroup(modifier = Modifier.fillMaxWidth()) {
+                            tabs.forEachIndexed { index, tab ->
+                                val shapes = when (index) {
+                                    0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                    tabs.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                    else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                                }
+                                ToggleButton(
+                                    checked = selectedIndex == index,
+                                    onCheckedChange = { checked -> if (checked) { haptic(); viewModel.onTabChange(tab) } },
+                                    modifier = Modifier.weight(1f),
+                                    shapes = shapes,
+                                    contentPadding = if (compactTabs) PaddingValues(horizontal = 8.dp) else ToggleButtonDefaults.ContentPadding,
+                                ) {
+                                    ChipLabel(
+                                        text = stringResource(tab.labelRes),
+                                        style = MaterialTheme.typography.labelLarge,
+                                        icon = iconFor(tab),
+                                    )
+                                }
                             }
                         }
                     }
