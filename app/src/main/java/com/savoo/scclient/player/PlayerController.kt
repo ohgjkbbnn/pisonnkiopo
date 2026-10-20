@@ -363,7 +363,7 @@ class PlayerController @Inject constructor(
                     val i = queueIndexOf(mediaId)
                     if (i < 0) return@launch
                     playerCommandMutex.withLock {
-                        controller?.replaceMediaItem(i, buildMediaItem(resolved.track, resolved.url, resolved.isHls))
+                        replaceMediaItemSafely(i, buildMediaItem(resolved.track, resolved.url, resolved.isHls))
                         controller?.let {
                             if (it.currentMediaItem?.mediaId?.toLongOrNull() == mediaId) {
                                 it.seekTo(i, 0L)
@@ -451,7 +451,7 @@ class PlayerController @Inject constructor(
 
                             playerCommandMutex.withLock {
                                 adoptResolvedTrack(i, resolved.track)
-                                controller?.replaceMediaItem(i, buildMediaItem(resolved.track, resolved.url, resolved.isHls))
+                                replaceMediaItemSafely(i, buildMediaItem(resolved.track, resolved.url, resolved.isHls))
 
                                 // Only do this if we're still actually the current item - playback may have moved on to a
                                 // different (possibly still-pending) track while this resolve was in flight. replaceMediaItem
@@ -632,6 +632,14 @@ class PlayerController @Inject constructor(
                     .build()
             ).build()
 
+    private fun replaceMediaItemSafely(index: Int, item: MediaItem) {
+        val c = controller ?: return
+        val repeatOneOnCurrent = c.repeatMode == Player.REPEAT_MODE_ONE && c.currentMediaItemIndex == index
+        if (repeatOneOnCurrent) c.repeatMode = Player.REPEAT_MODE_OFF
+        c.replaceMediaItem(index, item)
+        if (repeatOneOnCurrent) c.repeatMode = Player.REPEAT_MODE_ONE
+    }
+
     private fun buildPendingMediaItem(track: Track): MediaItem =
         MediaItem.Builder()
             .setMediaId(track.id.toString())
@@ -690,7 +698,7 @@ class PlayerController @Inject constructor(
                     } ?: false
                     if (!stillThere) return@withLock
                     adoptResolvedTrack(idx, resolved.track)
-                    controller?.replaceMediaItem(idx, buildMediaItem(resolved.track, resolved.url, resolved.isHls))
+                    replaceMediaItemSafely(idx, buildMediaItem(resolved.track, resolved.url, resolved.isHls))
 
                     // If this neighbour became the current item while we were resolving it, recover it the same way the
                     // reactive path does - see the comment there for why seekTo() is needed, not just prepare().
