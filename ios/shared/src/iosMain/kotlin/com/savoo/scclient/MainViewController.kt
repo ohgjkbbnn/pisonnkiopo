@@ -36,6 +36,7 @@ import okio.Path.Companion.toPath
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.koin.mp.KoinPlatform
+import platform.Foundation.NSLog
 import platform.UIKit.UIApplication
 import platform.UIKit.UIViewController
 
@@ -46,9 +47,21 @@ private val iosModule = module {
 private var started = false
 private var bridgeWebView: WebView? = null
 
+@OptIn(kotlin.experimental.ExperimentalNativeApi::class)
+private fun installCrashLogger() {
+    val previous = setUnhandledExceptionHook { e ->
+        e.stackTraceToString().lineSequence().forEach { NSLog("ResonaCrash: %@", it) }
+    }
+    if (previous != null) setUnhandledExceptionHook { e ->
+        e.stackTraceToString().lineSequence().forEach { NSLog("ResonaCrash: %@", it) }
+        previous(e)
+    }
+}
+
 private fun startApp() {
     if (started) return
     started = true
+    installCrashLogger()
     startKoin { modules(appModule, iosModule) }
     SingletonImageLoader.setSafe { context ->
         ImageLoader.Builder(context)

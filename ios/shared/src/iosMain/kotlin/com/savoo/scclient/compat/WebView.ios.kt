@@ -205,7 +205,7 @@ actual class WebView actual constructor(context: Context) {
             decisionHandler: (WKNavigationActionPolicy) -> Unit,
         ) {
             val req = request(decidePolicyForNavigationAction)
-            if (req.url.scheme == "about" || req.url.scheme == "data") {
+            if (req.url.scheme == "about" || req.url.scheme == "data" || !req.isForMainFrame) {
                 decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyAllow)
                 return
             }
