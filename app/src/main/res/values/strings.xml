@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Resona</string>
+    <string name="app_name">TrueMusic</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_welcome_title">Welcome to Resona</string>
+    <string name="onboarding_welcome_title">Welcome to TrueMusic</string>
     <string name="onboarding_welcome_desc">A fast, clean way to listen to SoundCloud — your account, your tracks, no clutter.</string>
     <string name="onboarding_mix_title">Your Mix, Tuned by You</string>
     <string name="onboarding_mix_desc">Resona builds an endless mix from your favorites and offline tracks, and you decide who\'s in it.</string>
