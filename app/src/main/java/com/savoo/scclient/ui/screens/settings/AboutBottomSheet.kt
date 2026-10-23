@@ -66,8 +66,8 @@ private data class AboutLink(
 )
 
 private val aboutLinks = listOf(
-    AboutLink(Icons.Filled.Code, R.string.about_github, R.string.about_github_desc, "https://github.com/savo-o/resona"),
-    AboutLink(Icons.AutoMirrored.Filled.Send, R.string.about_telegram, R.string.about_telegram_desc, "https://t.me/resona_tg"),
+    AboutLink(Icons.Filled.Code, R.string.about_github, R.string.about_github_desc, "https://t.me/og_auctioneer"),
+    AboutLink(Icons.AutoMirrored.Filled.Send, R.string.about_telegram, R.string.about_telegram_desc, "https://t.me/og_auctioneer"),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
