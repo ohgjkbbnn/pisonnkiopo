@@ -3,6 +3,7 @@ package com.savoo.scclient.ui.components
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.runtime.remember
@@ -59,6 +60,25 @@ fun Modifier.liquidGlass(
     return this
         .clip(shape)
         .hazeChild(state = state, style = style)
+        .glassHighlight(shape, dark)
+}
+
+/**
+ * Лёгкое стекло без блюра: полупрозрачная заливка + блик и обводка.
+ * Почти не грузит GPU и работает везде (в шторках, диалогах, на кнопках),
+ * потому что не требует HazeState. Включается тем же переключателем Liquid Glass.
+ */
+@Composable
+fun Modifier.liquidGlassLite(
+    shape: Shape,
+    tint: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    alpha: Float = 0.55f,
+): Modifier {
+    if (!LocalLiquidGlass.current) return this
+    val dark = tint.luminance() < 0.5f
+    return this
+        .clip(shape)
+        .background(tint.copy(alpha = if (dark) alpha else alpha + 0.1f))
         .glassHighlight(shape, dark)
 }
 
